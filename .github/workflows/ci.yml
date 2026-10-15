@@ -21,6 +21,10 @@ permissions:
 jobs:
   ci:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      # Codecov upload with OIDC (no CODECOV_TOKEN secret needed)
+      id-token: write
     steps:
       - uses: actions/checkout@v7
 
@@ -35,8 +39,8 @@ jobs:
       - name: Lint
         run: npm run lint
 
-      - name: Test
-        run: npm test
+      - name: Test with coverage
+        run: npm run coverage
 
       - name: Build
         run: npm run build
@@ -44,6 +48,17 @@ jobs:
           VITE_APP_VERSION: ${{ inputs.version }}
           VITE_POSTHOG_KEY: ${{ vars.POSTHOG_KEY }}
           VITE_POSTHOG_HOST: ${{ vars.POSTHOG_HOST }}
+
+      - name: Upload coverage to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/codecov-action@v7
+        with:
+          use_oidc: true
+          files: coverage/lcov.info
+          flags: unit
+          codecov_yml_path: .github/codecov.yml
+          # Fork PRs get no OIDC token; do not fail them because of the upload.
+          fail_ci_if_error: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
 
       - name: Upload Pages artifact
         if: ${{ inputs.upload-pages-artifact }}

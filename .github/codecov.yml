@@ -1,0 +1,31 @@
+# Codecov repository configuration: https://docs.codecov.com/docs/codecov-yaml
+codecov:
+  require_ci_to_pass: true
+
+coverage:
+  precision: 1
+  round: down
+  range: "50...90"
+  status:
+    project:
+      default:
+        target: auto
+        threshold: 1%
+    patch:
+      default:
+        informational: true
+
+comment:
+  layout: "header, diff, flags, files"
+  behavior: default
+  require_changes: false
+
+flags:
+  unit:
+    paths:
+      - src/
+    carryforward: false
+
+ignore:
+  - "src/**/*.test.ts"
+  - "src/core/test-utils.ts"

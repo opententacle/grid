@@ -11,7 +11,8 @@
     "lint": "biome check .",
     "format": "biome check --write .",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "coverage": "vitest run --coverage"
   },
   "engines": {
     "node": ">=22"
@@ -35,6 +36,7 @@
     "@types/d3-scale": "^4.0.9",
     "@types/d3-selection": "^3.0.12",
     "@types/d3-shape": "^3.2.0",
+    "@vitest/coverage-v8": "^5.0.4",
     "typescript": "^7.0.2",
     "vite": "^8.3.4",
     "vitest": "^5.0.4"

@@ -1,4 +1,6 @@
-# Netzkosten-Rechner (grid-calc)
+# Netzkosten-Rechner (grid)
+
+[![CI](https://github.com/opententacle/grid/actions/workflows/ci.yml/badge.svg)](https://github.com/opententacle/grid/actions/workflows/ci.yml) [![codecov](https://codecov.io/gh/opententacle/grid/graph/badge.svg)](https://codecov.io/gh/opententacle/grid)
 
 Web app that estimates Austrian electricity grid costs (Netzentgelte) from smart meter quarter-hour data:
 
@@ -23,6 +25,7 @@ npm run dev        # http://localhost:5173
 npm run lint       # biome check
 npm run format     # biome check --write
 npm test           # vitest
+npm run coverage   # vitest with coverage (coverage/lcov.info)
 npm run build      # type-check + production build to dist/
 ```
 
@@ -47,6 +50,8 @@ Put real exports in `exports/` for local tests. The folder is in `.gitignore`, b
 | `VITE_POSTHOG_KEY` | GitHub repository **variable** `POSTHOG_KEY` | PostHog project key. Empty = analytics off. |
 | `VITE_POSTHOG_HOST` | GitHub repository variable `POSTHOG_HOST` (optional) | Default `https://eu.i.posthog.com` |
 | `VITE_APP_VERSION` | set by the release workflow | Version in the footer |
+
+Coverage is uploaded to [Codecov](https://codecov.io/gh/opententacle/grid) after every CI build with OIDC, so no `CODECOV_TOKEN` secret is necessary. The repository must be activated in Codecov (Codecov GitHub app installed for the `opententacle` organization). Configuration: `.github/codecov.yml`.
 
 In the PostHog project settings, enable **"Discard client IP data"** so that the privacy page statement stays correct.
 
