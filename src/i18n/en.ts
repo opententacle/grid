@@ -44,6 +44,7 @@ export const en: Record<MessageKey, string> = {
   "ec.step.2": "Upload the CSV file here.",
 
   "upload.drop": "Drop the CSV file here",
+  "results.empty": "No data yet. Upload your CSV file in step 2. Then you see your costs here.",
   "upload.or": "or",
   "upload.choose": "Choose file",
   "upload.hint": "The file is read in your browser only. It is not uploaded.",

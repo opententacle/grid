@@ -714,7 +714,7 @@ export class GcApp extends BaseElement {
   private renderEmpty() {
     return html`<section class="card empty-results">
       <div class="big">${fa(faFileCsv)}</div>
-      <div>${t("upload.drop")} – ${t("step.results")}</div>
+      <div>${t("results.empty")}</div>
     </section>`;
   }
 

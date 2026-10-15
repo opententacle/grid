@@ -44,6 +44,8 @@ export const de = {
   "ec.step.2": "Laden Sie die CSV-Datei hier hoch.",
 
   "upload.drop": "CSV-Datei hierher ziehen",
+  "results.empty":
+    "Noch keine Daten. Laden Sie in Schritt 2 Ihre CSV-Datei hoch. Dann sehen Sie hier Ihre Kosten.",
   "upload.or": "oder",
   "upload.choose": "Datei auswählen",
   "upload.hint": "Die Datei wird nur in Ihrem Browser gelesen und nicht hochgeladen.",
