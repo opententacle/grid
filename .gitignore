@@ -7,3 +7,5 @@ coverage/
 # Real smart meter exports contain personal data (address, Zählpunkt). Never commit them.
 exports/
 .idea/
+# Drafts for press and social media (not part of the app)
+outreach/
