@@ -1,0 +1,9 @@
+node_modules/
+dist/
+coverage/
+*.log
+.env*
+!.env.example
+# Real smart meter exports contain personal data (address, Zählpunkt). Never commit them.
+exports/
+.idea/
