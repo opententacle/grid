@@ -45,7 +45,7 @@ export class GcChartDetail extends ChartElement {
       select {
         border: 1px solid var(--border);
         background: var(--surface);
-        border-radius: 10px;
+        border-radius: var(--radius-sm);
         padding: 8px 10px;
         min-width: 160px;
       }

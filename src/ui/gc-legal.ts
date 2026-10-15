@@ -64,7 +64,7 @@ export class GcLegal extends BaseElement {
       .logo {
         width: 32px;
         height: 32px;
-        border-radius: 9px;
+        border-radius: var(--radius-sm);
         display: grid;
         place-items: center;
         background: var(--accent);
@@ -76,7 +76,7 @@ export class GcLegal extends BaseElement {
       .seg {
         display: inline-flex;
         border: 1px solid var(--border);
-        border-radius: 10px;
+        border-radius: var(--radius-sm);
         overflow: hidden;
       }
       .seg button {
@@ -120,7 +120,7 @@ export class GcLegal extends BaseElement {
         margin: 16px 0 8px;
         padding: 12px 16px;
         border: 1px solid var(--border);
-        border-radius: 12px;
+        border-radius: var(--radius-sm);
         background: var(--surface);
         font-size: 0.9rem;
       }
@@ -152,7 +152,7 @@ export class GcLegal extends BaseElement {
         font-size: 0.85rem;
         background: var(--surface-2);
         border: 1px solid var(--border);
-        border-radius: 10px;
+        border-radius: var(--radius-sm);
         padding: 10px 12px;
         margin: 8px 0 12px;
         overflow-x: auto;

@@ -69,7 +69,9 @@ export const en: Record<MessageKey, string> = {
   "settings.baseFee": "Supplier base fee",
   "settings.baseFeeUnit": "€/month net",
   "settings.gross": "Gross",
-  "settings.net": "Net (excl. VAT)",
+  "settings.grossHint": "Including 20 % VAT",
+  "settings.net": "Net",
+  "settings.netHint": "Without VAT",
   "settings.display": "Display",
 
   "kpi.today": "Yearly cost with today's tariff",

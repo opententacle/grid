@@ -119,7 +119,7 @@ export class GcChartMonthly extends ChartElement {
       .call((g) => g.selectAll(".tick line").remove());
     top.append("text").attr("x", -M.left).attr("y", -12).attr("fill", muted).text("kWh");
     const bw = x.bandwidth();
-    const r = Math.min(4, bw / 2);
+    const r = Math.min(2, bw / 2);
     top
       .append("g")
       .selectAll("path")

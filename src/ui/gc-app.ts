@@ -160,7 +160,7 @@ export class GcApp extends BaseElement {
       .logo {
         width: 32px;
         height: 32px;
-        border-radius: 9px;
+        border-radius: var(--radius-sm);
         display: grid;
         place-items: center;
         background: var(--accent);
@@ -177,7 +177,7 @@ export class GcApp extends BaseElement {
       .seg {
         display: inline-flex;
         border: 1px solid var(--border);
-        border-radius: 10px;
+        border-radius: var(--radius-sm);
         overflow: hidden;
       }
       .seg button {
@@ -188,6 +188,9 @@ export class GcApp extends BaseElement {
         font-size: 0.85rem;
         cursor: pointer;
         color: var(--text-2);
+      }
+      .seg button {
+        white-space: nowrap;
       }
       .seg button[aria-pressed="true"] {
         background: var(--accent-soft);
@@ -256,7 +259,7 @@ export class GcApp extends BaseElement {
         align-items: center;
         margin-bottom: 16px;
       }
-      label.field {
+      .field {
         display: grid;
         gap: 6px;
         font-size: 0.85rem;
@@ -267,7 +270,7 @@ export class GcApp extends BaseElement {
       input.input {
         border: 1px solid var(--border);
         background: var(--surface);
-        border-radius: 10px;
+        border-radius: var(--radius-sm);
         padding: 10px 12px;
         width: 100%;
         font-size: 0.95rem;
@@ -298,7 +301,7 @@ export class GcApp extends BaseElement {
       }
       .drop {
         border: 2px dashed var(--border);
-        border-radius: 12px;
+        border-radius: var(--radius-sm);
         padding: 28px 16px;
         text-align: center;
         display: grid;
@@ -327,7 +330,7 @@ export class GcApp extends BaseElement {
         gap: 12px;
         align-items: center;
         padding: 12px 14px;
-        border-radius: 10px;
+        border-radius: var(--radius-sm);
         background: var(--surface-2);
         margin-top: 14px;
         font-size: 0.9rem;
@@ -341,7 +344,7 @@ export class GcApp extends BaseElement {
         align-items: flex-start;
         margin-top: 14px;
         padding: 12px 14px;
-        border-radius: 10px;
+        border-radius: var(--radius-sm);
         background: var(--warn-bg);
         border: 1px solid var(--warn-border);
         color: var(--warn-text);
@@ -371,7 +374,7 @@ export class GcApp extends BaseElement {
         grid-template-columns: repeat(5, 1fr);
         gap: 0;
         border: 1px solid var(--border);
-        border-radius: 10px;
+        border-radius: var(--radius-sm);
         overflow: hidden;
       }
       .years button {
@@ -697,11 +700,11 @@ export class GcApp extends BaseElement {
             <button aria-pressed=${this.gross} @click=${() => {
               this.gross = true;
               track("vat_mode", { gross: true });
-            }}>${t("settings.gross")}</button>
+            }} title=${t("settings.grossHint")}>${t("settings.gross")}</button>
             <button aria-pressed=${!this.gross} @click=${() => {
               this.gross = false;
               track("vat_mode", { gross: false });
-            }}>${t("settings.net")}</button>
+            }} title=${t("settings.netHint")}>${t("settings.net")}</button>
           </div>
         </div>
       </div>

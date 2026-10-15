@@ -143,7 +143,7 @@ export class GcChartCosts extends ChartElement {
           .attr(
             "d",
             i === lastIdx
-              ? roundedTopBar(x0, top, bw, h, Math.min(4, bw / 2))
+              ? roundedTopBar(x0, top, bw, h, Math.min(2, bw / 2))
               : `M${x0},${top}h${bw}v${h}h${-bw}Z`,
           );
       });

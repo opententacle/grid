@@ -69,7 +69,9 @@ export const de = {
   "settings.baseFee": "Grundgebühr Lieferant",
   "settings.baseFeeUnit": "€/Monat netto",
   "settings.gross": "Brutto",
-  "settings.net": "Netto (ohne USt.)",
+  "settings.grossHint": "Inklusive 20 % Umsatzsteuer",
+  "settings.net": "Netto",
+  "settings.netHint": "Ohne Umsatzsteuer",
   "settings.display": "Anzeige",
 
   "kpi.today": "Jahreskosten mit heutigem Tarif",

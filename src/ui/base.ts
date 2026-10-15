@@ -101,7 +101,7 @@ export const sharedStyles = css`
     gap: 8px;
     border: 1px solid var(--border);
     background: var(--surface);
-    border-radius: 10px;
+    border-radius: var(--radius-sm);
     padding: 8px 14px;
     cursor: pointer;
     font-weight: 550;
@@ -141,7 +141,7 @@ export const sharedStyles = css`
     font-size: 0.75rem;
     font-weight: 600;
     padding: 2px 8px;
-    border-radius: 999px;
+    border-radius: var(--radius-sm);
     background: var(--accent-soft);
     color: var(--accent);
     white-space: nowrap;

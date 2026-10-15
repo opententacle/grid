@@ -54,7 +54,7 @@ export abstract class ChartElement extends BaseElement {
         background: var(--surface);
         border: 1px solid var(--border);
         box-shadow: var(--shadow);
-        border-radius: 10px;
+        border-radius: var(--radius-sm);
         padding: 8px 10px;
         font-size: 0.8rem;
         line-height: 1.4;
@@ -90,12 +90,12 @@ export abstract class ChartElement extends BaseElement {
         display: inline-block;
         width: 10px;
         height: 10px;
-        border-radius: 3px;
+        border-radius: 2px;
       }
       .sw.line {
         height: 2px;
         width: 14px;
-        border-radius: 1px;
+        border-radius: 2px;
       }
       .sw.dash {
         height: 0;
