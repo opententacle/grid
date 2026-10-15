@@ -5,12 +5,13 @@ codecov:
 coverage:
   precision: 1
   round: down
-  range: "50...90"
+  range: "70...100"
   status:
+    # Quality gate: the project coverage must stay at 80 % or more.
     project:
       default:
-        target: auto
-        threshold: 1%
+        target: 80%
+        threshold: 0%
     patch:
       default:
         informational: true
@@ -29,3 +30,4 @@ flags:
 ignore:
   - "src/**/*.test.ts"
   - "src/core/test-utils.ts"
+  - "src/ui/test-helpers.ts"

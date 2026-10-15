@@ -9,7 +9,7 @@ import { css, html } from "lit";
 import { fmtDateTime, fmtMonth, fmtNum } from "../core/format";
 import type { MonthStats, Reading } from "../core/types";
 import { t } from "../i18n/i18n";
-import { fa } from "./base";
+import { define, fa } from "./base";
 import { ChartElement, cssVar, esc, tipRow } from "./chart-base";
 import { pointer } from "./gc-chart-monthly";
 
@@ -261,4 +261,4 @@ export class GcChartDetail extends ChartElement {
   }
 }
 
-customElements.define("gc-chart-detail", GcChartDetail);
+define("gc-chart-detail", GcChartDetail);

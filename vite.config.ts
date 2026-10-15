@@ -16,13 +16,15 @@ export default defineConfig({
   },
   test: {
     include: ["src/**/*.test.ts"],
-    environment: "node",
+    environment: "happy-dom",
     coverage: {
       provider: "v8",
       include: ["src/**/*.ts"],
-      exclude: ["src/**/*.test.ts", "src/core/test-utils.ts"],
+      exclude: ["src/**/*.test.ts", "src/core/test-utils.ts", "src/ui/test-helpers.ts"],
       reporter: ["text-summary", "lcov"],
       reportsDirectory: "coverage",
+      // Quality gate: same 80 % target as Codecov (.github/codecov.yml)
+      thresholds: { statements: 80, branches: 80, functions: 80, lines: 80 },
     },
   },
 });

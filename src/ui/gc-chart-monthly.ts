@@ -8,6 +8,7 @@ import { isComplete } from "../core/analyze";
 import { fmtDateTime, fmtMonth, fmtNum } from "../core/format";
 import type { MonthStats } from "../core/types";
 import { t } from "../i18n/i18n";
+import { define } from "./base";
 import { ChartElement, cssVar, esc, tipRow } from "./chart-base";
 
 const M = { top: 22, right: 12, bottom: 28, left: 48 };
@@ -269,4 +270,4 @@ export function roundedTopBar(x: number, y: number, w: number, h: number, r: num
   return `M${x},${y + h}V${y + rr}Q${x},${y} ${x + rr},${y}H${x + w - rr}Q${x + w},${y} ${x + w},${y + rr}V${y + h}Z`;
 }
 
-customElements.define("gc-chart-monthly", GcChartMonthly);
+define("gc-chart-monthly", GcChartMonthly);

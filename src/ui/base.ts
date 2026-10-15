@@ -10,6 +10,11 @@ config.autoAddCss = false;
 export const fa = (def: IconDefinition, title?: string) =>
   unsafeSVG(icon(def, title ? { title } : {}).html.join(""));
 
+/** Registers a custom element once (safe for HMR and repeated module loads in tests). */
+export function define(name: string, ctor: CustomElementConstructor): void {
+  if (!customElements.get(name)) customElements.define(name, ctor);
+}
+
 /** LitElement that re-renders on language and theme changes. */
 export class BaseElement extends LitElement {
   private unsubs: (() => void)[] = [];

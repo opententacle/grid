@@ -1,6 +1,10 @@
 # Netzkosten-Rechner (grid)
 
-[![CI](https://github.com/opententacle/grid/actions/workflows/ci.yml/badge.svg)](https://github.com/opententacle/grid/actions/workflows/ci.yml) [![codecov](https://codecov.io/gh/opententacle/grid/graph/badge.svg)](https://codecov.io/gh/opententacle/grid)
+[![Build](https://github.com/opententacle/grid/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/opententacle/grid/actions/workflows/ci.yml)
+[![Release](https://github.com/opententacle/grid/actions/workflows/release.yml/badge.svg)](https://github.com/opententacle/grid/actions/workflows/release.yml)
+[![Latest release](https://img.shields.io/github/v/release/opententacle/grid?label=release&sort=semver)](https://github.com/opententacle/grid/releases/latest)
+[![Coverage](https://codecov.io/gh/opententacle/grid/graph/badge.svg)](https://codecov.io/gh/opententacle/grid)
+[![Quality gate (coverage ≥ 80 %)](https://img.shields.io/github/checks-status/opententacle/grid/main?label=quality%20gate%20%E2%89%A5%2080%25)](https://app.codecov.io/gh/opententacle/grid)
 
 Web app that estimates Austrian electricity grid costs (Netzentgelte) from smart meter quarter-hour data:
 
@@ -50,6 +54,8 @@ Put real exports in `exports/` for local tests. The folder is in `.gitignore`, b
 | `VITE_POSTHOG_KEY` | GitHub repository **variable** `POSTHOG_KEY` | PostHog project key. Empty = analytics off. |
 | `VITE_POSTHOG_HOST` | GitHub repository variable `POSTHOG_HOST` (optional) | Default `https://eu.i.posthog.com` |
 | `VITE_APP_VERSION` | set by the release workflow | Version in the footer |
+
+**Quality gate:** test coverage must be at least 80 % (statements, branches, functions, lines). CI fails below that (`thresholds` in `vite.config.ts`), and Codecov reports the `codecov/project` status with the same 80 % target. The "quality gate" badge shows the combined check status of `main` (CI + Codecov).
 
 Coverage is uploaded to [Codecov](https://codecov.io/gh/opententacle/grid) after every CI build with OIDC, so no `CODECOV_TOKEN` secret is necessary. The repository must be activated in Codecov (Codecov GitHub app installed for the `opententacle` organization). Configuration: `.github/codecov.yml`.
 

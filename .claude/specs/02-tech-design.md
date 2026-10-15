@@ -147,3 +147,10 @@ Per month m and tariff T:
 
 - No `innerHTML` with user data. File content is never rendered as HTML.
 - Content-Security-Policy meta tag allowing self + PostHog EU host.
+
+## Tests and quality gate
+
+- Vitest with happy-dom. Core logic tests (`src/core/*.test.ts`), component and chart tests (`src/ui/*.test.ts`), i18n, theme, analytics (PostHog mocked) and entry point tests.
+- Charts are drawn in tests by setting the width directly (happy-dom has no layout, so the ResizeObserver does not fire).
+- Coverage with `@vitest/coverage-v8`, uploaded to Codecov with OIDC after each CI build.
+- Quality gate: 80 % for statements, branches, functions and lines (Vitest `thresholds`, CI fails below) and Codecov `codecov/project` target 80 %.

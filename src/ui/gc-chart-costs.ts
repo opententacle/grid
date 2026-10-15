@@ -6,6 +6,7 @@ import { html } from "lit";
 import { fmtEur, fmtMonth, fmtNum } from "../core/format";
 import type { CostBreakdown, MonthStats } from "../core/types";
 import { type MessageKey, t } from "../i18n/i18n";
+import { define } from "./base";
 import { ChartElement, cssVar, esc, tipRow } from "./chart-base";
 import { pointer, roundedTopBar } from "./gc-chart-monthly";
 
@@ -185,4 +186,4 @@ export class GcChartCosts extends ChartElement {
   }
 }
 
-customElements.define("gc-chart-costs", GcChartCosts);
+define("gc-chart-costs", GcChartCosts);

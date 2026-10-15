@@ -3,7 +3,7 @@ import { faLinkedin } from "@fortawesome/free-brands-svg-icons/faLinkedin";
 import { css, html } from "lit";
 import { AUTHOR } from "../config";
 import { t } from "../i18n/i18n";
-import { BaseElement, fa, sharedStyles } from "./base";
+import { BaseElement, define, fa, sharedStyles } from "./base";
 
 const VERSION = (import.meta.env.VITE_APP_VERSION as string | undefined) || "dev";
 
@@ -80,4 +80,4 @@ export class GcFooter extends BaseElement {
   }
 }
 
-customElements.define("gc-footer", GcFooter);
+define("gc-footer", GcFooter);

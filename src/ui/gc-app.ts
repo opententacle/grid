@@ -21,7 +21,7 @@ import type { Analysis, EnergyContract } from "../core/types";
 import { getLocale, type Locale, setLocale, t } from "../i18n/i18n";
 import { SOURCES, sourceById } from "../sources";
 import { getTheme, setTheme } from "../theme";
-import { BaseElement, fa, sharedStyles } from "./base";
+import { BaseElement, define, fa, sharedStyles } from "./base";
 import "./gc-chart-costs";
 import "./gc-chart-detail";
 import "./gc-chart-monthly";
@@ -813,4 +813,4 @@ export class GcApp extends BaseElement {
   }
 }
 
-customElements.define("gc-app", GcApp);
+define("gc-app", GcApp);

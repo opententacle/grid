@@ -1,0 +1,152 @@
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { buildCsv } from "../core/test-utils";
+import { setLocale } from "../i18n/i18n";
+import { setTheme } from "../theme";
+import { GcApp } from "./gc-app";
+import { $, $$, mount, settle } from "./test-helpers";
+
+/** Twelve months of synthetic data: 0.1 kWh per quarter-hour, one 12 kW peak in January. */
+const CSV = buildCsv(new Date(2025, 6, 1), 365, (d) =>
+  d.getMonth() === 0 && d.getDate() === 15 && d.getHours() === 18 && d.getMinutes() === 0 ? 3 : 0.1,
+);
+
+async function upload(app: GcApp, text: string, how: "input" | "drop" = "input") {
+  const file = new File([text], "export.csv", { type: "text/csv" });
+  if (how === "input") {
+    const input = $<HTMLInputElement>(app, "input[type=file]");
+    Object.defineProperty(input, "files", { value: [file], configurable: true });
+    input.dispatchEvent(new Event("change"));
+  } else {
+    const drop = $(app, ".drop");
+    const ev = new Event("drop", { bubbles: true, cancelable: true });
+    Object.defineProperty(ev, "dataTransfer", { value: { files: [file] } });
+    drop.dispatchEvent(ev);
+  }
+  await settle(app);
+}
+
+const kpis = (app: GcApp) => $$(app, ".kpi .value").map((e) => e.textContent?.trim());
+
+let app: GcApp;
+beforeEach(async () => {
+  setLocale("de");
+  setTheme("light");
+  app = await mount(new GcApp());
+});
+afterEach(() => app.remove());
+
+describe("gc-app", () => {
+  it("shows the steps and an empty result area", () => {
+    expect($$(app, ".step-title h2").map((h) => h.textContent)).toEqual([
+      "Datenquelle wählen",
+      "Viertelstundenwerte hochladen",
+      "Annahmen",
+    ]);
+    expect($(app, ".empty-results").textContent).toContain("Noch keine Daten");
+    expect($(app, ".disclaimer").textContent).toContain("Haftungsausschluss");
+    expect($(app, "a.badge.link").getAttribute("href")).toBe("./berechnung.html");
+  });
+
+  it("changes the instructions with the data source", async () => {
+    const select = $<HTMLSelectElement>(app, "select.input");
+    expect(select.options).toHaveLength(3);
+    expect($(app, ".instr a.btn").getAttribute("href")).toContain("wienernetze");
+    select.value = "at-format";
+    select.dispatchEvent(new Event("change"));
+    await app.updateComplete;
+    expect($(app, ".instr").textContent).toContain("AT-Format");
+    expect($$(app, ".instr a.btn")).toHaveLength(0);
+  });
+
+  it("reads a file and shows the results", async () => {
+    await upload(app, CSV);
+    expect($(app, ".loaded").textContent).toContain("Viertelstundenwerte");
+    expect(kpis(app)).toHaveLength(2);
+    expect($$(app, "gc-chart-monthly, gc-chart-costs, gc-chart-detail")).toHaveLength(3);
+    // Highest peak: 3 kWh × 4 = 12 kW
+    expect($$(app, ".fact .value").map((e) => e.textContent)).toContain("12,00 kW");
+  });
+
+  it("accepts a dropped file", async () => {
+    $(app, ".drop").dispatchEvent(new Event("dragover", { cancelable: true }));
+    await app.updateComplete;
+    expect($(app, ".drop").classList.contains("over")).toBe(true);
+    $(app, ".drop").dispatchEvent(new Event("dragleave"));
+    await upload(app, CSV, "drop");
+    expect($(app, ".drop").classList.contains("over")).toBe(false);
+    expect(kpis(app)).toHaveLength(2);
+  });
+
+  it("shows an error for a wrong file", async () => {
+    await upload(app, "no;csv;here\n1;2;3");
+    expect($(app, ".error").textContent).toContain("Dateiformat");
+    await upload(app, "");
+    expect($(app, ".error").textContent).toContain("leer");
+  });
+
+  it("recalculates with the tariff year, prices and net/gross", async () => {
+    await upload(app, CSV);
+    const first = kpis(app)[1];
+    const years = $$(app, ".years button");
+    years[4].click();
+    await app.updateComplete;
+    expect(years[4].getAttribute("aria-checked")).toBe("true");
+    expect(kpis(app)[1]).not.toBe(first);
+
+    const range = $<HTMLInputElement>(app, "input[type=range]");
+    range.value = "0";
+    range.dispatchEvent(new Event("input"));
+    await app.updateComplete;
+    expect($(app, ".kpi.selected .label").textContent).toContain("2026");
+    expect($(app, ".kpi.selected .delta").textContent).toContain("heutigen");
+
+    const [price, fee] = $$<HTMLInputElement>(app, ".settings input.input");
+    const before = kpis(app)[0];
+    price.value = "30";
+    price.dispatchEvent(new Event("change"));
+    fee.value = "-5";
+    fee.dispatchEvent(new Event("change"));
+    await app.updateComplete;
+    expect(kpis(app)[0]).not.toBe(before);
+
+    const gross = kpis(app)[0];
+    const toggles = $$(app, ".settings .seg button");
+    toggles[1].click();
+    await app.updateComplete;
+    expect(toggles[1].getAttribute("aria-pressed")).toBe("true");
+    expect(kpis(app)[0]).not.toBe(gross);
+    toggles[0].click();
+    await app.updateComplete;
+    expect(kpis(app)[0]).toBe(gross);
+  });
+
+  it("scales a short period to one year", async () => {
+    await upload(
+      app,
+      buildCsv(new Date(2026, 0, 1), 59, () => 0.1),
+    );
+    expect($(app, "main").textContent).toContain("Hochgerechnet auf 12 Monate");
+  });
+
+  it("switches language and theme from the header", async () => {
+    const [de, en] = $$(app, "header .seg button");
+    en.click();
+    await app.updateComplete;
+    expect($(app, ".hero h1").textContent).toBe("Grid Fee Calculator");
+    de.click();
+    await app.updateComplete;
+    expect($(app, ".hero h1").textContent).toBe("Netzkosten-Rechner");
+
+    $(app, "header .btn.icon").click();
+    await app.updateComplete;
+    expect(document.documentElement.dataset.theme).toBe("dark");
+  });
+
+  it("follows the month selected in the detail chart", async () => {
+    await upload(app, CSV);
+    const detail = $(app, "gc-chart-detail");
+    detail.dispatchEvent(new CustomEvent("month-change", { detail: 2 }));
+    await app.updateComplete;
+    expect((detail as unknown as { index: number }).index).toBe(2);
+  });
+});

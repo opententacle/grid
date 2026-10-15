@@ -9,7 +9,7 @@ import { TARIFF_DATA_DATE, WIENER_NETZE_TARIFFS } from "../core/tariffs";
 import { EXPLAIN } from "../i18n/explain";
 import { getLocale, type Locale, type MessageKey, setLocale, t } from "../i18n/i18n";
 import { getTheme, setTheme } from "../theme";
-import { BaseElement, fa, sharedStyles } from "./base";
+import { BaseElement, define, fa, sharedStyles } from "./base";
 import "./gc-footer";
 
 const PRIVACY_SECTIONS: [MessageKey, MessageKey][] = [
@@ -307,4 +307,4 @@ export class GcLegal extends BaseElement {
   }
 }
 
-customElements.define("gc-legal", GcLegal);
+define("gc-legal", GcLegal);
