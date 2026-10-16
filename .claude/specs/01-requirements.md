@@ -95,6 +95,7 @@ For each calendar month in the data:
 
 ### FR-14a Calculation page
 - A separate page (`/berechnung.html`, DE + EN) explains the calculation in simple words and short paragraphs. Linked from the hero, the assumptions box and the footer.
+- A FAQ page (`/faq.html`, DE + EN) explains the fine points of the SNE-G-V, each answer with its legal source (§). Each question is an accordion. On top: a timeline to 2030 in an accordion (vertical line, short keywords, plans marked as "Plan"). Linked from the header (all pages), the hero (FAQ and `faq.html#timeline`), the assumptions box and the footer. A URL hash opens that accordion.
 - Tables on this page are generated from `src/core/tariffs.ts`.
 
 ### FR-15 Author and legal

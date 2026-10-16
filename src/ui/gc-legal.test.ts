@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { AUTHOR, IMPRESSUM } from "../config";
+import { FAQ } from "../i18n/faq";
 import { setLocale } from "../i18n/i18n";
 import { GcFooter } from "./gc-footer";
 import { GcLegal } from "./gc-legal";
@@ -49,6 +50,32 @@ describe("gc-legal", () => {
     expect($(el, "#prices")).toBeTruthy();
   });
 
+  it("renders the FAQ with a closed timeline and one accordion per question", async () => {
+    const el = await page("faq");
+    expect($(el, "h1").textContent).toBe(FAQ.de.title);
+    expect(document.title).toContain("FAQ");
+    const tl = $<HTMLDetailsElement>(el, "details#timeline");
+    expect(tl.open).toBe(false);
+    expect($$(el, "ol.tl > li")).toHaveLength(FAQ.de.timeline.length);
+    expect($$(el, "ol.tl > li.plan").length).toBeGreaterThan(0);
+    expect($$(el, "details.acc:not(#timeline)")).toHaveLength(FAQ.de.items.length);
+    expect($(el, "details#minimum .ref").textContent).toContain("SNE-G-V § 6 Abs. 3");
+    expect($(el, "a.nav[href='./faq.html']").getAttribute("aria-current")).toBe("page");
+  });
+
+  it("opens the FAQ entry in the URL", async () => {
+    history.replaceState(null, "", "#timeline");
+    const el = await page("faq");
+    expect($<HTMLDetailsElement>(el, "details#timeline").open).toBe(true);
+  });
+
+  it("has the same FAQ structure in German and English", () => {
+    expect(FAQ.en.items.map((i) => i.id)).toEqual(FAQ.de.items.map((i) => i.id));
+    expect(FAQ.en.timeline.map((s) => s.plan ?? false)).toEqual(
+      FAQ.de.timeline.map((s) => s.plan ?? false),
+    );
+  });
+
   it("switches language and theme", async () => {
     const el = await page("calc");
     $$(el, ".seg button")[1].click();
@@ -61,7 +88,7 @@ describe("gc-legal", () => {
 });
 
 describe("gc-footer", () => {
-  it("links author, source, calculation, privacy and imprint", async () => {
+  it("links author, source, calculation, FAQ, privacy and imprint", async () => {
     const el = await mount(new GcFooter());
     const links = $$<HTMLAnchorElement>(el, "a").map((a) => a.getAttribute("href"));
     expect(links).toEqual([
@@ -69,6 +96,7 @@ describe("gc-footer", () => {
       AUTHOR.github,
       AUTHOR.repo,
       "./berechnung.html",
+      "./faq.html",
       "./datenschutz.html",
       "./impressum.html",
     ]);

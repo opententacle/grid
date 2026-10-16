@@ -8,6 +8,7 @@ export const en: Record<MessageKey, string> = {
   "header.language": "Language",
   "header.theme.dark": "Dark theme",
   "header.theme.light": "Light theme",
+  "header.faq": "FAQ",
 
   "step.source": "Select data source",
   "step.upload": "Upload quarter-hour values",
@@ -123,9 +124,13 @@ export const en: Record<MessageKey, string> = {
 
   "calc.title": "How we calculate",
   "calc.link": "How we calculate: the calculation in simple words",
+  "faq.title": "FAQ",
+  "faq.link": "FAQ: details of the new tariff",
+  "faq.timelineLink": "Timeline to 2030",
   "footer.madeBy": "A project by",
   "footer.source": "Source code",
   "footer.calc": "How we calculate",
+  "footer.faq": "FAQ",
   "footer.privacy": "Privacy",
   "footer.imprint": "Imprint",
   "footer.back": "Back to the calculator",

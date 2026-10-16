@@ -1,5 +1,6 @@
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons/faArrowLeft";
 import { faBolt } from "@fortawesome/free-solid-svg-icons/faBolt";
+import { faCircleQuestion } from "@fortawesome/free-solid-svg-icons/faCircleQuestion";
 import { faMoon } from "@fortawesome/free-solid-svg-icons/faMoon";
 import { faSun } from "@fortawesome/free-solid-svg-icons/faSun";
 import { css, html } from "lit";
@@ -7,6 +8,7 @@ import { IMPRESSUM } from "../config";
 import { fmtDate, fmtNum } from "../core/format";
 import { TARIFF_DATA_DATE, WIENER_NETZE_TARIFFS } from "../core/tariffs";
 import { EXPLAIN } from "../i18n/explain";
+import { FAQ } from "../i18n/faq";
 import { getLocale, type Locale, type MessageKey, setLocale, t } from "../i18n/i18n";
 import { getTheme, setTheme } from "../theme";
 import { BaseElement, define, fa, sharedStyles } from "./base";
@@ -24,9 +26,10 @@ const TITLES = {
   privacy: "privacy.title",
   imprint: "imprint.title",
   calc: "calc.title",
+  faq: "faq.title",
 } as const satisfies Record<string, MessageKey>;
 
-/** Content pages: calculation explained, privacy and imprint. */
+/** Content pages: calculation explained, FAQ, privacy and imprint. */
 export class GcLegal extends BaseElement {
   static properties = { page: { type: String } };
   declare page: keyof typeof TITLES;
@@ -186,6 +189,118 @@ export class GcLegal extends BaseElement {
       .model {
         color: var(--warn-text);
       }
+      .bar a.nav {
+        color: var(--text-2);
+        font-weight: 600;
+        font-size: 0.9rem;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .bar a.nav:hover,
+      .bar a.nav[aria-current="page"] {
+        color: var(--accent);
+      }
+      @media (max-width: 480px) {
+        .bar a.nav .label {
+          display: none;
+        }
+      }
+      details.acc {
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        background: var(--surface);
+        margin: 0 0 8px;
+        scroll-margin-top: 16px;
+      }
+      details.acc > summary {
+        cursor: pointer;
+        padding: 12px 16px;
+        font-weight: 600;
+        list-style: none;
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+      }
+      details.acc > summary::-webkit-details-marker {
+        display: none;
+      }
+      details.acc > summary::before {
+        content: "›";
+        display: inline-block;
+        width: 1em;
+        color: var(--text-muted);
+        transition: transform 0.15s;
+      }
+      details.acc[open] > summary::before {
+        transform: rotate(90deg);
+      }
+      details.acc > summary .hint {
+        font-weight: 400;
+        color: var(--text-muted);
+        font-size: 0.85rem;
+      }
+      details.acc > .body {
+        padding: 0 16px 12px 40px;
+      }
+      details.timeline {
+        margin: 16px 0 24px;
+      }
+      ol.tl {
+        list-style: none;
+        margin: 4px 0 4px;
+        padding: 0 0 0 20px;
+        border-left: 2px solid var(--border);
+      }
+      ol.tl > li {
+        position: relative;
+        padding: 0 0 14px 4px;
+      }
+      ol.tl > li::before {
+        content: "";
+        position: absolute;
+        left: -26px;
+        top: 5px;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--accent);
+        border: 2px solid var(--surface);
+      }
+      ol.tl > li.plan::before {
+        background: var(--surface);
+        border: 2px dashed var(--accent);
+      }
+      ol.tl .date {
+        display: block;
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: var(--accent);
+        font-variant-numeric: tabular-nums;
+      }
+      ol.tl .title {
+        font-weight: 600;
+      }
+      ol.tl .tag {
+        margin-left: 6px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        padding: 1px 6px;
+        border-radius: 999px;
+        border: 1px dashed var(--border);
+        color: var(--text-muted);
+      }
+      ol.tl ul {
+        margin: 2px 0 0;
+        padding-left: 18px;
+        color: var(--text-2);
+        font-size: 0.9rem;
+      }
+      .ref {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+      }
     `,
   ];
 
@@ -200,6 +315,7 @@ export class GcLegal extends BaseElement {
         <div class="bar">
           <a class="brand" href="./"><span class="logo">${fa(faBolt)}</span>${t("app.title")}</a>
           <span class="spacer"></span>
+          <a class="nav" href="./faq.html" aria-label=${t("header.faq")} title=${t("header.faq")} aria-current=${this.page === "faq" ? "page" : "false"}>${fa(faCircleQuestion)} <span class="label">${t("header.faq")}</span></a>
           <div class="seg" role="group" aria-label=${t("header.language")}>${lang("de", "DE")}${lang("en", "EN")}</div>
           <button class="btn icon" @click=${() => setTheme(next)}
             aria-label=${t(next === "dark" ? "header.theme.dark" : "header.theme.light")}>${fa(theme === "dark" ? faSun : faMoon)}</button>
@@ -212,7 +328,9 @@ export class GcLegal extends BaseElement {
             ? this.renderPrivacy()
             : this.page === "calc"
               ? this.renderCalc()
-              : this.renderImprint()
+              : this.page === "faq"
+                ? this.renderFaq()
+                : this.renderImprint()
         }
       </main>
       <gc-footer></gc-footer>`;
@@ -243,6 +361,36 @@ export class GcLegal extends BaseElement {
       <p class="muted">${t("assumptions.updated", { date: fmtDate(new Date(TARIFF_DATA_DATE)) })}</p>`;
   }
 
+  private renderFaq() {
+    const f = FAQ[getLocale()];
+    return html`<h1>${f.title}</h1>
+      <p class="lead">${f.intro}</p>
+      <details class="acc timeline" id="timeline">
+        <summary>${f.timelineTitle} <span class="hint">${f.timelineHint}</span></summary>
+        <div class="body">
+          <ol class="tl">
+            ${f.timeline.map(
+              (s) => html`<li class=${s.plan ? "plan" : ""}>
+                <span class="date">${s.date}</span>
+                <span class="title">${s.title}</span>${s.plan ? html`<span class="tag">${f.planLabel}</span>` : null}
+                <ul>${s.points.map((p) => html`<li>${p}</li>`)}</ul>
+              </li>`,
+            )}
+          </ol>
+        </div>
+      </details>
+      ${f.items.map(
+        (q) => html`<details class="acc" id=${q.id}>
+          <summary>${q.q}</summary>
+          <div class="body">
+            ${q.a.map((p) => html`<p>${p}</p>`)}
+            ${q.ref ? html`<p class="ref">${f.sourceLabel}: SNE-G-V ${q.ref}</p>` : null}
+          </div>
+        </details>`,
+      )}
+      <p class="muted">${t("assumptions.updated", { date: fmtDate(new Date(TARIFF_DATA_DATE)) })}</p>`;
+  }
+
   /** Anchor links inside the shadow DOM do not scroll on their own. */
   private jump(e: Event, id: string) {
     e.preventDefault();
@@ -252,7 +400,9 @@ export class GcLegal extends BaseElement {
 
   protected firstUpdated(): void {
     const id = location.hash.slice(1);
-    if (id) this.renderRoot.querySelector(`#${CSS.escape(id)}`)?.scrollIntoView();
+    const target = id ? this.renderRoot.querySelector(`#${CSS.escape(id)}`) : null;
+    if (target instanceof HTMLDetailsElement) target.open = true;
+    target?.scrollIntoView();
   }
 
   private tariffTable() {

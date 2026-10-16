@@ -3,10 +3,12 @@ import { faBolt } from "@fortawesome/free-solid-svg-icons/faBolt";
 import { faCalculator } from "@fortawesome/free-solid-svg-icons/faCalculator";
 import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons/faCircleExclamation";
 import { faCircleInfo } from "@fortawesome/free-solid-svg-icons/faCircleInfo";
+import { faCircleQuestion } from "@fortawesome/free-solid-svg-icons/faCircleQuestion";
 import { faFileCsv } from "@fortawesome/free-solid-svg-icons/faFileCsv";
 import { faLock } from "@fortawesome/free-solid-svg-icons/faLock";
 import { faMoon } from "@fortawesome/free-solid-svg-icons/faMoon";
 import { faSun } from "@fortawesome/free-solid-svg-icons/faSun";
+import { faTimeline } from "@fortawesome/free-solid-svg-icons/faTimeline";
 import { faTriangleExclamation } from "@fortawesome/free-solid-svg-icons/faTriangleExclamation";
 import { faUpload } from "@fortawesome/free-solid-svg-icons/faUpload";
 import { css, html, nothing } from "lit";
@@ -168,6 +170,23 @@ export class GcApp extends BaseElement {
       }
       .spacer {
         flex: 1;
+      }
+      header.top a.nav {
+        color: var(--text-2);
+        font-weight: 600;
+        font-size: 0.9rem;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+      header.top a.nav:hover {
+        color: var(--accent);
+      }
+      @media (max-width: 480px) {
+        header.top a.nav .label {
+          display: none;
+        }
       }
       @media (max-width: 480px) {
         .brand .name {
@@ -547,6 +566,8 @@ export class GcApp extends BaseElement {
           <div class="hero-links">
             <span class="badge">${fa(faLock)} ${t("app.privacyBadge")}</span>
             <a class="badge link" href="./berechnung.html">${fa(faCalculator)} ${t("calc.link")}</a>
+            <a class="badge link" href="./faq.html">${fa(faCircleQuestion)} ${t("faq.link")}</a>
+            <a class="badge link" href="./faq.html#timeline">${fa(faTimeline)} ${t("faq.timelineLink")}</a>
           </div>
         </section>
         <main>
@@ -573,6 +594,7 @@ export class GcApp extends BaseElement {
       <div class="wrap">
         <div class="brand"><span class="logo">${fa(faBolt)}</span><span class="name">${t("app.title")}</span></div>
         <span class="spacer"></span>
+        <a class="nav" href="./faq.html" aria-label=${t("header.faq")} title=${t("header.faq")}>${fa(faCircleQuestion)} <span class="label">${t("header.faq")}</span></a>
         <div class="seg" role="group" aria-label=${t("header.language")}>${lang("de", "DE")}${lang("en", "EN")}</div>
         <button class="btn icon" @click=${() => {
           setTheme(next);
@@ -807,6 +829,7 @@ export class GcApp extends BaseElement {
         <summary>${t("assumptions.title")}</summary>
         <p>${t("assumptions.text")}</p>
         <p><a href="./berechnung.html">${fa(faCalculator)} ${t("calc.link")}</a></p>
+        <p><a href="./faq.html">${fa(faCircleQuestion)} ${t("faq.link")}</a></p>
         <p class="muted">${t("assumptions.updated", { date: fmtDate(new Date(TARIFF_DATA_DATE)) })}</p>
       </details>
     `;

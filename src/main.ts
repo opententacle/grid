@@ -7,7 +7,7 @@ initTheme();
 document.documentElement.lang = getLocale();
 
 const page = document.body.dataset.page;
-if (page === "privacy" || page === "imprint" || page === "calc") {
+if (page === "privacy" || page === "imprint" || page === "calc" || page === "faq") {
   await import("./ui/gc-legal");
   const el = document.createElement("gc-legal");
   el.setAttribute("page", page);

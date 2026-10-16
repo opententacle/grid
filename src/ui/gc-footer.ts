@@ -72,6 +72,7 @@ export class GcFooter extends BaseElement {
       <nav>
         <a href=${AUTHOR.repo} target="_blank" rel="noopener noreferrer">${t("footer.source")}</a>
         <a href="./berechnung.html">${t("footer.calc")}</a>
+        <a href="./faq.html">${t("footer.faq")}</a>
         <a href="./datenschutz.html">${t("footer.privacy")}</a>
         <a href="./impressum.html">${t("footer.imprint")}</a>
         <span>${t("footer.version", { version: VERSION })}</span>

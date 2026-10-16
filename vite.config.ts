@@ -11,6 +11,7 @@ export default defineConfig({
         datenschutz: "datenschutz.html",
         impressum: "impressum.html",
         berechnung: "berechnung.html",
+        faq: "faq.html",
       },
     },
   },

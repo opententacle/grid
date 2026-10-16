@@ -6,6 +6,7 @@ export const de = {
   "header.language": "Sprache",
   "header.theme.dark": "Dunkles Design",
   "header.theme.light": "Helles Design",
+  "header.faq": "FAQ",
 
   "step.source": "Datenquelle wählen",
   "step.upload": "Viertelstundenwerte hochladen",
@@ -124,9 +125,13 @@ export const de = {
 
   "calc.title": "So rechnen wir",
   "calc.link": "So rechnen wir: die Berechnung einfach erklärt",
+  "faq.title": "FAQ",
+  "faq.link": "FAQ: Details zum neuen Tarif",
+  "faq.timelineLink": "Zeitleiste bis 2030",
   "footer.madeBy": "Ein Projekt von",
   "footer.source": "Quellcode",
   "footer.calc": "So rechnen wir",
+  "footer.faq": "FAQ",
   "footer.privacy": "Datenschutz",
   "footer.imprint": "Impressum",
   "footer.back": "Zurück zum Rechner",
