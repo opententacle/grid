@@ -27,13 +27,13 @@ function month(over: Partial<MonthStats> = {}): MonthStats {
 const NO_ENERGY = { priceCt: 0, baseFeeMonth: 0 };
 
 describe("tariffs", () => {
-  it("has a phased model from 2027 to 2030", () => {
+  it("has a phased model from 2027 to the final stage 2029", () => {
     const years = WIENER_NETZE_TARIFFS.map((t) => [t.year, t.energyCt, t.capacity?.lowEurKwYear]);
     expect(years).toEqual([
       [2026, 6.98, undefined],
       [2027, 7.36, 19],
-      [2028, 6.42, 23.94],
-      [2029, 5.47, 28.88],
+      [2028, 5.95, 26.41],
+      [2029, 4.53, 33.82],
       [2030, 4.53, 33.82],
     ]);
     expect(t2030.capacity?.highEurKwYear).toBe(67.64);

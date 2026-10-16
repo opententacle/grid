@@ -80,7 +80,7 @@ const de: ExplainText = {
         "Sie zahlen jeden Monat für Ihre Monatsspitze. Der Preis ist in Euro je kW und Jahr angegeben. Pro Monat zahlen Sie ein Zwölftel davon.",
         "Bis 10 kW gilt der normale Preis. Für jedes kW über 10 kW zahlen Sie den doppelten Preis.",
         "Übergang Jänner bis November 2027: ein Preis je kW für die ganze Spitze, ohne 10-kW-Staffel und ohne Minimum von 2 kW (§ 6 Abs. 3a). Ab Dezember 2027 gilt die Staffel.",
-        "Der Arbeitspreis je kWh sinkt dafür. Bis 2030 soll das Verhältnis von Arbeitspreis zu Leistungspreis 50 : 50 sein.",
+        "Der Arbeitspreis je kWh sinkt dafür. Ab 2029 soll das Verhältnis von Arbeitspreis zu Leistungspreis 50 : 50 sein.",
       ],
       formula:
         "Leistungspreis pro Monat = (min(Spitze, 10) × Preis bis 10 kW + max(Spitze − 10, 0) × Preis über 10 kW) ÷ 12",
@@ -89,7 +89,7 @@ const de: ExplainText = {
       id: "example",
       title: "5. Ein Beispiel",
       paragraphs: [
-        "Ihre Spitze im Jänner ist 4,4 kW. Der Preis ist 33,82 € je kW und Jahr (Endstufe 2030).",
+        "Ihre Spitze im Jänner ist 4,4 kW. Der Preis ist 33,82 € je kW und Jahr (Endstufe ab 2029).",
         "Rechnung: 4,4 × 33,82 € ÷ 12 = 12,40 € netto für Jänner.",
         "Eine Wallbox lädt mit 11 kW. Dann ist die Spitze mindestens 11 kW: 10 × 33,82 € + 1 × 67,64 € = 405,84 € pro Jahr, also 33,82 € pro Monat.",
         "Laden Sie langsamer (z. B. 3,7 kW), sinkt die Spitze. Dann sinken auch die Kosten.",
@@ -100,7 +100,7 @@ const de: ExplainText = {
       title: "6. Die Preise je Jahr",
       paragraphs: [
         "Die offiziellen Preise ab 2027 gibt es noch nicht. Sie kommen mit der SNE-T-V (erwartet im Dezember 2026).",
-        "Darum nutzen wir die Modellwerte der E-Control für 2027 (Anfangsstufe) und 2030 (Endstufe). Die Jahre 2028 und 2029 liegen gleichmäßig dazwischen.",
+        "Darum nutzen wir die Modellwerte der E-Control für 2027 (Anfangsstufe) und 2029 (Endstufe, laut E-Control ab 1. Jänner 2029). 2028 liegt genau dazwischen. 2030 bleibt auf der Endstufe.",
         "Die Modellwerte gelten für ganz Österreich. Die Preise von Wiener Netze können anders sein.",
       ],
       table: "tariffs",
@@ -202,7 +202,7 @@ const en: ExplainText = {
         "Each month you pay for your monthly peak. The price is given in euro per kW and year. Per month you pay one twelfth of it.",
         "Up to 10 kW, the normal price applies. For each kW above 10 kW, you pay double the price.",
         "Transition from January to November 2027: one price per kW for the whole peak, without 10 kW threshold and without 2 kW minimum (§ 6 (3a)). From December 2027, the threshold applies.",
-        "In return, the energy price per kWh goes down. By 2030, the ratio of energy price to capacity price is to be 50 : 50.",
+        "In return, the energy price per kWh goes down. From 2029, the ratio of energy price to capacity price is to be 50 : 50.",
       ],
       formula:
         "Capacity price per month = (min(peak, 10) × price up to 10 kW + max(peak − 10, 0) × price above 10 kW) ÷ 12",
@@ -211,7 +211,7 @@ const en: ExplainText = {
       id: "example",
       title: "5. An example",
       paragraphs: [
-        "Your peak in January is 4.4 kW. The price is €33.82 per kW and year (final stage 2030).",
+        "Your peak in January is 4.4 kW. The price is €33.82 per kW and year (final stage from 2029).",
         "Calculation: 4.4 × €33.82 ÷ 12 = €12.40 net for January.",
         "A wallbox charges with 11 kW. Then the peak is at least 11 kW: 10 × €33.82 + 1 × €67.64 = €405.84 per year, or €33.82 per month.",
         "If you charge more slowly (e.g. 3.7 kW), the peak goes down. Then the cost goes down too.",
@@ -222,7 +222,7 @@ const en: ExplainText = {
       title: "6. The prices per year",
       paragraphs: [
         "The official prices from 2027 are not published yet. They come with the SNE-T-V (expected in December 2026).",
-        "So we use the E-Control model values for 2027 (start stage) and 2030 (final stage). The years 2028 and 2029 are evenly in between.",
+        "So we use the E-Control model values for 2027 (start stage) and 2029 (final stage, from 1 January 2029 as announced by E-Control). 2028 is exactly in between. 2030 stays at the final stage.",
         "The model values apply to all of Austria. The Wiener Netze prices can be different.",
       ],
       table: "tariffs",

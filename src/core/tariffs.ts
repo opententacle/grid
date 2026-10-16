@@ -7,9 +7,10 @@ import type { Levies, Tariff } from "./types";
  * - Wiener Netze 2026 (Netzebene 7, not measured): SNE-V 2018 idF BGBl. II Nr. 305/2025;
  *   https://www.wienernetze.at/o/document/wn_ex0105-netznutzungs-und-netzverlustentgelt_2026_geschutzt
  * - New structure from 2027: SNE-G-V, BGBl. II Nr. 299/2026 (structure only, no prices).
- * - 2027 / 2030 values: E-Control model values ("Der Weg zu einer neuen Netzentgeltstruktur",
+ * - 2027 / 2029 values: E-Control model values ("Der Weg zu einer neuen Netzentgeltstruktur",
  *   14.07.2026, start stage and final stage, Austria-wide). Not Wiener Netze prices.
- * - 2028 / 2029: linear interpolation between start and final stage.
+ *   E-Control announces the final stage for 1 January 2029 (OTS, 12.10.2026).
+ * - 2028: linear interpolation between start and final stage. 2030: same as the final stage.
  * - From 2027 there is no Messentgelt and no Pauschale (SNE-G-V § 2 Abs. 1 Z 11, § 5 Abs. 1).
  *   The E-Control start value (about 19 €/kW) already contains both.
  * - January to November 2027: one capacity price per kW, no 10 kW threshold, no 2 kW minimum
@@ -42,7 +43,7 @@ const START = { energyCt: 7.36, low: 19 };
 const FINAL = { energyCt: 4.53, low: 33.82 };
 
 function newModel(year: number, step: number): Tariff {
-  const f = step / 3;
+  const f = step / 2;
   const lerp = (a: number, b: number) => Math.round((a + (b - a) * f) * 100) / 100;
   const low = lerp(START.low, FINAL.low);
   return {
@@ -67,7 +68,7 @@ export const WIENER_NETZE_TARIFFS: Tariff[] = [
   newModel(2027, 0),
   newModel(2028, 1),
   newModel(2029, 2),
-  newModel(2030, 3),
+  newModel(2030, 2),
 ];
 
 export const YEARS = WIENER_NETZE_TARIFFS.map((t) => t.year);

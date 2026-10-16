@@ -9,7 +9,7 @@
 Web app that estimates Austrian electricity grid costs (Netzentgelte) from smart meter quarter-hour data:
 
 - with the tariff that is valid today (2026: energy price + flat fee), and
-- with the new capacity-based tariff from 2027 (SNE-G-V: monthly peak, double price above 10 kW), phased until 2030.
+- with the new capacity-based tariff from 2027 (SNE-G-V: monthly peak, double price above 10 kW), phased until the final stage in 2029.
 
 Live: <https://grid.opententacle.com>
 
@@ -73,9 +73,9 @@ Before the first release, fill in `src/config.ts` (Impressum, LinkedIn URL).
 
 | | 2026 | 2027 | 2028 | 2029 | 2030 |
 |---|---|---|---|---|---|
-| Netznutzung ct/kWh | 6.98 | 7.36 | 6.42 | 5.47 | 4.53 |
+| Netznutzung ct/kWh | 6.98 | 7.36 | 5.95 | 4.53 | 4.53 |
 | Pauschale €/year | 54 | – | – | – | – |
-| Capacity ≤ 10 kW €/kW/year | – | 19.00 | 23.94 | 28.88 | 33.82 |
-| Capacity > 10 kW €/kW/year | – | 38.00 | 47.88 | 57.76 | 67.64 |
+| Capacity ≤ 10 kW €/kW/year | – | 19.00 | 26.41 | 33.82 | 33.82 |
+| Capacity > 10 kW €/kW/year | – | 38.00 | 52.82 | 67.64 | 67.64 |
 
-2026: Wiener Netze, Netzebene 7. 2027 and 2030: E-Control model (start and final stage, July 2026). 2028/2029: linear interpolation. Details and all other components: `src/core/tariffs.ts` and `.claude/specs/01-requirements.md`.
+2026: Wiener Netze, Netzebene 7. 2027 and 2029: E-Control model (start and final stage, July 2026; final stage from 1 January 2029 as announced by E-Control). 2028: linear interpolation. 2030: final stage. From 2027 no Pauschale and no Messentgelt; January–November 2027 one price per kW without threshold and minimum (SNE-G-V § 6 Abs. 3a). Details and all other components: `src/core/tariffs.ts` and `.claude/specs/01-requirements.md`.

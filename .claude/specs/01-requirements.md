@@ -126,15 +126,15 @@ For each calendar month in the data:
 
 | Item | 2026 (valid) | 2027 | 2028 | 2029 | 2030 |
 |---|---|---|---|---|---|
-| Netznutzung energy price ct/kWh | 6.98 | 7.36* | 6.42* | 5.47* | 4.53* |
+| Netznutzung energy price ct/kWh | 6.98 | 7.36* | 5.95* | 4.53* | 4.53* |
 | Pauschale €/year | 54.00 | – | – | – | – |
-| Capacity price ≤ 10 kW €/kW/year | – | 19.00* | 23.94* | 28.88* | 33.82* |
-| Capacity price > 10 kW €/kW/year | – | 38.00* | 47.88* | 57.76* | 67.64* |
+| Capacity price ≤ 10 kW €/kW/year | – | 19.00* | 26.41* | 33.82* | 33.82* |
+| Capacity price > 10 kW €/kW/year | – | 38.00* | 52.82* | 67.64* | 67.64* |
 | Netzverlust ct/kWh | 0.700 | 0.700† | 0.700† | 0.700† | 0.700† |
 | Messentgelt €/month | 2.18 | – | – | – | – |
 | SNAP reduction (Apr–Sep, 10–16 h) | −20 % | −20 %† | −20 %† | −20 %† | −20 %† |
 
-`*` E-Control model values (presentation 14.07.2026, Austria-wide, not Wiener Netze-specific). 2028/2029 are linear interpolation. `†` assumption: unchanged from 2026.
+`*` E-Control model values (presentation 14.07.2026, Austria-wide, not Wiener Netze-specific). 2028 is the midpoint (linear interpolation), 2030 equals the final stage 2029. `†` assumption: unchanged from 2026.
 
 Capacity price per month = (min(peak, 10) × P₁ + max(peak − 10, 0) × P₂) / 12, minimum billed peak 2 kW.
 
@@ -152,7 +152,7 @@ Not modelled in version 1: WiNAP (winter reduction from 1.10.2027, value not kno
 
 ## 7. Decisions
 
-- D-1 (owner) Tariffs 2027–2030: E-Control model values + linear interpolation. The calculation follows the SNE-G-V rules as close as possible (monthly highest quarter-hour, 2 decimals, minimum 2 kW, 10 kW threshold, double price above).
+- D-1 (owner) Tariffs 2027–2030: E-Control model values + linear interpolation. Final stage from 2029 (E-Control announcement, 12.10.2026); 2028 is the midpoint, 2030 equals 2029. The calculation follows the SNE-G-V rules as close as possible (monthly highest quarter-hour, 2 decimals, minimum 2 kW, 10 kW threshold, double price above).
 - D-2 (owner) Cost scope: gross all-in by default, net toggle.
 - D-3 (owner) PostHog: cookieless, EU host, no consent banner. Separate privacy page.
 - D-5 (owner) Footer: author name, subtle LinkedIn and GitHub links. Disclaimer: rough estimate, values can contain mistakes, no liability.
