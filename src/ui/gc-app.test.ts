@@ -86,7 +86,8 @@ describe("gc-app", () => {
   it("changes the instructions with the data source", async () => {
     const select = $<HTMLSelectElement>(app, "select.input");
     expect(select.options).toHaveLength(3);
-    expect($(app, ".instr a.btn").getAttribute("href")).toContain("wienernetze");
+    expect(select.value).toBe("e-control");
+    expect($(app, ".instr a.btn").getAttribute("href")).toContain("e-control");
     select.value = "at-format";
     select.dispatchEvent(new Event("change"));
     await app.updateComplete;
@@ -98,6 +99,7 @@ describe("gc-app", () => {
     await upload(app, CSV);
     expect($(app, ".loaded").textContent).toContain("Viertelstundenwerte");
     expect(kpis(app)).toHaveLength(2);
+    expect($(app, ".kpi.selected .grid-delta").textContent).toContain("Nur Netzentgelte");
     expect($$(app, "gc-chart-monthly, gc-chart-costs, gc-chart-detail")).toHaveLength(3);
     // Highest peak: 3 kWh × 4 = 12 kW
     expect($$(app, ".fact .value").map((e) => e.textContent)).toContain("12,00 kW");
@@ -135,6 +137,7 @@ describe("gc-app", () => {
     await app.updateComplete;
     expect($(app, ".kpi.selected .label").textContent).toContain("2026");
     expect($(app, ".kpi.selected .delta").textContent).toContain("heutigen");
+    expect($(app, ".kpi.selected .grid-delta").textContent).toContain("wie heute");
 
     const [price, fee] = $$<HTMLInputElement>(app, ".settings input.input");
     const before = kpis(app)[0];

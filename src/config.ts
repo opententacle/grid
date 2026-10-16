@@ -15,7 +15,7 @@ export const IMPRESSUM = {
   street: "Klostermanngasse 9",
   city: "1230, Wien",
   country: "Österreich",
-  email: "christoph.spoerk@gmail.com",
+  email: "contact@opententacle.com",
   /** Optional, e.g. "Privates, nicht-kommerzielles Informationsangebot" */
   purpose: "Privates, nicht-kommerzielles Informationsangebot / private, non-commercial website",
 };

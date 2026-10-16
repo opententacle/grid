@@ -82,6 +82,8 @@ export const en: Record<MessageKey, string> = {
   "kpi.diff": "{sign}{amount} ({pct}) compared to today",
   "kpi.same": "Same as today's tariff",
   "kpi.grid": "of which grid fees",
+  "kpi.gridDiff": "Grid fees only: {sign}{amount} ({pct}) compared to today",
+  "kpi.gridSame": "Grid fees only: same as today",
   "kpi.scaled": "Scaled to 12 months (data for {months} months).",
   "kpi.maxPeak": "Highest monthly peak",
   "kpi.avgPeak": "Avg. monthly peak",

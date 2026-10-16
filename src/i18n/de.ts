@@ -83,6 +83,8 @@ export const de = {
   "kpi.diff": "{sign}{amount} ({pct}) gegenüber heute",
   "kpi.same": "Entspricht dem heutigen Tarif",
   "kpi.grid": "davon Netzentgelte",
+  "kpi.gridDiff": "Nur Netzentgelte: {sign}{amount} ({pct}) gegenüber heute",
+  "kpi.gridSame": "Nur Netzentgelte: wie heute",
   "kpi.scaled": "Hochgerechnet auf 12 Monate (Daten für {months} Monate).",
   "kpi.maxPeak": "Höchste Monatsspitze",
   "kpi.avgPeak": "Ø Monatsspitze",

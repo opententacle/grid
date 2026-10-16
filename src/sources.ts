@@ -15,6 +15,14 @@ export interface DataSource {
 
 export const SOURCES: DataSource[] = [
   {
+    id: "e-control",
+    label: "source.econtrol",
+    portal: "https://www.e-control.at/tarifkalkulator",
+    requirements: ["ec.req.1", "ec.req.2"],
+    steps: ["ec.step.1", "ec.step.2"],
+    tariffs: WIENER_NETZE_TARIFFS,
+  },
+  {
     id: "wienernetze",
     label: "source.wienernetze",
     portal: "https://smartmeter-web.wienernetze.at/",
@@ -27,14 +35,6 @@ export const SOURCES: DataSource[] = [
     label: "source.atformat",
     requirements: ["at.req.1", "at.req.2"],
     steps: ["at.step.1", "at.step.2", "at.step.3", "at.step.4"],
-    tariffs: WIENER_NETZE_TARIFFS,
-  },
-  {
-    id: "e-control",
-    label: "source.econtrol",
-    portal: "https://www.e-control.at/tarifkalkulator",
-    requirements: ["ec.req.1", "ec.req.2"],
-    steps: ["ec.step.1", "ec.step.2"],
     tariffs: WIENER_NETZE_TARIFFS,
   },
 ];

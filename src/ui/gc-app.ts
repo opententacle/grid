@@ -21,7 +21,7 @@ import { ParseError } from "../core/parse-error";
 import { parseAny } from "../core/parse-formats";
 import { TARIFF_DATA_DATE, tariffAt, tariffFor } from "../core/tariffs";
 import type { Analysis, EnergyContract } from "../core/types";
-import { getLocale, type Locale, setLocale, t } from "../i18n/i18n";
+import { getLocale, type Locale, type MessageKey, setLocale, t } from "../i18n/i18n";
 import { BODY_URLS, OPEN } from "../i18n/open";
 import { SOURCES, sourceById } from "../sources";
 import { getTheme, setTheme } from "../theme";
@@ -479,6 +479,10 @@ export class GcApp extends BaseElement {
         font-size: 0.95rem;
         margin-top: 8px;
       }
+      .kpi .grid-delta .delta {
+        font-size: 0.85rem;
+        margin-top: 2px;
+      }
       .delta.up {
         color: var(--bad);
       }
@@ -806,8 +810,15 @@ export class GcApp extends BaseElement {
     const v = (y: YearCost) => (this.gross ? y.total.gross : y.total.net);
     const g = (y: YearCost) =>
       gridTotal(y.total) * (this.gross ? 1 + y.total.vat / y.total.net : 1);
-    const diff = v(sel) - v(today);
-    const pct = v(today) ? diff / v(today) : 0;
+    const delta = (now: number, next: number, sameKey: MessageKey, diffKey: MessageKey) => {
+      const diff = next - now;
+      if (Math.abs(diff) < 0.5) return html`<div class="delta">${t(sameKey)}</div>`;
+      return html`<div class="delta ${diff > 0 ? "up" : "down"}">${t(diffKey, {
+        sign: diff > 0 ? "+" : "−",
+        amount: fmtEur(Math.abs(diff)),
+        pct: fmtPct(now ? diff / now : 0),
+      })}</div>`;
+    };
     const window = sel.months.map((r) => r.month);
     const peaks = window.map((m) => m.peakKw);
     const maxPeak = Math.max(...peaks);
@@ -837,15 +848,8 @@ export class GcApp extends BaseElement {
               ${selTariff.estimate ? html`<span class="badge warn">${t("settings.estimate")}</span>` : nothing}</div>
             <div class="value">${fmtEur(v(sel))}</div>
             <div class="sub">${t("kpi.grid")}: ${fmtEur(g(sel))}</div>
-            ${
-              Math.abs(diff) < 0.5
-                ? html`<div class="delta">${t("kpi.same")}</div>`
-                : html`<div class="delta ${diff > 0 ? "up" : "down"}">${t("kpi.diff", {
-                    sign: diff > 0 ? "+" : "−",
-                    amount: fmtEur(Math.abs(diff)),
-                    pct: fmtPct(pct),
-                  })}</div>`
-            }
+            ${delta(v(today), v(sel), "kpi.same", "kpi.diff")}
+            <div class="grid-delta">${delta(g(today), g(sel), "kpi.gridSame", "kpi.gridDiff")}</div>
           </div>
         </div>
       </section>
