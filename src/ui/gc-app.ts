@@ -512,6 +512,11 @@ export class GcApp extends BaseElement {
           grid-template-columns: 1fr;
         }
       }
+      .footnote {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        margin: 8px 0 0;
+      }
       .note {
         font-size: 0.85rem;
         color: var(--text-muted);
@@ -809,6 +814,12 @@ export class GcApp extends BaseElement {
     const avgPeak = peaks.reduce((s, p) => s + p, 0) / Math.max(1, peaks.length);
     const yearKwh = window.reduce((s, m) => s + m.kwh, 0) * sel.scale;
     const thr = selTariff.capacity?.thresholdKw ?? 10;
+    // SNE-G-V § 6 Abs. 3a: the threshold does not apply in the transition months
+    const transition = selTariff.capacity?.uniformUntilMonth;
+    const mark = transition ? "¹" : "";
+    const footnote = transition
+      ? html`<p class="footnote">¹) ${t("chart.transitionNote", { year: this.year })}</p>`
+      : nothing;
     const mode = this.gross ? t("settings.gross") : t("settings.net");
 
     return html`
@@ -851,7 +862,9 @@ export class GcApp extends BaseElement {
       <section class="card">
         <div class="card-head"><h2>${t("chart.monthly.title")}</h2></div>
         <p class="desc">${t("chart.monthly.desc")}</p>
-        <gc-chart-monthly .months=${a.months} ?showPeak=${!!selTariff.capacity} .thresholdKw=${thr}></gc-chart-monthly>
+        <gc-chart-monthly .months=${a.months} ?showPeak=${!!selTariff.capacity} .thresholdKw=${thr}
+          .thresholdMark=${mark}></gc-chart-monthly>
+        ${footnote}
       </section>
       <section class="card">
         <div class="card-head"><h2>${t("chart.costs.title")}</h2>
@@ -863,10 +876,11 @@ export class GcApp extends BaseElement {
         <div class="card-head"><h2>${t("chart.detail.title")}</h2></div>
         <p class="desc">${t("chart.detail.desc")}</p>
         <gc-chart-detail .readings=${a.readings} .months=${a.months} .index=${this.detailIndex}
-          ?showThreshold=${!!selTariff.capacity} .thresholdKw=${thr}
+          ?showThreshold=${!!selTariff.capacity} .thresholdKw=${thr} .thresholdMark=${mark}
           @month-change=${(e: CustomEvent<number>) => {
             this.detailIndex = e.detail;
           }}></gc-chart-detail>
+        ${footnote}
       </section>
     `;
   }

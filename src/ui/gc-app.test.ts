@@ -4,6 +4,7 @@ import { setLocale } from "../i18n/i18n";
 import { BODY_URLS, OPEN } from "../i18n/open";
 import { setTheme } from "../theme";
 import { GcApp } from "./gc-app";
+import type { GcChartMonthly } from "./gc-chart-monthly";
 import { $, $$, mount, settle } from "./test-helpers";
 
 /** Twelve months of synthetic data: 0.1 kWh per quarter-hour, one 12 kW peak in January. */
@@ -66,6 +67,20 @@ describe("gc-app", () => {
     expect($<HTMLDetailsElement>(other, "#open-existing").open).toBe(true);
     other.remove();
     history.replaceState(null, "", "/");
+  });
+
+  it("marks the 10 kW line with a footnote only for the 2027 transition year", async () => {
+    await upload(app, CSV);
+    const years = $$(app, ".years button");
+    years[1].click();
+    await app.updateComplete;
+    expect($$(app, ".footnote")).toHaveLength(2);
+    expect($(app, ".footnote").textContent).toContain("§ 6 Abs. 3a");
+    expect($<GcChartMonthly>(app, "gc-chart-monthly").thresholdMark).toBe("¹");
+    years[2].click();
+    await app.updateComplete;
+    expect($$(app, ".footnote")).toHaveLength(0);
+    expect($<GcChartMonthly>(app, "gc-chart-monthly").thresholdMark).toBe("");
   });
 
   it("changes the instructions with the data source", async () => {

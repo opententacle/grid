@@ -94,6 +94,8 @@ export const de = {
   "chart.monthly.peakHidden": "Leistungsspitzen sind für den Tarif 2026 nicht kostenrelevant.",
   "chart.costs.title": "Kosten pro Monat",
   "chart.costs.desc": "Aufteilung der Kosten je Monat mit dem Tarif {year} ({mode}).",
+  "chart.transitionNote":
+    "Tarifjahr {year}: Die 10-kW-Grenze gilt erst ab Dezember. Jänner bis November gilt ein Preis je kW für die ganze Spitze, ohne Staffel und ohne Minimum (SNE-G-V § 6 Abs. 3a).",
   "chart.detail.title": "Viertelstundenwerte im Detail",
   "chart.detail.desc": "Leistung je Viertelstunde (kW). Die Linie zeigt die Monatsspitze.",
   "chart.detail.prev": "Vorheriger Monat",

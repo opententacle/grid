@@ -93,6 +93,8 @@ export const en: Record<MessageKey, string> = {
   "chart.monthly.peakHidden": "Peaks do not affect the cost with the 2026 tariff.",
   "chart.costs.title": "Cost per month",
   "chart.costs.desc": "Cost split per month with the {year} tariff ({mode}).",
+  "chart.transitionNote":
+    "Tariff year {year}: the 10 kW threshold applies only from December. From January to November, one price per kW applies to the whole peak, without threshold and without minimum (SNE-G-V § 6 (3a)).",
   "chart.detail.title": "Quarter-hour values in detail",
   "chart.detail.desc": "Power per quarter-hour (kW). The line shows the monthly peak.",
   "chart.detail.prev": "Previous month",

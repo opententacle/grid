@@ -25,12 +25,15 @@ export class GcChartDetail extends ChartElement {
     index: { type: Number },
     showThreshold: { type: Boolean },
     thresholdKw: { type: Number },
+    /** Footnote mark after the threshold label, e.g. "¹" */
+    thresholdMark: { type: String },
   };
   declare readings: Reading[];
   declare months: MonthStats[];
   declare index: number;
   declare showThreshold: boolean;
   declare thresholdKw: number;
+  declare thresholdMark: string;
 
   static styles = [
     ...ChartElement.styles,
@@ -70,6 +73,7 @@ export class GcChartDetail extends ChartElement {
     this.index = 0;
     this.showThreshold = true;
     this.thresholdKw = 10;
+    this.thresholdMark = "";
   }
 
   private get month(): MonthStats | undefined {
@@ -212,7 +216,8 @@ export class GcChartDetail extends ChartElement {
         .attr("font-weight", 600)
         .text(label);
     };
-    if (this.showThreshold) hline(this.thresholdKw, cThr, `${fmtNum(this.thresholdKw)} kW`, "5 4");
+    if (this.showThreshold)
+      hline(this.thresholdKw, cThr, `${fmtNum(this.thresholdKw)} kW${this.thresholdMark}`, "5 4");
     hline(m.peakKw, c2, `${t("series.peak")} ${fmtNum(m.peakKw, 2)} kW`);
     g.append("circle")
       .attr("cx", x(new Date(m.peakAt)))

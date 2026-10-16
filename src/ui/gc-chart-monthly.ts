@@ -23,16 +23,20 @@ export class GcChartMonthly extends ChartElement {
     months: { attribute: false },
     showPeak: { type: Boolean },
     thresholdKw: { type: Number },
+    /** Footnote mark after the threshold label, e.g. "¹" */
+    thresholdMark: { type: String },
   };
   declare months: MonthStats[];
   declare showPeak: boolean;
   declare thresholdKw: number;
+  declare thresholdMark: string;
 
   constructor() {
     super();
     this.months = [];
     this.showPeak = true;
     this.thresholdKw = 10;
+    this.thresholdMark = "";
   }
 
   render() {
@@ -186,7 +190,7 @@ export class GcChartMonthly extends ChartElement {
         .attr("dy", "-0.4em")
         .attr("text-anchor", "end")
         .attr("fill", muted)
-        .text(`${fmtNum(this.thresholdKw)} kW`);
+        .text(`${fmtNum(this.thresholdKw)} kW${this.thresholdMark}`);
       const cx = (d: MonthStats) => (x(d.key) ?? 0) + bw / 2;
       const ys = yP;
       bot

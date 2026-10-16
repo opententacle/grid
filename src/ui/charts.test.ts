@@ -56,6 +56,15 @@ describe("gc-chart-monthly", () => {
     el.remove();
   });
 
+  it("adds a footnote mark to the 10 kW label", async () => {
+    const el = await mount(
+      Object.assign(new GcChartMonthly(), { months: a.months, thresholdMark: "¹" }),
+    );
+    await drawChart(el);
+    expect($(el, ".plot > svg").textContent).toContain("10 kW¹");
+    el.remove();
+  });
+
   it("hides the peak panel for the 2026 tariff", async () => {
     const el = await mount(
       Object.assign(new GcChartMonthly(), { months: a.months, showPeak: false }),
