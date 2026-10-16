@@ -127,6 +127,7 @@ export const en: Record<MessageKey, string> = {
   "faq.title": "FAQ",
   "faq.link": "FAQ: details of the new tariff",
   "faq.timelineLink": "Timeline to 2030",
+  "open.link": "Open questions and responsible bodies",
   "footer.madeBy": "A project by",
   "footer.source": "Source code",
   "footer.calc": "How we calculate",

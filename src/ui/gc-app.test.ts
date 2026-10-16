@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { buildCsv } from "../core/test-utils";
 import { setLocale } from "../i18n/i18n";
+import { BODY_URLS, OPEN } from "../i18n/open";
 import { setTheme } from "../theme";
 import { GcApp } from "./gc-app";
 import { $, $$, mount, settle } from "./test-helpers";
@@ -45,6 +46,26 @@ describe("gc-app", () => {
     expect($(app, ".empty-results").textContent).toContain("Noch keine Daten");
     expect($(app, ".disclaimer").textContent).toContain("Haftungsausschluss");
     expect($(app, "a.badge.link").getAttribute("href")).toBe("./berechnung.html");
+  });
+
+  it("lists the open questions with the responsible bodies", () => {
+    const items = $$<HTMLDetailsElement>(app, "#open-questions details");
+    expect(items).toHaveLength(OPEN.de.items.length);
+    expect(items.every((d) => !d.open)).toBe(true);
+    const existing = $(app, "#open-existing");
+    expect(existing.textContent).toContain("§ 34 Abs. 1");
+    const hrefs = [...existing.querySelectorAll("a")].map((a) => a.getAttribute("href"));
+    expect(hrefs).toEqual([BODY_URLS.econtrol, BODY_URLS.wienernetze]);
+    expect($(app, "#open-questions .help a").getAttribute("href")).toMatch(/\/issues$/);
+    expect($(app, "header.top a.nav").getAttribute("href")).toBe("./faq.html");
+  });
+
+  it("opens the open question in the URL", async () => {
+    history.replaceState(null, "", "#open-existing");
+    const other = await mount(new GcApp());
+    expect($<HTMLDetailsElement>(other, "#open-existing").open).toBe(true);
+    other.remove();
+    history.replaceState(null, "", "/");
   });
 
   it("changes the instructions with the data source", async () => {

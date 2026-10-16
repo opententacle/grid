@@ -128,6 +128,7 @@ export const de = {
   "faq.title": "FAQ",
   "faq.link": "FAQ: Details zum neuen Tarif",
   "faq.timelineLink": "Zeitleiste bis 2030",
+  "open.link": "Offene Fragen und zuständige Stellen",
   "footer.madeBy": "Ein Projekt von",
   "footer.source": "Quellcode",
   "footer.calc": "So rechnen wir",

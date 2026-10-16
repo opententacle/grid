@@ -13,6 +13,7 @@ import { faTriangleExclamation } from "@fortawesome/free-solid-svg-icons/faTrian
 import { faUpload } from "@fortawesome/free-solid-svg-icons/faUpload";
 import { css, html, nothing } from "lit";
 import { track } from "../analytics";
+import { AUTHOR, IMPRESSUM } from "../config";
 import { analyze } from "../core/analyze";
 import { gridTotal, type YearCost, yearCost } from "../core/cost";
 import { fmtDate, fmtEur, fmtNum, fmtPct } from "../core/format";
@@ -21,6 +22,7 @@ import { parseAny } from "../core/parse-formats";
 import { TARIFF_DATA_DATE, tariffAt, tariffFor } from "../core/tariffs";
 import type { Analysis, EnergyContract } from "../core/types";
 import { getLocale, type Locale, setLocale, t } from "../i18n/i18n";
+import { BODY_URLS, OPEN } from "../i18n/open";
 import { SOURCES, sourceById } from "../sources";
 import { getTheme, setTheme } from "../theme";
 import { BaseElement, define, fa, sharedStyles } from "./base";
@@ -531,6 +533,55 @@ export class GcApp extends BaseElement {
         display: block;
         margin-bottom: 2px;
       }
+      .open-q h2 {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .open-q,
+      .open-q details {
+        scroll-margin-top: 76px;
+      }
+      .open-q details {
+        border-top: 1px solid var(--border);
+        padding: 10px 0;
+        font-size: 0.9rem;
+      }
+      .open-q a {
+        color: var(--accent);
+      }
+      .open-q summary {
+        cursor: pointer;
+        font-weight: 600;
+      }
+      .open-q dl {
+        display: grid;
+        grid-template-columns: max-content 1fr;
+        gap: 4px 12px;
+        margin: 8px 0 0;
+        color: var(--text-2);
+      }
+      .open-q dt {
+        color: var(--text-muted);
+      }
+      .open-q dd {
+        margin: 0;
+      }
+      @media (max-width: 560px) {
+        .open-q dl {
+          grid-template-columns: 1fr;
+        }
+        .open-q dd {
+          margin-bottom: 6px;
+        }
+      }
+      .open-q .help {
+        border-top: 1px solid var(--border);
+        padding-top: 10px;
+        margin: 0;
+        font-size: 0.85rem;
+        color: var(--text-2);
+      }
       details.assumptions {
         font-size: 0.85rem;
         color: var(--text-2);
@@ -574,6 +625,7 @@ export class GcApp extends BaseElement {
           <div class="steps">${this.renderSourceStep()} ${this.renderUploadStep()}</div>
           ${this.renderSettings()}
           ${this.analysis ? this.renderResults(this.analysis) : this.renderEmpty()}
+          ${this.renderOpenQuestions()}
           ${this.renderDisclaimer()}
         </main>
       </div>
@@ -817,6 +869,41 @@ export class GcApp extends BaseElement {
           }}></gc-chart-detail>
       </section>
     `;
+  }
+
+  private renderOpenQuestions() {
+    const o = OPEN[getLocale()];
+    return html`<section class="card open-q" id="open-questions" aria-labelledby="open-title">
+      <div class="card-head"><h2 id="open-title">${fa(faCircleQuestion)} ${o.title}</h2></div>
+      <p class="desc">${o.intro}</p>
+      ${o.items.map(
+        (q) => html`<details id=${`open-${q.id}`}>
+          <summary>${q.q}</summary>
+          <dl>
+            <dt>${o.assumptionLabel}</dt><dd>${q.assumption}</dd>
+            ${q.impact ? html`<dt>${o.impactLabel}</dt><dd>${q.impact}</dd>` : nothing}
+            <dt>${o.whoLabel}</dt>
+            <dd>${q.who.map(
+              (b, i) =>
+                html`${i ? ", " : ""}<a href=${BODY_URLS[b]} target="_blank" rel="noopener noreferrer">${o.bodies[b]}</a>`,
+            )}</dd>
+            ${q.ref ? html`<dt>${o.sourceLabel}</dt><dd>${q.ref}</dd>` : nothing}
+          </dl>
+        </details>`,
+      )}
+      <p class="help">${o.help}
+        <a href=${`${AUTHOR.repo}/issues`} target="_blank" rel="noopener noreferrer">${o.helpIssue}</a> ·
+        <a href=${`mailto:${IMPRESSUM.email}`}>${o.helpMail}</a></p>
+    </section>`;
+  }
+
+  /** Anchor links do not reach into the shadow DOM, so open the target here. */
+  protected firstUpdated(): void {
+    const id = location.hash.slice(1);
+    if (!id) return;
+    const target = this.renderRoot.querySelector(`#${CSS.escape(id)}`);
+    if (target instanceof HTMLDetailsElement) target.open = true;
+    target?.scrollIntoView();
   }
 
   private renderDisclaimer() {

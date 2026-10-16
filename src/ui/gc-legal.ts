@@ -365,6 +365,7 @@ export class GcLegal extends BaseElement {
     const f = FAQ[getLocale()];
     return html`<h1>${f.title}</h1>
       <p class="lead">${f.intro}</p>
+      <p><a href="./#open-questions">${fa(faCircleQuestion)} ${t("open.link")}</a></p>
       <details class="acc timeline" id="timeline">
         <summary>${f.timelineTitle} <span class="hint">${f.timelineHint}</span></summary>
         <div class="body">
