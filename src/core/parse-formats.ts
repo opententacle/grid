@@ -1,5 +1,5 @@
 import { ParseError } from "./parse-error";
-import { assertQuarterHourly, parseGeneric } from "./parse-generic";
+import { assertQuarterHourly, parseGeneric, unitToKwh } from "./parse-generic";
 import { parseWienerNetze } from "./parse-wienernetze";
 import type { Reading } from "./types";
 
@@ -38,9 +38,8 @@ export function parseAtFormat(text: string): Reading[] {
     if (c.length <= iValue) continue;
     if (iObis >= 0 && !/1\.9\.0 G\.01/.test(c[iObis])) continue;
     const d = DE_DATETIME.exec(c[iStart].trim());
-    let kwh = num(c[iValue]);
+    const kwh = num(c[iValue]) * ((iUnit >= 0 && unitToKwh(c[iUnit] ?? "")) || 1);
     if (!d || Number.isNaN(kwh)) continue;
-    if (iUnit >= 0 && c[iUnit].trim().toLowerCase() === "wh") kwh /= 1000;
     readings.push({ t: new Date(+d[3], +d[2] - 1, +d[1], +d[4], +d[5]).getTime(), kwh });
   }
   return done(readings);
@@ -50,14 +49,17 @@ export function parseAtFormat(text: string): Reading[] {
  * Load profile for the E-Control tariff calculator:
  * `Ende Ablesezeitraum;Messintervall;Abrechnungsmaßeinheit;<…> Verbrauch [kWh];;`
  * The timestamp is the END of the interval as ISO time with offset (2025-06-01T00:15+02:00).
+ * Some portals export power (`… [kW]`, unit `KW`): these values are changed to kWh.
  */
 export function parseEControl(text: string): Reading[] {
   const ls = lines(text);
   const head = ls[0].split(";").map((h) => h.trim().toLowerCase());
   if (!head[0]?.startsWith("ende")) throw new ParseError("header");
-  const iValue = head.findIndex((h, i) => i > 0 && h.includes("kwh"));
+  const iValue = head.findIndex((h, i) => i > 2 && unitToKwh(h) !== undefined);
   const iInterval = head.indexOf("messintervall");
+  const iUnit = head.indexOf("abrechnungsmaßeinheit");
   if (iValue < 0) throw new ParseError("header");
+  const headFactor = unitToKwh(head[iValue]) ?? 1;
 
   const readings: Reading[] = [];
   for (let i = 1; i < ls.length; i++) {
@@ -66,7 +68,7 @@ export function parseEControl(text: string): Reading[] {
     if (iInterval >= 0 && c[iInterval].trim().toUpperCase() !== "QH")
       throw new ParseError("granularity");
     const end = Date.parse(c[0].trim());
-    const kwh = num(c[iValue]);
+    const kwh = num(c[iValue]) * ((iUnit >= 0 && unitToKwh(c[iUnit])) || headFactor);
     if (Number.isNaN(end) || Number.isNaN(kwh)) continue;
     readings.push({ t: end - QH, kwh });
   }

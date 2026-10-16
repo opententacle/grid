@@ -32,6 +32,11 @@ describe("parseAtFormat", () => {
     expect(local(r[0].t)).toEqual([6, 1, 0, 0]);
   });
 
+  it("changes Wh and kW values to kWh", () => {
+    expect(parseAtFormat(csv.replaceAll(";kWh;", ";Wh;"))[0].kwh).toBeCloseTo(0.000028);
+    expect(parseAtFormat(csv.replaceAll(";kWh;", ";kW;"))[0].kwh).toBeCloseTo(0.007);
+  });
+
   it("is detected from the header", () => {
     expect(detectFormat(csv)).toBe("at-format");
   });
@@ -51,6 +56,11 @@ describe("parseEControl", () => {
     expect(r).toHaveLength(4);
     expect(r[0].t).toBe(Date.parse("2026-01-01T00:00+01:00"));
     expect(r[3].kwh).toBe(0.4);
+  });
+
+  it("changes power values (kW) to kWh per quarter hour", () => {
+    const kw = csv.replace("Verbrauch [kWh]", "Leistung [kW]").replaceAll(";KWH;", ";KW;");
+    expect(parseEControl(kw).map((x) => x.kwh)).toEqual([0.025, 0.05, 0.075, 0.1]);
   });
 
   it("rejects daily values", () => {

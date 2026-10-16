@@ -479,9 +479,22 @@ export class GcApp extends BaseElement {
         font-size: 0.95rem;
         margin-top: 8px;
       }
-      .kpi .grid-delta .delta {
+      .kpi-head {
+        margin: 28px 0 4px;
+      }
+      .grid-kpis .value {
+        font-size: clamp(1.6rem, 4vw, 2.2rem);
+      }
+      .kpi .parts {
+        margin-top: 8px;
         font-size: 0.85rem;
-        margin-top: 2px;
+        color: var(--text-muted);
+      }
+      .kpi .part {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 2px 0;
       }
       .delta.up {
         color: var(--bad);
@@ -808,8 +821,19 @@ export class GcApp extends BaseElement {
     const today = yearCost(a.months, todayTariff, this.contract);
     const sel = yearCost(a.months, selTariff, this.contract);
     const v = (y: YearCost) => (this.gross ? y.total.gross : y.total.net);
-    const g = (y: YearCost) =>
-      gridTotal(y.total) * (this.gross ? 1 + y.total.vat / y.total.net : 1);
+    const vatF = (y: YearCost) => (this.gross ? 1 + y.total.vat / y.total.net : 1);
+    const g = (y: YearCost) => gridTotal(y.total) * vatF(y);
+    const gridParts = (y: YearCost) =>
+      (
+        [
+          ["grid.energy", y.total.gridEnergy],
+          ["grid.capacity", y.total.gridCapacity],
+          ["grid.meter", y.total.gridOther],
+        ] as const
+      ).map(
+        ([key, value]) =>
+          html`<div class="part"><span>${t(key)}</span><span>${fmtEur(value * vatF(y))}</span></div>`,
+      );
     const delta = (now: number, next: number, sameKey: MessageKey, diffKey: MessageKey) => {
       const diff = next - now;
       if (Math.abs(diff) < 0.5) return html`<div class="delta">${t(sameKey)}</div>`;
@@ -849,7 +873,22 @@ export class GcApp extends BaseElement {
             <div class="value">${fmtEur(v(sel))}</div>
             <div class="sub">${t("kpi.grid")}: ${fmtEur(g(sel))}</div>
             ${delta(v(today), v(sel), "kpi.same", "kpi.diff")}
-            <div class="grid-delta">${delta(g(today), g(sel), "kpi.gridSame", "kpi.gridDiff")}</div>
+          </div>
+        </div>
+        <h3 class="kpi-head">${t("grid.title")}</h3>
+        <p class="desc">${t("grid.desc")}</p>
+        <div class="kpis grid-kpis">
+          <div class="card kpi">
+            <div class="label">${t("grid.today", { year: todayTariff.year })}</div>
+            <div class="value">${fmtEur(g(today))}</div>
+            <div class="parts">${gridParts(today)}</div>
+          </div>
+          <div class="card kpi selected">
+            <div class="label">${t("grid.selected", { year: this.year })}
+              ${selTariff.estimate ? html`<span class="badge warn">${t("settings.estimate")}</span>` : nothing}</div>
+            <div class="value">${fmtEur(g(sel))}</div>
+            <div class="parts">${gridParts(sel)}</div>
+            ${delta(g(today), g(sel), "kpi.same", "kpi.diff")}
           </div>
         </div>
       </section>

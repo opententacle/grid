@@ -47,7 +47,7 @@ const de: ExplainText = {
       paragraphs: [
         "Ihr Smart Meter misst den Verbrauch alle 15 Minuten. Das ist ein Viertelstundenwert in kWh.",
         "Ein Jahr hat rund 35.000 solche Werte. Die App liest sie aus Ihrer CSV-Datei. Die Datei bleibt in Ihrem Browser.",
-        "Die App erkennt das Format selbst: Export von Wiener Netze, Österreich-Format (AT-Format) oder Lastprofil für den E-Control Tarifkalkulator.",
+        "Die App erkennt das Format selbst: Export von Wiener Netze, Österreich-Format (AT-Format) oder Lastprofil für den E-Control Tarifkalkulator. Sie erkennt auch die Einheit: Leistungswerte (kW) rechnet sie in Energie je Viertelstunde (kWh) um.",
       ],
     },
     {
@@ -169,7 +169,7 @@ const en: ExplainText = {
       paragraphs: [
         "Your smart meter measures the consumption every 15 minutes. This is a quarter-hour value in kWh.",
         "One year has about 35,000 of these values. The app reads them from your CSV file. The file stays in your browser.",
-        "The app finds the format itself: Wiener Netze export, Austrian format (AT-Format) or load profile for the E-Control tariff calculator.",
+        "The app finds the format itself: Wiener Netze export, Austrian format (AT-Format) or load profile for the E-Control tariff calculator. It also finds the unit: it changes power values (kW) to energy per quarter hour (kWh).",
       ],
     },
     {

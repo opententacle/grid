@@ -51,6 +51,28 @@ describe("parseGeneric", () => {
     expect(parseGeneric(csv).map((x) => x.kwh)).toEqual([1, 2, 3, 4]);
   });
 
+  it("changes power values (kW) to kWh per quarter hour", () => {
+    const csv = [
+      "Datum;Zeit;Leistung [kW]",
+      "01.01.2026;12:00;5",
+      "01.01.2026;12:15;8",
+      "01.01.2026;12:30;5",
+      "01.01.2026;12:45;3",
+    ].join("\n");
+    expect(parseGeneric(csv).map((x) => x.kwh)).toEqual([1.25, 2, 1.25, 0.75]);
+  });
+
+  it("reads the unit from a unit column", () => {
+    const csv = [
+      "Datum;Zeit;Wert;Einheit",
+      "01.01.2026;12:00;5;kW",
+      "01.01.2026;12:15;8;kW",
+      "01.01.2026;12:30;5;kW",
+      "01.01.2026;12:45;3;kW",
+    ].join("\n");
+    expect(parseGeneric(csv).map((x) => x.kwh)).toEqual([1.25, 2, 1.25, 0.75]);
+  });
+
   it("rejects daily values", () => {
     const csv = [
       "Datum;Verbrauch [kWh]",

@@ -15,6 +15,13 @@ describe("parseWienerNetze", () => {
     ]);
   });
 
+  it("changes a power column (kW) to kWh per quarter hour", () => {
+    const r = parseWienerNetze(
+      `${HEADER.replace("[kWh]", "[kW]")}\n01.06.2025;00:15:00;00:30:00;13;;\n`,
+    );
+    expect(r[0].kwh).toBe(3.25);
+  });
+
   it("accepts integer values and CRLF", () => {
     const r = parseWienerNetze(`${HEADER}\r\n01.06.2025;00:00:00;00:15:00;1;;\r\n`);
     expect(r[0].kwh).toBe(1);

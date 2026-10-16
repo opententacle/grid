@@ -53,6 +53,7 @@ function detectSeparator(line: string): string {
 /**
  * Tolerant parser for quarter-hour CSV exports (ebUtilities AT-Format, E-Control load profile,
  * other grid operator portals). It finds the date/time and the kWh column on its own.
+ * Power values (kW) are changed to kWh per quarter hour.
  */
 export function parseGeneric(text: string): Reading[] {
   const lines = text
@@ -83,11 +84,17 @@ export function parseGeneric(text: string): Reading[] {
     const h = header[i] ?? "";
     let s = 0;
     if (h.includes("kwh")) s += 4;
+    else if (unitToKwh(h) === 1 / 4) s += 3;
     if (/verbrauch|bezug|1\.8\.0|1-1:1\.9\.0|energiewert|wert|value|consumption/.test(h)) s += 2;
     if (/einspeis|2\.8\.0|2\.9\.0|qualit|status/.test(h)) s -= 5;
     return s;
   };
   const valueCol = [...candidates].sort((a, b) => score(b) - score(a) || a - b)[0];
+  const unitCol = header.findIndex((h) => /^(einheit|maßeinheit|unit)$/.test(h));
+  const factor =
+    (unitCol >= 0 ? unitToKwh(sample[0][unitCol] ?? "") : undefined) ??
+    unitToKwh(header[valueCol] ?? "") ??
+    1;
 
   const readings: Reading[] = [];
   for (let i = first; i < rows.length; i++) {
@@ -104,12 +111,26 @@ export function parseGeneric(text: string): Reading[] {
     }
     const raw = r[valueCol] ?? "";
     if (!NUMBER.test(raw)) continue;
-    const kwh = Number(raw.replace(",", "."));
+    const kwh = Number(raw.replace(",", ".")) * factor;
     readings.push({ t: new Date(dp.y, dp.mo - 1, dp.d, h ?? 0, mi ?? 0).getTime(), kwh });
   }
   if (readings.length === 0) throw new ParseError("noData");
   assertQuarterHourly(readings);
   return readings;
+}
+
+/**
+ * Factor that converts one quarter-hour value to kWh, from a unit text like "[kWh]", "Wh" or "kW".
+ * A power value (kW) is the average over the quarter hour, so the energy is kW × 0.25 h.
+ */
+export function unitToKwh(text: string): number | undefined {
+  const s = text.trim().toLowerCase();
+  const unit = (u: string) => new RegExp(`(^|[^a-z])${u}([^a-z]|$)`).test(s);
+  if (unit("kwh")) return 1;
+  if (unit("wh")) return 1 / 1000;
+  if (unit("kw") || s.includes("leistung")) return 1 / 4;
+  if (s === "w") return 1 / 4000;
+  return undefined;
 }
 
 /** Throws when the typical step between readings is not 15 minutes. */
