@@ -138,6 +138,7 @@ export const en: Record<MessageKey, string> = {
   "footer.imprint": "Imprint",
   "footer.back": "Back to the calculator",
   "footer.version": "Version {version}",
+  "footer.releaseNotes": "Release notes on GitHub",
 
   "privacy.title": "Privacy",
   "privacy.intro": "This website stores no personal data. We use no cookies.",

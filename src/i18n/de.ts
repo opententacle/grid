@@ -139,6 +139,7 @@ export const de = {
   "footer.imprint": "Impressum",
   "footer.back": "Zurück zum Rechner",
   "footer.version": "Version {version}",
+  "footer.releaseNotes": "Release Notes auf GitHub",
 
   "privacy.title": "Datenschutz",
   "privacy.intro":

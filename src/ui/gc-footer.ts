@@ -7,6 +7,12 @@ import { BaseElement, define, fa, sharedStyles } from "./base";
 
 const VERSION = (import.meta.env.VITE_APP_VERSION as string | undefined) || "dev";
 
+/** Release notes of this version on GitHub; all releases for a dev build. */
+export const releaseUrl = (version: string) =>
+  version === "dev"
+    ? `${AUTHOR.repo}/releases`
+    : `${AUTHOR.repo}/releases/tag/${encodeURIComponent(version)}`;
+
 export class GcFooter extends BaseElement {
   static styles = [
     sharedStyles,
@@ -75,7 +81,8 @@ export class GcFooter extends BaseElement {
         <a href="./faq.html">${t("footer.faq")}</a>
         <a href="./datenschutz.html">${t("footer.privacy")}</a>
         <a href="./impressum.html">${t("footer.imprint")}</a>
-        <span>${t("footer.version", { version: VERSION })}</span>
+        <a href=${releaseUrl(VERSION)} target="_blank" rel="noopener noreferrer"
+          title=${t("footer.releaseNotes")}>${t("footer.version", { version: VERSION })}</a>
       </nav>
     </footer>`;
   }

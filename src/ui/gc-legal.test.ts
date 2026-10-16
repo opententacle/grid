@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { AUTHOR, IMPRESSUM } from "../config";
 import { FAQ } from "../i18n/faq";
 import { setLocale } from "../i18n/i18n";
-import { GcFooter } from "./gc-footer";
+import { GcFooter, releaseUrl } from "./gc-footer";
 import { GcLegal } from "./gc-legal";
 import { $, $$, mount } from "./test-helpers";
 
@@ -88,7 +88,7 @@ describe("gc-legal", () => {
 });
 
 describe("gc-footer", () => {
-  it("links author, source, calculation, FAQ, privacy and imprint", async () => {
+  it("links author, source, calculation, FAQ, privacy, imprint and release notes", async () => {
     const el = await mount(new GcFooter());
     const links = $$<HTMLAnchorElement>(el, "a").map((a) => a.getAttribute("href"));
     expect(links).toEqual([
@@ -99,8 +99,14 @@ describe("gc-footer", () => {
       "./faq.html",
       "./datenschutz.html",
       "./impressum.html",
+      `${AUTHOR.repo}/releases`,
     ]);
     expect($(el, ".author").textContent).toContain(AUTHOR.name);
-    expect($(el, "nav").textContent).toContain("Version dev");
+    expect($(el, "nav a:last-child").textContent).toBe("Version dev");
+  });
+
+  it("links a release version to its GitHub release", () => {
+    expect(releaseUrl("1.2.0")).toBe(`${AUTHOR.repo}/releases/tag/1.2.0`);
+    expect(releaseUrl("dev")).toBe(`${AUTHOR.repo}/releases`);
   });
 });
