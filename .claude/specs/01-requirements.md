@@ -131,12 +131,16 @@ For each calendar month in the data:
 | Capacity price ≤ 10 kW €/kW/year | – | 19.00* | 23.94* | 28.88* | 33.82* |
 | Capacity price > 10 kW €/kW/year | – | 38.00* | 47.88* | 57.76* | 67.64* |
 | Netzverlust ct/kWh | 0.700 | 0.700† | 0.700† | 0.700† | 0.700† |
-| Messentgelt €/month | 2.18 | 2.18† | 2.18† | 2.18† | 2.18† |
+| Messentgelt €/month | 2.18 | – | – | – | – |
 | SNAP reduction (Apr–Sep, 10–16 h) | −20 % | −20 %† | −20 %† | −20 %† | −20 %† |
 
 `*` E-Control model values (presentation 14.07.2026, Austria-wide, not Wiener Netze-specific). 2028/2029 are linear interpolation. `†` assumption: unchanged from 2026.
 
 Capacity price per month = (min(peak, 10) × P₁ + max(peak − 10, 0) × P₂) / 12, minimum billed peak 2 kW.
+
+From 2027 there is no Pauschale and no Messentgelt (SNE-G-V § 2 Abs. 1 Z 11, § 5 Abs. 1). The E-Control start value (about 19 €/kW) already contains both (54 € + 28.80 € per year).
+
+Transition January to November 2027 (SNE-G-V § 6 Abs. 3a): capacity price per month = peak × P₁ / 12, without the 10 kW threshold and without the 2 kW minimum. P₁ is the model start value. From December 2027 the regular formula applies.
 
 Levies (assumed unchanged): Elektrizitätsabgabe 0.1 ct/kWh (H0 household 2026), Erneuerbaren-Förderbeitrag as share of each grid fee (2026: 0.583 ct/kWh on Arbeitspreis, 3.796 €/year on Pauschale, 0.037 ct/kWh on Netzverlust; from 2027 the Pauschale share applies to the capacity price), Erneuerbaren-Förderpauschale 19.02 €/year, Gebrauchsabgabe Wien 7 % on energy + all grid fees, VAT 20 %.
 
@@ -144,7 +148,7 @@ Verification: the 2026 model was checked line by line against a real Wien Energi
 
 Minimum billed power (checked against BGBl. II Nr. 299/2026, § 6 Abs. 3): the 20 % rule (20 % of the contracted grid capacity in Bezugsrichtung) applies only on Netzebenen 1 to 6. On Netzebene 7 the minimum is 2 kW (Kleinstanschlüsse excepted). The app models Netzebene 7, so the 2 kW minimum is correct and the 20 % rule does not apply.
 
-Not modelled in version 1: WiNAP (winter reduction from 1.10.2027, value not known), flexible connection discount, transition rule § 6 Abs. 3a (Jan–Nov 2027), operator-specific start date (up to 1.7.2028), feed-in (PV).
+Not modelled in version 1: WiNAP (winter reduction from 1.10.2027, value not known), flexible connection discount, operator-specific start date (transition can move until 30.6.2028, § 6 Abs. 3b), feed-in (PV).
 
 ## 7. Decisions
 

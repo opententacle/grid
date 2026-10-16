@@ -13,10 +13,11 @@ export const ZERO_COST: CostBreakdown = {
   gross: 0,
 };
 
-/** Capacity charge per month in € for a peak in kW. */
-export function capacityChargeMonth(peakKw: number, t: Tariff): number {
+/** Capacity charge in € for the peak (kW) of one calendar month (1..12). */
+export function capacityChargeMonth(peakKw: number, t: Tariff, month = 12): number {
   if (!t.capacity) return t.flatFeeYear / 12;
   const c = t.capacity;
+  if (c.uniformUntilMonth && month <= c.uniformUntilMonth) return (peakKw * c.lowEurKwYear) / 12;
   const p = Math.max(peakKw, c.minKw);
   const low = Math.min(p, c.thresholdKw) * c.lowEurKwYear;
   const high = Math.max(p - c.thresholdKw, 0) * c.highEurKwYear;
@@ -29,7 +30,7 @@ export function monthCost(m: MonthStats, t: Tariff, contract: EnergyContract): C
   const energy = (m.kwh * contract.priceCt) / 100 + contract.baseFeeMonth * share;
   const gridEnergy =
     (m.kwh * t.energyCt - m.snapKwh * t.energyCt * t.snapReduction + m.kwh * t.lossCt) / 100;
-  const gridCapacity = capacityChargeMonth(m.peakKw, t) * share;
+  const gridCapacity = capacityChargeMonth(m.peakKw, t, m.month) * share;
   const gridOther = t.meterEurMonth * share;
   const l = t.levies;
   const eag = l.eagContribution;

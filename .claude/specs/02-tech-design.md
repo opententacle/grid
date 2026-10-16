@@ -101,7 +101,8 @@ interface CostBreakdown { energy; gridEnergy; gridCapacity; gridOther; levies; u
 Per month m and tariff T:
 - `gridEnergy = kWh × energyCt/100 − snapKwh × energyCt/100 × snapReduction + kWh × lossCt/100`
 - `gridCapacity = T.capacity ? (min(p,thr)×low + max(p−thr,0)×high)/12 with p = max(peak, minKw) : flatFeeYear/12`
-- `gridOther = meterEurMonth`
+  - if `capacity.uniformUntilMonth` and `m.month ≤ uniformUntilMonth` (2027: 11): `peak × low / 12` (SNE-G-V § 6 Abs. 3a)
+- `gridOther = meterEurMonth` (0 from 2027)
 - `energy = kWh × energyPriceCt/100 + baseFeeMonth`
 - `levies = kWh × (electricityTaxCt + eagContributionCt)/100 + eagFlatYear/12`
 - `usageTax = (energy + gridEnergy + gridCapacity + gridOther) × usageTaxRate`

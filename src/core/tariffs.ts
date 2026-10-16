@@ -10,6 +10,10 @@ import type { Levies, Tariff } from "./types";
  * - 2027 / 2030 values: E-Control model values ("Der Weg zu einer neuen Netzentgeltstruktur",
  *   14.07.2026, start stage and final stage, Austria-wide). Not Wiener Netze prices.
  * - 2028 / 2029: linear interpolation between start and final stage.
+ * - From 2027 there is no Messentgelt and no Pauschale (SNE-G-V § 2 Abs. 1 Z 11, § 5 Abs. 1).
+ *   The E-Control start value (about 19 €/kW) already contains both.
+ * - January to November 2027: one capacity price per kW, no 10 kW threshold, no 2 kW minimum
+ *   (SNE-G-V § 6 Abs. 3a). The model start value is used as that price.
  * - Levies 2026: https://www.wienernetze.at/o/document/wn_ex0106_steuernundabgaben_2026_geschutzt
  *   and a Wien Energie bill (2026 prices per line, checked line by line).
  *
@@ -30,7 +34,6 @@ const LEVIES_2026: Levies = {
 
 const COMMON = {
   lossCt: 0.7,
-  meterEurMonth: 2.18,
   snapReduction: 0.2,
   levies: LEVIES_2026,
 };
@@ -47,18 +50,20 @@ function newModel(year: number, step: number): Tariff {
     estimate: true,
     energyCt: lerp(START.energyCt, FINAL.energyCt),
     flatFeeYear: 0,
+    meterEurMonth: 0,
     capacity: {
       lowEurKwYear: low,
       highEurKwYear: Math.round(low * 200) / 100,
       thresholdKw: 10,
       minKw: 2,
+      ...(year === 2027 ? { uniformUntilMonth: 11 } : {}),
     },
     ...COMMON,
   };
 }
 
 export const WIENER_NETZE_TARIFFS: Tariff[] = [
-  { year: 2026, estimate: false, energyCt: 6.98, flatFeeYear: 54, ...COMMON },
+  { year: 2026, estimate: false, energyCt: 6.98, flatFeeYear: 54, meterEurMonth: 2.18, ...COMMON },
   newModel(2027, 0),
   newModel(2028, 1),
   newModel(2029, 2),

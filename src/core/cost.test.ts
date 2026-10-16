@@ -4,6 +4,7 @@ import { tariffAt, tariffFor, WIENER_NETZE_TARIFFS } from "./tariffs";
 import type { MonthStats } from "./types";
 
 const t2026 = tariffFor(WIENER_NETZE_TARIFFS, 2026);
+const t2027 = tariffFor(WIENER_NETZE_TARIFFS, 2027);
 const t2030 = tariffFor(WIENER_NETZE_TARIFFS, 2030);
 
 function month(over: Partial<MonthStats> = {}): MonthStats {
@@ -38,6 +39,14 @@ describe("tariffs", () => {
     expect(t2030.capacity?.highEurKwYear).toBe(67.64);
   });
 
+  it("has no metering fee and no flat fee from 2027 (SNE-G-V § 5 Abs. 1)", () => {
+    for (const t of WIENER_NETZE_TARIFFS.filter((x) => x.year >= 2027)) {
+      expect(t.meterEurMonth).toBe(0);
+      expect(t.flatFeeYear).toBe(0);
+    }
+    expect(t2026.meterEurMonth).toBe(2.18);
+  });
+
   it("selects the tariff valid at a date", () => {
     expect(tariffAt(WIENER_NETZE_TARIFFS, new Date(2026, 9, 15)).year).toBe(2026);
     expect(tariffAt(WIENER_NETZE_TARIFFS, new Date(2031, 0, 1)).year).toBe(2030);
@@ -46,6 +55,17 @@ describe("tariffs", () => {
 });
 
 describe("capacityChargeMonth", () => {
+  it("uses one price without threshold and minimum from January to November 2027", () => {
+    expect(capacityChargeMonth(12, t2027, 1)).toBeCloseTo((12 * 19) / 12);
+    expect(capacityChargeMonth(0.5, t2027, 11)).toBeCloseTo((0.5 * 19) / 12);
+    expect(capacityChargeMonth(0, t2027, 6)).toBe(0);
+  });
+
+  it("uses threshold and minimum again from December 2027", () => {
+    expect(capacityChargeMonth(12, t2027, 12)).toBeCloseTo((10 * 19 + 2 * 38) / 12);
+    expect(capacityChargeMonth(0.5, t2027, 12)).toBeCloseTo((2 * 19) / 12);
+  });
+
   it("uses the flat fee before 2027", () => {
     expect(capacityChargeMonth(12, t2026)).toBeCloseTo(54 / 12);
   });
@@ -71,6 +91,17 @@ describe("monthCost", () => {
     expect(c.usageTax).toBeCloseTo(base * 0.07);
     expect(c.net).toBeCloseTo(base + c.levies + c.usageTax);
     expect(c.gross).toBeCloseTo(c.net * 1.2);
+  });
+
+  it("bills no metering fee from 2027", () => {
+    expect(monthCost(month(), t2030, NO_ENERGY).gridOther).toBe(0);
+  });
+
+  it("uses the calendar month of the data for the 2027 transition rule", () => {
+    const jan = monthCost(month({ month: 1, peakKw: 12 }), t2027, NO_ENERGY);
+    const dec = monthCost(month({ month: 12, peakKw: 12 }), t2027, NO_ENERGY);
+    expect(jan.gridCapacity).toBeCloseTo(19);
+    expect(dec.gridCapacity).toBeCloseTo((10 * 19 + 2 * 38) / 12);
   });
 
   it("prorates fixed fees for partial months", () => {

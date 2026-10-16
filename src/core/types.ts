@@ -39,6 +39,11 @@ export interface CapacityPrice {
   thresholdKw: number;
   /** Lowest billed peak in kW */
   minKw: number;
+  /**
+   * Transition rule (SNE-G-V § 6 Abs. 3a): in months 1 to this month, one price
+   * (lowEurKwYear) applies to the whole peak, without threshold and without minimum.
+   */
+  uniformUntilMonth?: number;
 }
 
 export interface Levies {
