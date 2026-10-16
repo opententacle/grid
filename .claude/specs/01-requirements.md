@@ -142,6 +142,8 @@ Levies (assumed unchanged): Elektrizitätsabgabe 0.1 ct/kWh (H0 household 2026),
 
 Verification: the 2026 model was checked line by line against a real Wien Energie annual bill (23.09.2025–29.09.2026). Grid costs match to the cent (`src/core/cost.test.ts`, "bill reconciliation").
 
+Minimum billed power (checked against BGBl. II Nr. 299/2026, § 6 Abs. 3): the 20 % rule (20 % of the contracted grid capacity in Bezugsrichtung) applies only on Netzebenen 1 to 6. On Netzebene 7 the minimum is 2 kW (Kleinstanschlüsse excepted). The app models Netzebene 7, so the 2 kW minimum is correct and the 20 % rule does not apply.
+
 Not modelled in version 1: WiNAP (winter reduction from 1.10.2027, value not known), flexible connection discount, transition rule § 6 Abs. 3a (Jan–Nov 2027), operator-specific start date (up to 1.7.2028), feed-in (PV).
 
 ## 7. Decisions
