@@ -1,4 +1,7 @@
+import { AUTHOR } from "../config";
 import type { Locale } from "./i18n";
+
+const NEW_ISSUE = `${AUTHOR.repo}/issues/new`;
 
 /**
  * Text for the FAQ page: fine points of the new grid fee rules and a timeline to 2030.
@@ -9,6 +12,10 @@ export interface FaqItem {
   id: string;
   q: string;
   a: string[];
+  /** Optional bullet list after the answer */
+  list?: string[];
+  /** Optional link after the answer */
+  link?: { href: string; label: string };
   /** Legal source, e.g. "SNE-G-V § 6 Abs. 3" */
   ref?: string;
 }
@@ -125,6 +132,26 @@ const de: FaqText = {
     },
   ],
   items: [
+    {
+      id: "operators",
+      q: "Funktioniert der Rechner für ganz Österreich?",
+      a: [
+        "Ja. Die neuen Regeln gelten für alle Netzbetreiber in Österreich. Die Preise ab 2027 sind Modellwerte der E-Control für ganz Österreich.",
+        "Die Preise für 2026 („heute“) sind die Preise von Wiener Netze. Bei anderen Netzbetreibern sind die Preise 2026 anders. Der Vergleich ist dann nur eine grobe Schätzung.",
+        "Die App erkennt das Format aus der Datei. Diese Exporte haben wir mit echten Dateien geprüft:",
+      ],
+      list: [
+        "Wiener Netze – Smart Meter-Webportal (Viertelstundenwerte)",
+        "Linz Netz – Viertelstundenwerte, auch mit Daten der Energiegemeinschaft",
+        "Österreich-Format (ebUtilities, AT-Format, Viertelstundenwerte)",
+        "Lastprofil für den E-Control Tarifkalkulator",
+      ],
+      link: {
+        href: NEW_ISSUE,
+        label:
+          "Ihr Netzbetreiber fehlt oder die Datei geht nicht? Schicken Sie uns einen Beispiel-Export auf GitHub. Bitte entfernen Sie vorher Ihre Zählpunktnummer.",
+      },
+    },
     {
       id: "peak",
       q: "Wie berechnet die App die Monatsspitze?",
@@ -332,6 +359,26 @@ const en: FaqText = {
     },
   ],
   items: [
+    {
+      id: "operators",
+      q: "Does the calculator work for all of Austria?",
+      a: [
+        "Yes. The new rules apply to all grid operators in Austria. The prices from 2027 are E-Control model values for all of Austria.",
+        "The prices for 2026 (“today”) are the Wiener Netze prices. Other grid operators have different prices in 2026. Then the comparison is only a rough estimate.",
+        "The app finds the format in the file. We checked these exports with real files:",
+      ],
+      list: [
+        "Wiener Netze – Smart Meter web portal (quarter-hour values)",
+        "Linz Netz – quarter-hour values, also with energy community data",
+        "Austrian format (ebUtilities, AT-Format, quarter-hour values)",
+        "Load profile for the E-Control tariff calculator",
+      ],
+      link: {
+        href: NEW_ISSUE,
+        label:
+          "Your grid operator is missing or the file does not work? Send us a sample export on GitHub. Please remove your metering point number first.",
+      },
+    },
     {
       id: "peak",
       q: "How does the app calculate the monthly peak?",

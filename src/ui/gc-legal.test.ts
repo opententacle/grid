@@ -63,6 +63,13 @@ describe("gc-legal", () => {
     expect($(el, "a.nav[href='./faq.html']").getAttribute("aria-current")).toBe("page");
   });
 
+  it("lists the supported grid operators and asks for sample exports", async () => {
+    const el = await page("faq");
+    expect($$(el, "details#operators li")).toHaveLength(FAQ.de.items[0].list?.length ?? 0);
+    const a = $<HTMLAnchorElement>(el, "details#operators a");
+    expect(a.href).toBe(`${AUTHOR.repo}/issues/new`);
+  });
+
   it("opens the FAQ entry in the URL", async () => {
     history.replaceState(null, "", "#timeline");
     const el = await page("faq");

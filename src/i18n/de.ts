@@ -1,7 +1,7 @@
 export const de = {
   "app.title": "Netzkosten-Rechner",
   "app.subtitle":
-    "Was kosten Sie die Stromnetzentgelte heute – und mit dem neuen Leistungspreis ab 2027?",
+    "Was kosten Sie die Stromnetzentgelte in Österreich heute – und mit dem neuen Leistungspreis ab 2027?",
   "app.privacyBadge": "Ihre Daten bleiben im Browser",
   "header.language": "Sprache",
   "header.theme.dark": "Dunkles Design",
@@ -17,6 +17,9 @@ export const de = {
   "source.wienernetze": "Wiener Netze – Smart Meter-Webportal",
   "source.atformat": "Österreich-Format (ebUtilities, Viertelstundenwerte)",
   "source.econtrol": "E-Control Tarifkalkulator (Lastprofil)",
+  "source.allAustria":
+    "Für alle Netzbetreiber in Österreich. Die App erkennt das Format selbst aus der Datei.",
+  "source.operators": "Welche Netzbetreiber funktionieren?",
   "source.requirements": "Voraussetzungen",
   "source.steps": "So exportieren Sie Ihre Daten",
   "source.openPortal": "Portal öffnen",

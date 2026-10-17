@@ -385,6 +385,8 @@ export class GcLegal extends BaseElement {
           <summary>${q.q}</summary>
           <div class="body">
             ${q.a.map((p) => html`<p>${p}</p>`)}
+            ${q.list ? html`<ul>${q.list.map((p) => html`<li>${p}</li>`)}</ul>` : null}
+            ${q.link ? html`<p><a href=${q.link.href} target="_blank" rel="noopener noreferrer">${q.link.label}</a></p>` : null}
             ${q.ref ? html`<p class="ref">${f.sourceLabel}: SNE-G-V ${q.ref}</p>` : null}
           </div>
         </details>`,

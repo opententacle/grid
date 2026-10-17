@@ -698,6 +698,8 @@ export class GcApp extends BaseElement {
           )}
         </select>
       </label>
+      <p class="hint">${fa(faCircleInfo)} ${t("source.allAustria")}
+        <a href="./faq.html#operators">${t("source.operators")}</a></p>
       <div class="instr">
         <h3>${t("source.requirements")}</h3>
         <ul>${s.requirements.map((k) => html`<li>${t(k)}</li>`)}</ul>

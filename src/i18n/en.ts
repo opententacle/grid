@@ -3,7 +3,7 @@ import type { MessageKey } from "./de";
 export const en: Record<MessageKey, string> = {
   "app.title": "Grid Fee Calculator",
   "app.subtitle":
-    "What do you pay for the electricity grid today – and with the new capacity price from 2027?",
+    "What do you pay for the electricity grid in Austria today – and with the new capacity price from 2027?",
   "app.privacyBadge": "Your data stays in your browser",
   "header.language": "Language",
   "header.theme.dark": "Dark theme",
@@ -19,6 +19,9 @@ export const en: Record<MessageKey, string> = {
   "source.wienernetze": "Wiener Netze – Smart Meter web portal",
   "source.atformat": "Austrian format (ebUtilities, quarter-hour values)",
   "source.econtrol": "E-Control tariff calculator (load profile)",
+  "source.allAustria":
+    "For all grid operators in Austria. The app finds the format in the file on its own.",
+  "source.operators": "Which grid operators work?",
   "source.requirements": "Requirements",
   "source.steps": "How to export your data",
   "source.openPortal": "Open portal",
