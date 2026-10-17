@@ -1,7 +1,7 @@
 import { ParseError } from "./parse-error";
 import type { Reading } from "./types";
 
-const DE_DATE = /^(\d{1,2})\.(\d{1,2})\.(\d{4})(?:[ T,]+(\d{1,2}):(\d{2})(?::\d{2})?)?$/;
+const DE_DATE = /^(\d{1,2})\.(\d{1,2})\.(\d{4}|\d{2})(?:[ T,]+(\d{1,2}):(\d{2})(?::\d{2})?)?$/;
 const ISO_DATE = /^(\d{4})-(\d{2})-(\d{2})(?:[ T](\d{2}):(\d{2})(?::\d{2}(?:\.\d+)?)?)?$/;
 const TIME = /^(\d{1,2}):(\d{2})(?::\d{2})?$/;
 const NUMBER = /^-?\d+(?:[.,]\d+)?$/;
@@ -17,8 +17,10 @@ interface DateParts {
 function parseDate(cell: string): DateParts | undefined {
   const de = DE_DATE.exec(cell);
   if (de) {
+    // Some portals (Linz Netz) write 2-digit years: "01.09.26".
+    const y = +de[3];
     return {
-      y: +de[3],
+      y: y < 100 ? 2000 + y : y,
       mo: +de[2],
       d: +de[1],
       h: de[4] ? +de[4] : undefined,
@@ -87,6 +89,9 @@ export function parseGeneric(text: string): Reading[] {
     else if (unitToKwh(h) === 1 / 4) s += 3;
     if (/verbrauch|bezug|1\.8\.0|1-1:1\.9\.0|energiewert|wert|value|consumption/.test(h)) s += 2;
     if (/einspeis|2\.8\.0|2\.9\.0|qualit|status/.test(h)) s -= 5;
+    // Energy community columns (Restnetzbezug) hold only the part not covered by the community.
+    // Grid fees use the full metered value.
+    if (/energiegemeinschaft|restnetz/.test(h)) s -= 5;
     return s;
   };
   const valueCol = [...candidates].sort((a, b) => score(b) - score(a) || a - b)[0];

@@ -62,6 +62,19 @@ describe("parseGeneric", () => {
     expect(parseGeneric(csv).map((x) => x.kwh)).toEqual([1.25, 2, 1.25, 0.75]);
   });
 
+  it("reads the Linz Netz format with 2-digit years and an energy community column", () => {
+    const csv = [
+      "Datum von;Datum bis;Leistung in kW;Ersatzwert;Restnetzbezug in kW (Energiegemeinschaft);Status (Energiegemeinschaft)",
+      "01.09.26 00:00;01.09.26 00:15;4;;1;EB",
+      "01.09.26 00:15;01.09.26 00:30;8;;2;EB",
+      "01.09.26 00:30;01.09.26 00:45;4;;1;EB",
+      "01.09.26 00:45;01.09.26 01:00;2;;0,5;EN",
+    ].join("\r\n");
+    const r = parseGeneric(csv);
+    expect(r.map((x) => x.kwh)).toEqual([1, 2, 1, 0.5]);
+    expect(new Date(r[3].t)).toEqual(new Date(2026, 8, 1, 0, 45));
+  });
+
   it("reads the unit from a unit column", () => {
     const csv = [
       "Datum;Zeit;Wert;Einheit",
