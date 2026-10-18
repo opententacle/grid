@@ -99,7 +99,7 @@ describe("gc-app", () => {
   it("calculates today's tariff with the selected grid area", async () => {
     await upload(app, CSV);
     const select = $<HTMLSelectElement>(app, "select[name=area]");
-    expect(select.options).toHaveLength(4);
+    expect(select.options).toHaveLength(14);
     expect(select.value).toBe("wien");
 
     const todayGrid = () => $(app, ".grid-kpis .kpi .value").textContent;
@@ -134,6 +134,19 @@ describe("gc-app", () => {
     await upload(app, CSV);
     expect($(app, ".area-note.warn").textContent).toContain("AT000000");
     expect($(app, "select[name=area] option[selected]").getAttribute("value")).toBe("linz");
+    localStorage.removeItem("gc.gridArea");
+  });
+
+  it("uses the grid area for small and unknown operators", async () => {
+    const zp = (code: string) =>
+      CSV.replace("AT0000000000000000000000000000000", `${code}4600000000000000000000123`);
+    await upload(app, zp("AT003300"));
+    expect($(app, "select[name=area] option[selected]").getAttribute("value")).toBe("ooe");
+    expect($(app, ".area-note.ok").textContent).toContain("eww ag");
+    expect($(app, ".area-note.ok").textContent).toContain("Messentgelt");
+    await upload(app, zp("AT005999"));
+    expect($(app, "select[name=area] option[selected]").getAttribute("value")).toBe("tirol");
+    expect($(app, ".area-note.warn").textContent).toContain("Bundesland");
     localStorage.removeItem("gc.gridArea");
   });
 

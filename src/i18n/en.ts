@@ -29,8 +29,12 @@ export const en: Record<MessageKey, string> = {
   "area.label": "Grid area / grid operator",
   "area.hint":
     "The grid area sets the 2026 prices and the levies. The prices from 2027 are the same in all of Austria. The app finds the grid area from the metering point number in your file.",
-  "area.missing": "Is your grid area missing?",
-  "area.detected": "Found in your file: the metering point number starts with {code}.",
+  "area.missing": "Which grid area applies to me?",
+  "area.detected": "Found in your file: {operator} ({code}).",
+  "area.smallOperator":
+    "The app uses the prices of the grid area {area}. The metering fee of your grid operator can be different.",
+  "area.state":
+    "The app does not know the grid operator {code}. The code shows the federal state. So the app uses the grid area {area}. Make sure that this is correct.",
   "area.unknown":
     "Your grid operator ({code}) is not in the list. Select a grid area with similar prices. Then the 2026 value is only a rough estimate.",
   "area.none": "Your file has no metering point number. Make sure that the grid area is correct.",
@@ -142,7 +146,7 @@ export const en: Record<MessageKey, string> = {
     "All values are rough estimates and can contain mistakes. The tariffs from 2027 are E-Control model values (July 2026), not official prices of your grid operator. No liability is accepted for correctness, completeness or timeliness. Only your bill is binding.",
   "assumptions.title": "Assumptions and sources",
   "assumptions.text":
-    "Tariff 2026: prices of the selected grid area, grid level 7 without power metering (SNE-V 2018 as amended by BGBl. II No. 305/2025). Metering fee from the price sheet of the grid operator. Netz Oberösterreich does not publish a value, so we use the maximum price of 2.40 €/month (SNE-V 2018 § 10). From 2027: structure per SNE-G-V (BGBl. II No. 299/2026); prices per E-Control model (start stage 2027, final stage from 2029 as announced by E-Control), 2028 linearly interpolated. Monthly peak = highest quarter-hour value × 4 (average over 15 minutes), rounded to 2 decimals, at least 2 kW. From 2027 no flat fee and no metering fee. January–November 2027: one price per kW, without 10 kW threshold and without minimum (§ 6 (3a)). Grid loss fee of the grid area, summer low-price window (−20 %, April–September 10:00–16:00), levies (electricity tax, renewable energy contribution and flat fee, usage tax 7 % only in Vienna) and VAT 20 % as in 2026. Not included: winter low-price window, flexible grid connections, feed-in, later start at the grid operator (until 30 June 2028).",
+    "Tariff 2026: prices of the selected grid area, grid level 7 without power metering (SNE-V 2018 as amended by BGBl. II No. 305/2025). Metering fee from the price sheet of the grid operator. Netz Oberösterreich does not publish a value, so we use the maximum price of 2.40 €/month (SNE-V 2018 § 10). From 2027: structure per SNE-G-V (BGBl. II No. 299/2026); prices per E-Control model (start stage 2027, final stage from 2029 as announced by E-Control), 2028 linearly interpolated. Monthly peak = highest quarter-hour value × 4 (average over 15 minutes), rounded to 2 decimals, at least 2 kW. From 2027 no flat fee and no metering fee. January–November 2027: one price per kW, without 10 kW threshold and without minimum (§ 6 (3a)). Grid loss fee of the grid area, summer low-price window (−20 %, April–September 10:00–16:00), levies (electricity tax, renewable energy contribution and flat fee, local levies: Vienna usage tax 7 %, Salzburg usage tax 0.3789 ct/kWh, Klagenfurt Benützungsabgabe 1.637 ct/kWh) and VAT 20 % as in 2026. Kleinwalsertal: German electricity tax and 19 % VAT. Not included: winter low-price window, flexible grid connections, feed-in, later start at the grid operator (until 30 June 2028).",
   "assumptions.updated": "Tariff data as of {date}",
 
   "calc.title": "How we calculate",

@@ -54,19 +54,24 @@ interface Area2026 {
   lossCt: number;
   meterEurMonth: number;
   usageTaxRate: number;
+  localLevyCt?: number;
+  /** Only for Kleinwalsertal: German Stromsteuer and VAT apply there. */
+  electricityTaxCt?: number;
+  vatRate?: number;
 }
 
 function levies(area: Area2026, energyRate: number): Levies {
   return {
-    electricityTaxCt: 0.1,
+    electricityTaxCt: area.electricityTaxCt ?? 0.1,
     eagContribution: {
       energyRate,
       capacityRate: EAG_2026.flatYear / FLAT_FEE_2026,
-      lossRate: EAG_2026.lossCt / area.lossCt,
+      lossCt: EAG_2026.lossCt,
     },
     eagFlatYear: 19.02,
     usageTaxRate: area.usageTaxRate,
-    vatRate: 0.2,
+    ...(area.localLevyCt ? { localLevyCt: area.localLevyCt } : {}),
+    vatRate: area.vatRate ?? 0.2,
   };
 }
 
@@ -116,12 +121,6 @@ export function tariffsFor(area: Area2026): Tariff[] {
 
 export interface GridArea {
   id: string;
-  /**
-   * Operator code in the metering point number (Zählpunktnummer): "AT" + 6 digits.
-   * Source: operator list of the ebUtilities market partners, for example
-   * https://wissen.neoom.com/netzbetreiberliste
-   */
-  code: string;
   /** Name of the grid operator (proper name, not translated) */
   operator: string;
   /** Netzbereich in SNE-V 2018 */
@@ -137,7 +136,6 @@ export interface GridArea {
 export const GRID_AREAS: GridArea[] = [
   {
     id: "wien",
-    code: "AT001000",
     operator: "Wiener Netze",
     area: "Wien",
     priceSheet:
@@ -146,8 +144,39 @@ export const GRID_AREAS: GridArea[] = [
     tariffs: tariffsFor({ energyCt: 6.98, lossCt: 0.7, meterEurMonth: 2.18, usageTaxRate: 0.07 }),
   },
   {
+    id: "burgenland",
+    operator: "Netz Burgenland",
+    area: "Burgenland",
+    priceSheet:
+      "https://assets.netzburgenland.at/Tarifblatt_Strom_gueltig_ab_1_1_2026_ebfae30e42.pdf",
+    // § 5 Abs. 1 Z 6 lit. a, § 6 lit. b Z 2 (no grid loss fee on NE 7)
+    tariffs: tariffsFor({ energyCt: 8.46, lossCt: 0, meterEurMonth: 2.4, usageTaxRate: 0 }),
+  },
+  {
+    id: "kaernten",
+    operator: "KNG-Kärnten Netz",
+    area: "Kärnten",
+    priceSheet: "https://kaerntennetz.at/dokumente/Strom/Preisblatt_Strom_2026.pdf",
+    // § 5 Abs. 1 Z 6 lit. b, § 6 lit. b Z 3
+    tariffs: tariffsFor({ energyCt: 9.67, lossCt: 0.368, meterEurMonth: 2.4, usageTaxRate: 0 }),
+  },
+  {
+    id: "klagenfurt",
+    operator: "Energie Klagenfurt",
+    area: "Klagenfurt",
+    priceSheet: "https://www.stw.at/wp-content/uploads/2026/07/260720_preisblatt_stromnetz.pdf",
+    // § 5 Abs. 1 Z 6 lit. c, § 6 lit. b Z 4. Benützungsabgabe der Stadt Klagenfurt 1.637 ct/kWh
+    // (price sheet valid from 1.7.2026; the sheets from January 2026 are no longer online).
+    tariffs: tariffsFor({
+      energyCt: 6.9,
+      lossCt: 0.578,
+      meterEurMonth: 2.4,
+      usageTaxRate: 0,
+      localLevyCt: 1.637,
+    }),
+  },
+  {
     id: "noe",
-    code: "AT002000",
     operator: "Netz Niederösterreich",
     area: "Niederösterreich",
     priceSheet: "https://netz-noe.at/wissen/downloads",
@@ -156,7 +185,6 @@ export const GRID_AREAS: GridArea[] = [
   },
   {
     id: "ooe",
-    code: "AT003000",
     operator: "Netz Oberösterreich",
     area: "Oberösterreich",
     priceSheet:
@@ -167,7 +195,6 @@ export const GRID_AREAS: GridArea[] = [
   },
   {
     id: "linz",
-    code: "AT003100",
     operator: "Linz Netz",
     area: "Linz",
     priceSheet:
@@ -175,12 +202,151 @@ export const GRID_AREAS: GridArea[] = [
     // § 5 Abs. 1 Z 6 lit. f, § 6 lit. b Z 7; metering fee: Linz Netz price sheet 2026
     tariffs: tariffsFor({ energyCt: 5.57, lossCt: 0.487, meterEurMonth: 2.38, usageTaxRate: 0 }),
   },
+  {
+    id: "salzburg",
+    operator: "Salzburg Netz",
+    area: "Salzburg",
+    priceSheet:
+      "https://www.salzburgnetz.at/content/dam/salzburgnetz/dokumente/stromnetz/Strom-Zuschlaege-Systemnnutzung.pdf",
+    // § 5 Abs. 1 Z 6 lit. g, § 6 lit. b Z 8. Gebrauchsabgabe (state law) 0.3789 ct/kWh on NE 7.
+    // Metering fee: Strom-Messentgelte.pdf (Direkt-Drehstromzählung)
+    tariffs: tariffsFor({
+      energyCt: 6.59,
+      lossCt: 0.357,
+      meterEurMonth: 2.3,
+      usageTaxRate: 0,
+      localLevyCt: 0.3789,
+    }),
+  },
+  {
+    id: "steiermark",
+    operator: "Energienetze Steiermark",
+    area: "Steiermark",
+    priceSheet:
+      "https://www.e-netze.at/downloads-data/pdf.aspx?pdf=EN_03-2026_Preisblatt_Strom_20260101_barrierefrei.pdf",
+    // § 5 Abs. 1 Z 6 lit. h, § 6 lit. b Z 9
+    tariffs: tariffsFor({ energyCt: 8.82, lossCt: 0.336, meterEurMonth: 2.4, usageTaxRate: 0 }),
+  },
+  {
+    id: "graz",
+    operator: "Stromnetz Graz",
+    area: "Graz",
+    priceSheet:
+      "https://www.stromnetz-graz.at/media/wysiwyg/SGG/Preisblatt_Entgelte_Messleistungen.pdf",
+    // § 5 Abs. 1 Z 6 lit. i, § 6 lit. b Z 10
+    tariffs: tariffsFor({ energyCt: 5.17, lossCt: 0.658, meterEurMonth: 2.1, usageTaxRate: 0 }),
+  },
+  {
+    id: "tirol",
+    operator: "TINETZ-Tiroler Netze",
+    area: "Tirol",
+    priceSheet: "https://www.tinetz.at/uploads/tx_bh/769/tinetz_preisblatt_netz_2026.pdf",
+    // § 5 Abs. 1 Z 6 lit. j, § 6 lit. b Z 11. Metering fee 28.80 €/year (sheet valid from 1.4.2026)
+    tariffs: tariffsFor({ energyCt: 6.81, lossCt: 0.293, meterEurMonth: 2.4, usageTaxRate: 0 }),
+  },
+  {
+    id: "innsbruck",
+    operator: "Innsbrucker Kommunalbetriebe",
+    area: "Innsbruck",
+    priceSheet:
+      "https://www.ikb.at/fileadmin/user_upload/Dokumente/Energie/Strom_Netz/SN_Dokumente/Preisblatt_Netzebene_7.pdf",
+    // § 5 Abs. 1 Z 6 lit. k, § 6 lit. b Z 12
+    tariffs: tariffsFor({ energyCt: 8.03, lossCt: 0.453, meterEurMonth: 2.4, usageTaxRate: 0 }),
+  },
+  {
+    id: "vorarlberg",
+    operator: "Vorarlberger Energienetze",
+    area: "Vorarlberg",
+    priceSheet:
+      "https://www.vorarlbergnetz.at/media/Preisblatt_Messpreise_und_Blindarbeit_2026.pdf",
+    // § 5 Abs. 1 Z 6 lit. l, § 6 lit. b Z 13. Metering fee: three-phase meter without control functions
+    tariffs: tariffsFor({ energyCt: 4.96, lossCt: 0.393, meterEurMonth: 1.6, usageTaxRate: 0 }),
+  },
+  {
+    id: "kleinwalsertal",
+    operator: "Energieversorgung Kleinwalsertal",
+    area: "Kleinwalsertal",
+    priceSheet: "https://www.evk.at/media/preisblatt_evk_2026_01012026.pdf",
+    // § 5 Abs. 1 Z 6 lit. n, § 6 lit. b Z 15. German taxes apply: Stromsteuer 2.05 ct/kWh and
+    // 19 % VAT, no Elektrizitätsabgabe. Finanzierungsbeitrag (§ 10 Abs. 2 Ökostromgesetz) 0.0137 ct/kWh.
+    tariffs: tariffsFor({
+      energyCt: 17.73,
+      lossCt: 0.401,
+      meterEurMonth: 2.4,
+      usageTaxRate: 0,
+      localLevyCt: 0.0137,
+      electricityTaxCt: 2.05,
+      vatRate: 0.19,
+    }),
+  },
 ];
 
 export const gridAreaById = (id: string) => GRID_AREAS.find((a) => a.id === id) ?? GRID_AREAS[0];
 
+/** Grid operator with its code in the metering point number (Zählpunktnummer). */
+export interface GridOperator {
+  /** "AT" + 6 digits: the first 8 characters of the metering point number */
+  code: string;
+  name: string;
+  /** Grid area (SNE-V 2018) with the prices for this operator */
+  areaId: string;
+}
+
+/**
+ * Operator codes of the large grid operators.
+ * Source: https://wissen.neoom.com/netzbetreiberliste (ebUtilities market partners).
+ * Small operators use the prices of their grid area. Their metering fee can be different.
+ */
+export const OPERATORS: GridOperator[] = [
+  { code: "AT001000", name: "Wiener Netze", areaId: "wien" },
+  { code: "AT002000", name: "Netz Niederösterreich", areaId: "noe" },
+  { code: "AT003000", name: "Netz Oberösterreich", areaId: "ooe" },
+  { code: "AT003100", name: "Linz Netz", areaId: "linz" },
+  { code: "AT003300", name: "eww ag", areaId: "ooe" },
+  { code: "AT004000", name: "Salzburg Netz", areaId: "salzburg" },
+  { code: "AT005000", name: "TINETZ-Tiroler Netze", areaId: "tirol" },
+  { code: "AT005100", name: "Innsbrucker Kommunalbetriebe", areaId: "innsbruck" },
+  { code: "AT005120", name: "HALLAG Kommunale", areaId: "tirol" },
+  { code: "AT006000", name: "Vorarlberger Energienetze", areaId: "vorarlberg" },
+  // Not in the list above. Source: EVK Kommunikationsdatenblatt
+  // https://www.evk.at/media/kommunikationsdatenblatt_evk_netz_01052026.pdf
+  { code: "AT006230", name: "Energieversorgung Kleinwalsertal", areaId: "kleinwalsertal" },
+  { code: "AT007000", name: "KNG-Kärnten Netz", areaId: "kaernten" },
+  { code: "AT007100", name: "Energie Klagenfurt", areaId: "klagenfurt" },
+  { code: "AT008000", name: "Energienetze Steiermark", areaId: "steiermark" },
+  { code: "AT008100", name: "Stromnetz Graz", areaId: "graz" },
+  { code: "AT008870", name: "Feistritzwerke-STEWEAG", areaId: "steiermark" },
+  { code: "AT009000", name: "Netz Burgenland", areaId: "burgenland" },
+];
+
+/** The first digit of the operator number is the federal state. Each state has a main grid area. */
+const STATE_AREAS: Record<string, string> = {
+  "1": "wien",
+  "2": "noe",
+  "3": "ooe",
+  "4": "salzburg",
+  "5": "tirol",
+  "6": "vorarlberg",
+  "7": "kaernten",
+  "8": "steiermark",
+  "9": "burgenland",
+};
+
+export interface AreaMatch {
+  area: GridArea;
+  /** Undefined when the code is not in OPERATORS and the area comes from the federal state */
+  operator?: GridOperator;
+}
+
 /** Grid area for an operator code ("AT003100"), or undefined when the app has no prices for it. */
-export const gridAreaByCode = (code: string) => GRID_AREAS.find((a) => a.code === code);
+export function areaForCode(code: string): AreaMatch | undefined {
+  const operator = OPERATORS.find((o) => o.code === code);
+  const find = (id: string | undefined) => GRID_AREAS.find((a) => a.id === id);
+  const area = find(operator?.areaId);
+  if (area) return { area, operator };
+  const byState = find(STATE_AREAS[code.charAt(4)]);
+  return byState ? { area: byState, operator } : undefined;
+}
 
 export const WIENER_NETZE_TARIFFS = gridAreaById("wien").tariffs;
 

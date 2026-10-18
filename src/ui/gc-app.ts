@@ -21,8 +21,8 @@ import { fmtDate, fmtEur, fmtNum, fmtPct } from "../core/format";
 import { ParseError } from "../core/parse-error";
 import { parseAny } from "../core/parse-formats";
 import {
+  areaForCode,
   GRID_AREAS,
-  gridAreaByCode,
   gridAreaById,
   TARIFF_DATA_DATE,
   tariffAt,
@@ -43,7 +43,11 @@ const DEFAULT_CONTRACT: EnergyContract = { priceCt: 12, baseFeeMonth: 3 };
 const AREA_KEY = "gc.gridArea";
 
 type AreaSource =
-  | { kind: "detected"; code: string }
+  /** Known operator. `main` is false for a small operator that uses the prices of the area. */
+  | { kind: "detected"; code: string; operator: string; main: boolean }
+  /** Unknown operator: the area comes from the federal state in the code. */
+  | { kind: "state"; code: string }
+  /** The app has no prices for this code. */
   | { kind: "unknown"; code: string }
   | { kind: "none" }
   | { kind: "manual" };
@@ -174,22 +178,30 @@ export class GcApp extends BaseElement {
 
   /** Selects the grid area from the operator code in the metering point number. */
   private detectArea(code: string | undefined) {
-    const area = code ? gridAreaByCode(code) : undefined;
-    if (area) {
-      this.setArea(area.id, false);
-      this.areaSource = { kind: "detected", code: area.code };
-    } else {
-      this.areaSource = code ? { kind: "unknown", code } : { kind: "none" };
+    const match = code ? areaForCode(code) : undefined;
+    if (!code) this.areaSource = { kind: "none" };
+    else if (!match) this.areaSource = { kind: "unknown", code };
+    else {
+      this.setArea(match.area.id, false);
+      const op = match.operator;
+      this.areaSource = op
+        ? { kind: "detected", code, operator: op.name, main: op.name === match.area.operator }
+        : { kind: "state", code };
     }
   }
 
   private renderAreaSource() {
     const s = this.areaSource;
     if (!s || s.kind === "manual") return nothing;
-    if (s.kind === "detected")
-      return html`<p class="area-note ok">${fa(faCircleCheck)} ${t("area.detected", { code: s.code })}</p>`;
-    return html`<p class="area-note warn">${fa(faTriangleExclamation)}
-      ${t(s.kind === "unknown" ? "area.unknown" : "area.none", { code: s.kind === "unknown" ? s.code : "" })}</p>`;
+    const area = this.area.area;
+    if (s.kind === "detected") {
+      const p = { code: s.code, operator: s.operator, area };
+      return html`<p class="area-note ok">${fa(faCircleCheck)} ${t("area.detected", p)}
+        ${s.main ? nothing : t("area.smallOperator", p)}</p>`;
+    }
+    const key = { state: "area.state", unknown: "area.unknown", none: "area.none" } as const;
+    const code = s.kind === "none" ? "" : s.code;
+    return html`<p class="area-note warn">${fa(faTriangleExclamation)} ${t(key[s.kind], { code, area })}</p>`;
   }
 
   private setContract(patch: Partial<EnergyContract>) {

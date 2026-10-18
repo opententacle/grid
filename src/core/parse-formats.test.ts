@@ -6,7 +6,7 @@ import {
   parseAtFormat,
   parseEControl,
 } from "./parse-formats";
-import { gridAreaByCode } from "./tariffs";
+import { areaForCode } from "./tariffs";
 import { buildCsv, errorCode } from "./test-utils";
 
 const AT_HEAD =
@@ -100,7 +100,7 @@ describe("detectOperatorCode", () => {
     );
     expect(detectOperatorCode(csv)).toBe("AT001000");
     expect(parseAny(csv).operatorCode).toBe("AT001000");
-    expect(gridAreaByCode("AT001000")?.id).toBe("wien");
+    expect(areaForCode("AT001000")?.area.id).toBe("wien");
   });
 
   it("finds the operator code in the rows of the AT-Format", () => {
@@ -108,13 +108,13 @@ describe("detectOperatorCode", () => {
       .join("\n")
       .replace("AT0000000000000000000000000000000", LINZ);
     expect(detectOperatorCode(csv)).toBe("AT003100");
-    expect(gridAreaByCode("AT003100")?.id).toBe("linz");
+    expect(areaForCode("AT003100")?.area.id).toBe("linz");
   });
 
   it("finds the operator code in the E-Control header", () => {
     const csv = `${EC_HEAD.replace("AT000", "at0030000400000000000000000000001")}\n`;
     expect(detectOperatorCode(csv)).toBe("AT003000");
-    expect(gridAreaByCode("AT003000")?.id).toBe("ooe");
+    expect(areaForCode("AT003000")?.area.id).toBe("ooe");
   });
 
   it("returns nothing when the file has no full metering point number", () => {
@@ -122,6 +122,5 @@ describe("detectOperatorCode", () => {
       detectOperatorCode("Datum von;Datum bis;Leistung in kW\n01.09.26 00:00;01.09.26 00:15;4"),
     ).toBe(undefined);
     expect(detectOperatorCode(EC_HEAD)).toBe(undefined);
-    expect(gridAreaByCode("AT009000")).toBe(undefined);
   });
 });

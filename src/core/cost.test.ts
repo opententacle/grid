@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { capacityChargeMonth, monthCost, yearCost, yearWindow } from "./cost";
 import {
+  areaForCode,
   EAG_2026,
   GRID_AREAS,
   gridAreaById,
@@ -77,9 +78,19 @@ describe("grid areas", () => {
     });
     expect(rows).toEqual([
       ["wien", 2026, 6.98, 54, 0.7, 2.18, 0.07],
+      ["burgenland", 2026, 8.46, 54, 0, 2.4, 0],
+      ["kaernten", 2026, 9.67, 54, 0.368, 2.4, 0],
+      ["klagenfurt", 2026, 6.9, 54, 0.578, 2.4, 0],
       ["noe", 2026, 8.79, 54, 0.384, 2.18, 0],
       ["ooe", 2026, 6.29, 54, 0.528, 2.4, 0],
       ["linz", 2026, 5.57, 54, 0.487, 2.38, 0],
+      ["salzburg", 2026, 6.59, 54, 0.357, 2.3, 0],
+      ["steiermark", 2026, 8.82, 54, 0.336, 2.4, 0],
+      ["graz", 2026, 5.17, 54, 0.658, 2.1, 0],
+      ["tirol", 2026, 6.81, 54, 0.293, 2.4, 0],
+      ["innsbruck", 2026, 8.03, 54, 0.453, 2.4, 0],
+      ["vorarlberg", 2026, 4.96, 54, 0.393, 1.6, 0],
+      ["kleinwalsertal", 2026, 17.73, 54, 0.401, 2.4, 0],
     ]);
     expect(GRID_AREAS.filter((a) => a.meterIsMaximum).map((a) => a.id)).toEqual(["ooe"]);
   });
@@ -105,19 +116,32 @@ describe("grid areas", () => {
     const m = month({ kwh: 300, snapKwh: 40 });
     for (const a of GRID_AREAS) {
       const c = monthCost(m, a.tariffs[0], NO_ENERGY);
-      const eag = c.levies - (300 * 0.1) / 100 - 19.02 / 12;
+      const eag = c.levies - (300 * a.tariffs[0].levies.electricityTaxCt) / 100 - 19.02 / 12;
       expect(eag).toBeCloseTo(
         (300 * (EAG_2026.energyCt + EAG_2026.lossCt)) / 100 + EAG_2026.flatYear / 12,
       );
     }
   });
 
-  it("charges the Gebrauchsabgabe only in Vienna", () => {
-    const m = month();
-    expect(monthCost(m, gridAreaById("wien").tariffs[0], NO_ENERGY).usageTax).toBeGreaterThan(0);
-    for (const id of ["noe", "ooe", "linz"]) {
-      expect(monthCost(m, gridAreaById(id).tariffs[0], NO_ENERGY).usageTax).toBe(0);
-    }
+  it("charges the local levies of Vienna, Salzburg, Klagenfurt and Kleinwalsertal", () => {
+    const m = month({ kwh: 300 });
+    const usage = (id: string) => monthCost(m, gridAreaById(id).tariffs[0], NO_ENERGY).usageTax;
+    const wien = monthCost(m, gridAreaById("wien").tariffs[0], NO_ENERGY);
+    expect(wien.usageTax).toBeCloseTo(
+      (wien.gridEnergy + wien.gridCapacity + wien.gridOther) * 0.07,
+    );
+    expect(usage("salzburg")).toBeCloseTo((300 * 0.3789) / 100);
+    expect(usage("klagenfurt")).toBeCloseTo((300 * 1.637) / 100);
+    expect(usage("kleinwalsertal")).toBeCloseTo((300 * 0.0137) / 100);
+    const withLevy = ["wien", "salzburg", "klagenfurt", "kleinwalsertal"];
+    for (const a of GRID_AREAS.filter((x) => !withLevy.includes(x.id))) expect(usage(a.id)).toBe(0);
+  });
+
+  it("uses German electricity tax and VAT in Kleinwalsertal", () => {
+    const l = gridAreaById("kleinwalsertal").tariffs[0].levies;
+    expect([l.electricityTaxCt, l.vatRate]).toEqual([2.05, 0.19]);
+    const c = monthCost(month(), gridAreaById("kleinwalsertal").tariffs[0], NO_ENERGY);
+    expect(c.vat).toBeCloseTo(c.net * 0.19);
   });
 
   it("calculates the 2026 grid fees of Linz Netz", () => {
@@ -130,6 +154,21 @@ describe("grid areas", () => {
     expect(c.gridEnergy).toBeCloseTo((300 * 5.57 - 40 * 5.57 * 0.2 + 300 * 0.487) / 100);
     expect(c.gridCapacity).toBeCloseTo(54 / 12);
     expect(c.gridOther).toBeCloseTo(2.38);
+  });
+
+  it("finds the grid area for an operator code", () => {
+    const m = (code: string) => {
+      const r = areaForCode(code);
+      return r && [r.area.id, r.operator?.name];
+    };
+    expect(m("AT003100")).toEqual(["linz", "Linz Netz"]);
+    expect(m("AT008100")).toEqual(["graz", "Stromnetz Graz"]);
+    expect(m("AT006230")).toEqual(["kleinwalsertal", "Energieversorgung Kleinwalsertal"]);
+    // Small operator: prices of its grid area
+    expect(m("AT003300")).toEqual(["ooe", "eww ag"]);
+    // Unknown operator: grid area of the federal state (first digit of the operator number)
+    expect(m("AT005999")).toEqual(["tirol", undefined]);
+    expect(m("AT000000")).toBe(undefined);
   });
 
   it("falls back to Wiener Netze for an unknown id", () => {

@@ -117,7 +117,8 @@ const de: ExplainText = {
       paragraphs: [
         "Energie: Preis je kWh und Grundgebühr Ihres Lieferanten. Diese Werte geben Sie selbst ein. Tipp: Nehmen Sie den Preis von Ihrer Rechnung und ziehen Sie Rabatte ab.",
         "Erneuerbaren-Förderbeitrag: 2026 ein fester Betrag. Er ist in ganz Österreich gleich (BGBl. II Nr. 301/2025). Ab 2027 nehmen wir einen festen Anteil an den Netzentgelten an. Der Anteil der Pauschale gilt dann für den Leistungspreis.",
-        "Gebrauchsabgabe: 7 % auf Energie und Netzentgelte. Diese Abgabe gibt es nur in Wien.",
+        "Örtliche Abgaben: In Wien gilt die Gebrauchsabgabe, 7 % auf Energie und Netzentgelte. In Salzburg gilt eine Gebrauchsabgabe je kWh, in Klagenfurt eine Benützungsabgabe je kWh. Die Tabelle in Abschnitt 3 zeigt die Werte.",
+        "Kleinwalsertal: Dort gelten die deutsche Stromsteuer (2,05 ct/kWh) und 19 % Umsatzsteuer. Die Elektrizitätsabgabe gilt dort nicht.",
         "Umsatzsteuer: 20 % auf alles. Mit dem Schalter „Netto“ sehen Sie die Werte ohne Umsatzsteuer.",
       ],
       table: "levies",
@@ -159,7 +160,7 @@ const de: ExplainText = {
     eag2026:
       "Erneuerbaren-Förderbeitrag 2026 (Arbeitspreis ct/kWh / Pauschale €/Jahr / Netzverlust ct/kWh)",
     eagShare: "Erneuerbaren-Förderbeitrag ab 2027 (Anteil Arbeitspreis / Leistungspreis)",
-    usage: "Gebrauchsabgabe (nur Wien)",
+    usage: "Örtliche Abgabe",
     vat: "Umsatzsteuer",
     model: "Modellwert",
     area: "Netzbereich",
@@ -245,7 +246,8 @@ const en: ExplainText = {
       paragraphs: [
         "Energy: price per kWh and base fee of your supplier. You enter these values yourself. Tip: take the price from your bill and subtract discounts.",
         "Renewable energy contribution (Erneuerbaren-Förderbeitrag): in 2026 a fixed amount. It is the same in all of Austria (BGBl. II No. 301/2025). From 2027 we assume a fixed share of the grid fees. The share of the flat fee then applies to the capacity price.",
-        "Usage tax (Gebrauchsabgabe): 7 % on energy and grid fees. Only Vienna has this levy.",
+        "Local levies: Vienna has a usage tax (Gebrauchsabgabe) of 7 % on energy and grid fees. Salzburg has a usage tax per kWh, Klagenfurt a Benützungsabgabe per kWh. The table in section 3 shows the values.",
+        "Kleinwalsertal: the German electricity tax (2.05 ct/kWh) and 19 % VAT apply there. The Austrian electricity tax does not apply there.",
         "VAT: 20 % on everything. With the “Net” switch you see the values without VAT.",
       ],
       table: "levies",
@@ -287,7 +289,7 @@ const en: ExplainText = {
     eag2026:
       "Renewable energy contribution 2026 (energy ct/kWh / flat fee €/year / grid loss ct/kWh)",
     eagShare: "Renewable energy contribution from 2027 (share of energy price / capacity price)",
-    usage: "Usage tax (only Vienna)",
+    usage: "Local levy",
     vat: "VAT",
     model: "Model value",
     area: "Grid area",

@@ -37,13 +37,13 @@ describe("gc-legal", () => {
     const areas = $$(el, "#today tbody tr").map((tr) =>
       [...tr.querySelectorAll("td")].map((td) => td.textContent?.replace(/\s+/g, " ").trim()),
     );
-    expect(areas).toHaveLength(4);
+    expect(areas).toHaveLength(14);
     expect(areas[0]).toEqual(["Wien (Wiener Netze)", "6,98", "54,00", "0,700", "2,18", "7 %"]);
-    expect(areas[2][4]).toBe("2,40*");
-    expect(areas[3]).toEqual(["Linz (Linz Netz)", "5,57", "54,00", "0,487", "2,38", "–"]);
+    expect(areas[5][4]).toBe("2,40*");
+    expect(areas[6]).toEqual(["Linz (Linz Netz)", "5,57", "54,00", "0,487", "2,38", "–"]);
+    expect(areas[7][5]).toBe("0,3789 ct/kWh");
     expect($(el, "#today .muted").textContent).toContain("§ 10");
     expect($(el, "#more table").textContent).toContain("0,583");
-    expect($(el, "#more table").textContent).toContain("7 %");
     expect($$(el, ".formula")).toHaveLength(2);
   });
 

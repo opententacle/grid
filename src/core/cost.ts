@@ -35,11 +35,12 @@ export function monthCost(m: MonthStats, t: Tariff, contract: EnergyContract): C
   const l = t.levies;
   const eag = l.eagContribution;
   const eagContribution =
-    (m.kwh * (t.energyCt * eag.energyRate + t.lossCt * eag.lossRate)) / 100 +
-    gridCapacity * eag.capacityRate;
+    (m.kwh * (t.energyCt * eag.energyRate + eag.lossCt)) / 100 + gridCapacity * eag.capacityRate;
   const levies =
     (m.kwh * l.electricityTaxCt) / 100 + eagContribution + (l.eagFlatYear / 12) * share;
-  const usageTax = (energy + gridEnergy + gridCapacity + gridOther) * l.usageTaxRate;
+  const usageTax =
+    (energy + gridEnergy + gridCapacity + gridOther) * l.usageTaxRate +
+    (m.kwh * (l.localLevyCt ?? 0)) / 100;
   const net = energy + gridEnergy + gridCapacity + gridOther + levies + usageTax;
   const vat = net * l.vatRate;
   return {

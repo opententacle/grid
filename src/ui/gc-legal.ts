@@ -7,6 +7,7 @@ import { css, html } from "lit";
 import { IMPRESSUM } from "../config";
 import { fmtDate, fmtNum } from "../core/format";
 import { EAG_2026, GRID_AREAS, TARIFF_DATA_DATE, WIENER_NETZE_TARIFFS } from "../core/tariffs";
+import type { Levies } from "../core/types";
 import { EXPLAIN } from "../i18n/explain";
 import { FAQ } from "../i18n/faq";
 import { getLocale, type Locale, type MessageKey, setLocale, t } from "../i18n/i18n";
@@ -413,7 +414,12 @@ export class GcLegal extends BaseElement {
   private areaTable() {
     const x = EXPLAIN[getLocale()].tables;
     const n = (v: number, d = 2) => fmtNum(v, d);
-    const pct = (v: number) => (v ? `${fmtNum(v * 100, 0)} %` : "–");
+    const local = (l: Levies) =>
+      l.usageTaxRate
+        ? `${fmtNum(l.usageTaxRate * 100, 0)} %`
+        : l.localLevyCt
+          ? `${fmtNum(l.localLevyCt, 4)} ct/kWh`
+          : "–";
     return html`<div class="table-wrap"><table>
       <thead><tr><th>${x.area}</th><th>${x.energy}</th><th>${x.flat}</th><th>${x.loss}</th>
         <th>${x.meter}</th><th>${x.usage}</th></tr></thead>
@@ -424,7 +430,7 @@ export class GcLegal extends BaseElement {
             <td>${a.area} (<a href=${a.priceSheet} target="_blank" rel="noopener noreferrer">${a.operator}</a>)</td>
             <td>${n(t26.energyCt)}</td><td>${n(t26.flatFeeYear)}</td><td>${n(t26.lossCt, 3)}</td>
             <td>${n(t26.meterEurMonth)}${a.meterIsMaximum ? "*" : ""}</td>
-            <td>${pct(t26.levies.usageTaxRate)}</td>
+            <td>${local(t26.levies)}</td>
           </tr>`;
         })}
       </tbody>
@@ -464,7 +470,6 @@ export class GcLegal extends BaseElement {
         <tr><td>${x.eagFlat}</td><td>${fmtNum(l.eagFlatYear, 2)}</td></tr>
         <tr><td>${x.eag2026}</td><td>${fmtNum(EAG_2026.energyCt, 3)} / ${fmtNum(EAG_2026.flatYear, 3)} / ${fmtNum(EAG_2026.lossCt, 3)}</td></tr>
         <tr><td>${x.eagShare}</td><td>${pct(e.energyRate)} / ${pct(e.capacityRate)}</td></tr>
-        <tr><td>${x.usage}</td><td>${pct(l.usageTaxRate, 0)}</td></tr>
         <tr><td>${x.vat}</td><td>${pct(l.vatRate, 0)}</td></tr>
       </tbody>
     </table></div>`;

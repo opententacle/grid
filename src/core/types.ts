@@ -50,14 +50,17 @@ export interface Levies {
   /** Elektrizitätsabgabe ct/kWh */
   electricityTaxCt: number;
   /**
-   * Erneuerbaren-Förderbeitrag as a share of each grid fee (EAG § 75).
+   * Erneuerbaren-Förderbeitrag (EAG § 75): a share of the energy price and of the flat fee or
+   * capacity price, plus a fixed amount per kWh for the grid loss part (ct/kWh).
    * It is charged on the normal energy price (no SNAP reduction).
    */
-  eagContribution: { energyRate: number; capacityRate: number; lossRate: number };
+  eagContribution: { energyRate: number; capacityRate: number; lossCt: number };
   /** Erneuerbaren-Förderpauschale €/year */
   eagFlatYear: number;
-  /** Gebrauchsabgabe (share, on energy + grid) */
+  /** Gebrauchsabgabe (share, on energy + grid). Only Vienna. */
   usageTaxRate: number;
+  /** Local levy per kWh, ct/kWh (Benützungsabgabe Klagenfurt). Counted as usage tax. */
+  localLevyCt?: number;
   vatRate: number;
 }
 
