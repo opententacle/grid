@@ -1,6 +1,7 @@
 import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons/faArrowUpRightFromSquare";
 import { faBolt } from "@fortawesome/free-solid-svg-icons/faBolt";
 import { faCalculator } from "@fortawesome/free-solid-svg-icons/faCalculator";
+import { faCircleCheck } from "@fortawesome/free-solid-svg-icons/faCircleCheck";
 import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons/faCircleExclamation";
 import { faCircleInfo } from "@fortawesome/free-solid-svg-icons/faCircleInfo";
 import { faCircleQuestion } from "@fortawesome/free-solid-svg-icons/faCircleQuestion";
@@ -19,7 +20,14 @@ import { gridTotal, type YearCost, yearCost } from "../core/cost";
 import { fmtDate, fmtEur, fmtNum, fmtPct } from "../core/format";
 import { ParseError } from "../core/parse-error";
 import { parseAny } from "../core/parse-formats";
-import { GRID_AREAS, gridAreaById, TARIFF_DATA_DATE, tariffAt, tariffFor } from "../core/tariffs";
+import {
+  GRID_AREAS,
+  gridAreaByCode,
+  gridAreaById,
+  TARIFF_DATA_DATE,
+  tariffAt,
+  tariffFor,
+} from "../core/tariffs";
 import type { Analysis, EnergyContract } from "../core/types";
 import { getLocale, type Locale, type MessageKey, setLocale, t } from "../i18n/i18n";
 import { BODY_URLS, OPEN } from "../i18n/open";
@@ -34,6 +42,12 @@ import "./gc-footer";
 const DEFAULT_CONTRACT: EnergyContract = { priceCt: 12, baseFeeMonth: 3 };
 const AREA_KEY = "gc.gridArea";
 
+type AreaSource =
+  | { kind: "detected"; code: string }
+  | { kind: "unknown"; code: string }
+  | { kind: "none" }
+  | { kind: "manual" };
+
 /** Last chosen grid area, else the first one. */
 function loadAreaId(): string {
   try {
@@ -47,6 +61,7 @@ export class GcApp extends BaseElement {
   static properties = {
     sourceId: { state: true },
     areaId: { state: true },
+    areaSource: { state: true },
     analysis: { state: true },
     error: { state: true },
     loading: { state: true },
@@ -58,6 +73,8 @@ export class GcApp extends BaseElement {
   };
   declare sourceId: string;
   declare areaId: string;
+  /** How the grid area was found for the current file. Undefined before a file is read. */
+  declare areaSource: AreaSource | undefined;
   declare analysis: Analysis | undefined;
   declare error: string | undefined;
   declare loading: boolean;
@@ -96,9 +113,10 @@ export class GcApp extends BaseElement {
     this.error = undefined;
     try {
       const text = await file.text();
-      const { format, readings } = parseAny(text);
+      const { format, readings, operatorCode } = parseAny(text);
       const a = analyze(readings);
       this.analysis = a;
+      this.detectArea(operatorCode);
       this.detailIndex = a.months.reduce(
         (best, m, i, arr) => (m.peakKw > arr[best].peakKw ? i : best),
         0,
@@ -106,6 +124,7 @@ export class GcApp extends BaseElement {
       track("file_parsed", {
         source: this.sourceId,
         area: this.areaId,
+        area_source: this.areaSource?.kind ?? "none",
         format,
         rows: readings.length,
         months: a.months.length,
@@ -140,14 +159,37 @@ export class GcApp extends BaseElement {
     track("year_changed", { year: y });
   }
 
-  private setArea(id: string) {
+  private setArea(id: string, manual = true) {
     this.areaId = gridAreaById(id).id;
     try {
       localStorage.setItem(AREA_KEY, this.areaId);
     } catch {
       // Storage can be blocked. The choice then lasts only for this page view.
     }
-    track("area_selected", { area: this.areaId });
+    if (manual) {
+      this.areaSource = { kind: "manual" };
+      track("area_selected", { area: this.areaId });
+    }
+  }
+
+  /** Selects the grid area from the operator code in the metering point number. */
+  private detectArea(code: string | undefined) {
+    const area = code ? gridAreaByCode(code) : undefined;
+    if (area) {
+      this.setArea(area.id, false);
+      this.areaSource = { kind: "detected", code: area.code };
+    } else {
+      this.areaSource = code ? { kind: "unknown", code } : { kind: "none" };
+    }
+  }
+
+  private renderAreaSource() {
+    const s = this.areaSource;
+    if (!s || s.kind === "manual") return nothing;
+    if (s.kind === "detected")
+      return html`<p class="area-note ok">${fa(faCircleCheck)} ${t("area.detected", { code: s.code })}</p>`;
+    return html`<p class="area-note warn">${fa(faTriangleExclamation)}
+      ${t(s.kind === "unknown" ? "area.unknown" : "area.none", { code: s.kind === "unknown" ? s.code : "" })}</p>`;
   }
 
   private setContract(patch: Partial<EnergyContract>) {
@@ -405,6 +447,16 @@ export class GcApp extends BaseElement {
       }
       .area .hint {
         margin: 8px 0 0;
+      }
+      .area-note {
+        margin: 8px 0 0;
+        font-size: 0.85rem;
+      }
+      .area-note.ok {
+        color: var(--text-2);
+      }
+      .area-note.warn {
+        color: var(--warn-text);
       }
       .settings {
         display: grid;
@@ -808,6 +860,7 @@ export class GcApp extends BaseElement {
             )}
           </select>
         </label>
+        ${this.renderAreaSource()}
         <p class="hint">${fa(faCircleInfo)} ${t("area.hint")}
           <a href="./faq.html#operators">${t("area.missing")}</a></p>
       </div>

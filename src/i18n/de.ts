@@ -26,8 +26,12 @@ export const de = {
 
   "area.label": "Netzbereich / Netzbetreiber",
   "area.hint":
-    "Der Netzbereich bestimmt die Preise für 2026 und die Abgaben. Die Preise ab 2027 sind in ganz Österreich gleich.",
+    "Der Netzbereich bestimmt die Preise für 2026 und die Abgaben. Die Preise ab 2027 sind in ganz Österreich gleich. Die App erkennt den Netzbereich aus der Zählpunktnummer in Ihrer Datei.",
   "area.missing": "Ihr Netzbereich fehlt?",
+  "area.detected": "Aus Ihrer Datei erkannt: Die Zählpunktnummer beginnt mit {code}.",
+  "area.unknown":
+    "Ihr Netzbetreiber ({code}) fehlt in der Liste. Wählen Sie einen Netzbereich mit ähnlichen Preisen. Der Wert für 2026 ist dann nur eine grobe Schätzung.",
+  "area.none": "Ihre Datei enthält keine Zählpunktnummer. Prüfen Sie, ob der Netzbereich stimmt.",
 
   "wn.req.1": "Smart Meter von Wiener Netze und ein Konto im Smart Meter-Webportal",
   "wn.req.2":

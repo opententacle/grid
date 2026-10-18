@@ -93,8 +93,28 @@ const PARSERS: Record<FormatId, (text: string) => Reading[]> = {
   generic: parseGeneric,
 };
 
+/**
+ * Metering point number (Zählpunktnummer): "AT", 6-digit operator number, 5-digit postal code,
+ * 20 more characters (33 in total).
+ */
+const METERING_POINT = /AT(\d{6})\d{5}[0-9A-Z]{20}/i;
+
+/**
+ * Operator code ("AT003100") from the first metering point number in the file.
+ * Wiener Netze, AT-Format and E-Control exports contain the number. Some exports do not.
+ * Only the first lines are searched: the number is in the header or in each row.
+ */
+export function detectOperatorCode(text: string): string | undefined {
+  const m = METERING_POINT.exec(lines(text).slice(0, 20).join("\n"));
+  return m ? `AT${m[1]}` : undefined;
+}
+
 /** Parses any supported export. The format is detected from the file, not from the dropdown. */
-export function parseAny(text: string): { format: FormatId; readings: Reading[] } {
+export function parseAny(text: string): {
+  format: FormatId;
+  readings: Reading[];
+  operatorCode?: string;
+} {
   const format = detectFormat(text);
-  return { format, readings: PARSERS[format](text) };
+  return { format, readings: PARSERS[format](text), operatorCode: detectOperatorCode(text) };
 }

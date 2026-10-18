@@ -28,8 +28,12 @@ export const en: Record<MessageKey, string> = {
 
   "area.label": "Grid area / grid operator",
   "area.hint":
-    "The grid area sets the 2026 prices and the levies. The prices from 2027 are the same in all of Austria.",
+    "The grid area sets the 2026 prices and the levies. The prices from 2027 are the same in all of Austria. The app finds the grid area from the metering point number in your file.",
   "area.missing": "Is your grid area missing?",
+  "area.detected": "Found in your file: the metering point number starts with {code}.",
+  "area.unknown":
+    "Your grid operator ({code}) is not in the list. Select a grid area with similar prices. Then the 2026 value is only a rough estimate.",
+  "area.none": "Your file has no metering point number. Make sure that the grid area is correct.",
 
   "wn.req.1": "A Wiener Netze smart meter and an account in the Smart Meter web portal",
   "wn.req.2":

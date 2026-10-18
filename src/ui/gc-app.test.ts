@@ -121,6 +121,31 @@ describe("gc-app", () => {
     localStorage.removeItem("gc.gridArea");
   });
 
+  it("selects the grid area from the metering point number in the file", async () => {
+    const linz = CSV.replace(
+      "AT0000000000000000000000000000000",
+      "AT0031000402000000000000000123456",
+    );
+    await upload(app, linz);
+    expect($(app, "select[name=area] option[selected]").getAttribute("value")).toBe("linz");
+    expect($(app, ".area-note.ok").textContent).toContain("AT003100");
+    expect($(app, ".kpis .kpi").textContent).toContain("Netzbereich Linz");
+    // The test CSV has the operator code AT000000, which the app does not know.
+    await upload(app, CSV);
+    expect($(app, ".area-note.warn").textContent).toContain("AT000000");
+    expect($(app, "select[name=area] option[selected]").getAttribute("value")).toBe("linz");
+    localStorage.removeItem("gc.gridArea");
+  });
+
+  it("asks to check the grid area when the file has no metering point number", async () => {
+    await upload(app, CSV.replace("AT0000000000000000000000000000000", "AT000"));
+    expect($(app, ".area-note.warn").textContent).toContain("keine Zählpunktnummer");
+    $<HTMLSelectElement>(app, "select[name=area]").dispatchEvent(new Event("change"));
+    await app.updateComplete;
+    expect($$(app, ".area-note")).toHaveLength(0);
+    localStorage.removeItem("gc.gridArea");
+  });
+
   it("reads a file and shows the results", async () => {
     await upload(app, CSV);
     expect($(app, ".loaded").textContent).toContain("Viertelstundenwerte");

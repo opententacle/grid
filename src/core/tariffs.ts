@@ -116,6 +116,12 @@ export function tariffsFor(area: Area2026): Tariff[] {
 
 export interface GridArea {
   id: string;
+  /**
+   * Operator code in the metering point number (Zählpunktnummer): "AT" + 6 digits.
+   * Source: operator list of the ebUtilities market partners, for example
+   * https://wissen.neoom.com/netzbetreiberliste
+   */
+  code: string;
   /** Name of the grid operator (proper name, not translated) */
   operator: string;
   /** Netzbereich in SNE-V 2018 */
@@ -131,6 +137,7 @@ export interface GridArea {
 export const GRID_AREAS: GridArea[] = [
   {
     id: "wien",
+    code: "AT001000",
     operator: "Wiener Netze",
     area: "Wien",
     priceSheet:
@@ -140,6 +147,7 @@ export const GRID_AREAS: GridArea[] = [
   },
   {
     id: "noe",
+    code: "AT002000",
     operator: "Netz Niederösterreich",
     area: "Niederösterreich",
     priceSheet: "https://netz-noe.at/wissen/downloads",
@@ -148,6 +156,7 @@ export const GRID_AREAS: GridArea[] = [
   },
   {
     id: "ooe",
+    code: "AT003000",
     operator: "Netz Oberösterreich",
     area: "Oberösterreich",
     priceSheet:
@@ -158,6 +167,7 @@ export const GRID_AREAS: GridArea[] = [
   },
   {
     id: "linz",
+    code: "AT003100",
     operator: "Linz Netz",
     area: "Linz",
     priceSheet:
@@ -168,6 +178,9 @@ export const GRID_AREAS: GridArea[] = [
 ];
 
 export const gridAreaById = (id: string) => GRID_AREAS.find((a) => a.id === id) ?? GRID_AREAS[0];
+
+/** Grid area for an operator code ("AT003100"), or undefined when the app has no prices for it. */
+export const gridAreaByCode = (code: string) => GRID_AREAS.find((a) => a.code === code);
 
 export const WIENER_NETZE_TARIFFS = gridAreaById("wien").tariffs;
 

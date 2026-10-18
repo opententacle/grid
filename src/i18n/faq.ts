@@ -137,7 +137,8 @@ const de: FaqText = {
       q: "Funktioniert der Rechner für ganz Österreich?",
       a: [
         "Ja. Die neuen Regeln gelten für alle Netzbetreiber in Österreich. Die Preise ab 2027 sind Modellwerte der E-Control für ganz Österreich.",
-        "Die Preise für 2026 („heute“) hängen vom Netzbereich ab. Wählen Sie Ihren Netzbereich in Schritt 3. Die App kennt diese Netzbereiche: Wien, Niederösterreich, Oberösterreich und Linz.",
+        "Die Preise für 2026 („heute“) hängen vom Netzbereich ab. Die App kennt diese Netzbereiche: Wien, Niederösterreich, Oberösterreich und Linz.",
+        "Die App erkennt den Netzbereich aus der Zählpunktnummer in Ihrer Datei. Die Nummer beginnt mit dem Code des Netzbetreibers, zum Beispiel AT001000 für Wiener Netze. Hat Ihre Datei keine Zählpunktnummer, wählen Sie den Netzbereich in Schritt 3.",
         "Ihr Netzbereich fehlt? Dann wählen Sie einen Netzbereich mit ähnlichen Preisen. Der Vergleich ist dann nur eine grobe Schätzung.",
         "Die App erkennt das Format aus der Datei. Diese Exporte haben wir mit echten Dateien geprüft:",
       ],
@@ -366,7 +367,8 @@ const en: FaqText = {
       q: "Does the calculator work for all of Austria?",
       a: [
         "Yes. The new rules apply to all grid operators in Austria. The prices from 2027 are E-Control model values for all of Austria.",
-        "The prices for 2026 (“today”) depend on the grid area. Select your grid area in step 3. The app knows these grid areas: Vienna, Lower Austria, Upper Austria and Linz.",
+        "The prices for 2026 (“today”) depend on the grid area. The app knows these grid areas: Vienna, Lower Austria, Upper Austria and Linz.",
+        "The app finds the grid area from the metering point number in your file. The number starts with the code of the grid operator, for example AT001000 for Wiener Netze. If your file has no metering point number, select the grid area in step 3.",
         "Is your grid area missing? Then select a grid area with similar prices. The comparison is then only a rough estimate.",
         "The app finds the format in the file. We checked these exports with real files:",
       ],

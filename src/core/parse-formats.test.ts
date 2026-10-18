@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { detectFormat, parseAny, parseAtFormat, parseEControl } from "./parse-formats";
+import {
+  detectFormat,
+  detectOperatorCode,
+  parseAny,
+  parseAtFormat,
+  parseEControl,
+} from "./parse-formats";
+import { gridAreaByCode } from "./tariffs";
 import { buildCsv, errorCode } from "./test-utils";
 
 const AT_HEAD =
@@ -79,5 +86,42 @@ describe("parseAny", () => {
     const { format, readings } = parseAny(buildCsv(new Date(2026, 0, 1), 1, () => 0.1));
     expect(format).toBe("wienernetze");
     expect(readings).toHaveLength(96);
+  });
+});
+
+describe("detectOperatorCode", () => {
+  // AT + operator 003100 (Linz Netz) + postal code 04020 + 20 characters
+  const LINZ = "AT0031000402000000000000000123456";
+
+  it("finds the operator code in the Wiener Netze header", () => {
+    const csv = buildCsv(new Date(2026, 0, 1), 1, () => 0.1).replace(
+      "AT0000000000000000000000000000000",
+      "AT0010000110000000000000000654321",
+    );
+    expect(detectOperatorCode(csv)).toBe("AT001000");
+    expect(parseAny(csv).operatorCode).toBe("AT001000");
+    expect(gridAreaByCode("AT001000")?.id).toBe("wien");
+  });
+
+  it("finds the operator code in the rows of the AT-Format", () => {
+    const csv = [AT_HEAD, atRow("01.06.2025 00:00:00", "01.06.2025 00:15:00", "0,028")]
+      .join("\n")
+      .replace("AT0000000000000000000000000000000", LINZ);
+    expect(detectOperatorCode(csv)).toBe("AT003100");
+    expect(gridAreaByCode("AT003100")?.id).toBe("linz");
+  });
+
+  it("finds the operator code in the E-Control header", () => {
+    const csv = `${EC_HEAD.replace("AT000", "at0030000400000000000000000000001")}\n`;
+    expect(detectOperatorCode(csv)).toBe("AT003000");
+    expect(gridAreaByCode("AT003000")?.id).toBe("ooe");
+  });
+
+  it("returns nothing when the file has no full metering point number", () => {
+    expect(
+      detectOperatorCode("Datum von;Datum bis;Leistung in kW\n01.09.26 00:00;01.09.26 00:15;4"),
+    ).toBe(undefined);
+    expect(detectOperatorCode(EC_HEAD)).toBe(undefined);
+    expect(gridAreaByCode("AT009000")).toBe(undefined);
   });
 });
