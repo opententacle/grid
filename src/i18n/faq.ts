@@ -137,7 +137,8 @@ const de: FaqText = {
       q: "Funktioniert der Rechner für ganz Österreich?",
       a: [
         "Ja. Die neuen Regeln gelten für alle Netzbetreiber in Österreich. Die Preise ab 2027 sind Modellwerte der E-Control für ganz Österreich.",
-        "Die Preise für 2026 („heute“) sind die Preise von Wiener Netze. Bei anderen Netzbetreibern sind die Preise 2026 anders. Der Vergleich ist dann nur eine grobe Schätzung.",
+        "Die Preise für 2026 („heute“) hängen vom Netzbereich ab. Wählen Sie Ihren Netzbereich in Schritt 3. Die App kennt diese Netzbereiche: Wien, Niederösterreich, Oberösterreich und Linz.",
+        "Ihr Netzbereich fehlt? Dann wählen Sie einen Netzbereich mit ähnlichen Preisen. Der Vergleich ist dann nur eine grobe Schätzung.",
         "Die App erkennt das Format aus der Datei. Diese Exporte haben wir mit echten Dateien geprüft:",
       ],
       list: [
@@ -151,6 +152,7 @@ const de: FaqText = {
         label:
           "Ihr Netzbetreiber fehlt oder die Datei geht nicht? Schicken Sie uns einen Beispiel-Export auf GitHub. Bitte entfernen Sie vorher Ihre Zählpunktnummer.",
       },
+      ref: "Preise 2026: SNE-V 2018 § 5 Abs. 1 Z 6 und § 6 (BGBl. II Nr. 305/2025)",
     },
     {
       id: "peak",
@@ -254,7 +256,7 @@ const de: FaqText = {
       a: [
         "Die SNE-G-V regelt nur die Struktur.",
         "Die Preise kommen mit der Tarifverordnung (SNE-T-V), erwartet im Dezember 2026.",
-        "Bis dahin nutzt die App die Modellwerte der E-Control. Sie gelten für ganz Österreich, nicht nur für Wiener Netze.",
+        "Bis dahin nutzt die App die Modellwerte der E-Control. Sie gelten für ganz Österreich.",
       ],
       ref: "§ 1 Abs. 1, § 6 Abs. 2",
     },
@@ -364,7 +366,8 @@ const en: FaqText = {
       q: "Does the calculator work for all of Austria?",
       a: [
         "Yes. The new rules apply to all grid operators in Austria. The prices from 2027 are E-Control model values for all of Austria.",
-        "The prices for 2026 (“today”) are the Wiener Netze prices. Other grid operators have different prices in 2026. Then the comparison is only a rough estimate.",
+        "The prices for 2026 (“today”) depend on the grid area. Select your grid area in step 3. The app knows these grid areas: Vienna, Lower Austria, Upper Austria and Linz.",
+        "Is your grid area missing? Then select a grid area with similar prices. The comparison is then only a rough estimate.",
         "The app finds the format in the file. We checked these exports with real files:",
       ],
       list: [
@@ -378,6 +381,7 @@ const en: FaqText = {
         label:
           "Your grid operator is missing or the file does not work? Send us a sample export on GitHub. Please remove your metering point number first.",
       },
+      ref: "Prices 2026: SNE-V 2018 § 5 (1) no. 6 and § 6 (BGBl. II No. 305/2025)",
     },
     {
       id: "peak",
@@ -481,7 +485,7 @@ const en: FaqText = {
       a: [
         "The SNE-G-V sets only the structure.",
         "The prices come with the tariff regulation (SNE-T-V), expected in December 2026.",
-        "Until then, the app uses the E-Control model values. They apply to all of Austria, not only to Wiener Netze.",
+        "Until then, the app uses the E-Control model values. They apply to all of Austria.",
       ],
       ref: "§ 1 (1), § 6 (2)",
     },

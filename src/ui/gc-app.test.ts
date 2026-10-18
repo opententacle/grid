@@ -96,6 +96,31 @@ describe("gc-app", () => {
     expect($$(app, ".instr a.btn")).toHaveLength(0);
   });
 
+  it("calculates today's tariff with the selected grid area", async () => {
+    await upload(app, CSV);
+    const select = $<HTMLSelectElement>(app, "select[name=area]");
+    expect(select.options).toHaveLength(4);
+    expect(select.value).toBe("wien");
+
+    const todayGrid = () => $(app, ".grid-kpis .kpi .value").textContent;
+    const wien = todayGrid();
+    const selected = $(app, ".grid-kpis .kpi.selected .value").textContent;
+    expect($(app, ".kpis .kpi").textContent).toContain("Netzbereich Wien");
+    select.value = "linz";
+    select.dispatchEvent(new Event("change"));
+    await app.updateComplete;
+    expect(todayGrid()).not.toBe(wien);
+    expect($(app, ".kpis .kpi").textContent).toContain("Netzbereich Linz");
+    // The 2027 model price is the same; only the grid loss fee and levies change.
+    expect($(app, ".grid-kpis .kpi.selected .value").textContent).not.toBe(selected);
+    expect(localStorage.getItem("gc.gridArea")).toBe("linz");
+    const other = await mount(new GcApp());
+    // jsdom does not update select.value from the selected attribute, so test the attribute.
+    expect($(other, "select[name=area] option[selected]").getAttribute("value")).toBe("linz");
+    other.remove();
+    localStorage.removeItem("gc.gridArea");
+  });
+
   it("reads a file and shows the results", async () => {
     await upload(app, CSV);
     expect($(app, ".loaded").textContent).toContain("Viertelstundenwerte");

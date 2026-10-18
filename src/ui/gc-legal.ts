@@ -6,7 +6,7 @@ import { faSun } from "@fortawesome/free-solid-svg-icons/faSun";
 import { css, html } from "lit";
 import { IMPRESSUM } from "../config";
 import { fmtDate, fmtNum } from "../core/format";
-import { TARIFF_DATA_DATE, WIENER_NETZE_TARIFFS } from "../core/tariffs";
+import { EAG_2026, GRID_AREAS, TARIFF_DATA_DATE, WIENER_NETZE_TARIFFS } from "../core/tariffs";
 import { EXPLAIN } from "../i18n/explain";
 import { FAQ } from "../i18n/faq";
 import { getLocale, type Locale, type MessageKey, setLocale, t } from "../i18n/i18n";
@@ -354,6 +354,7 @@ export class GcLegal extends BaseElement {
           <h2>${s.title}</h2>
           ${s.paragraphs.map((p) => html`<p>${p}</p>`)}
           ${s.formula ? html`<div class="formula">${s.formula}</div>` : null}
+          ${s.table === "areas" ? this.areaTable() : null}
           ${s.table === "tariffs" ? this.tariffTable() : null}
           ${s.table === "levies" ? this.leviesTable() : null}
         </section>`,
@@ -408,9 +409,33 @@ export class GcLegal extends BaseElement {
     target?.scrollIntoView();
   }
 
+  /** 2026 prices per grid area. */
+  private areaTable() {
+    const x = EXPLAIN[getLocale()].tables;
+    const n = (v: number, d = 2) => fmtNum(v, d);
+    const pct = (v: number) => (v ? `${fmtNum(v * 100, 0)} %` : "–");
+    return html`<div class="table-wrap"><table>
+      <thead><tr><th>${x.area}</th><th>${x.energy}</th><th>${x.flat}</th><th>${x.loss}</th>
+        <th>${x.meter}</th><th>${x.usage}</th></tr></thead>
+      <tbody>
+        ${GRID_AREAS.map((a) => {
+          const t26 = a.tariffs[0];
+          return html`<tr>
+            <td>${a.area} (<a href=${a.priceSheet} target="_blank" rel="noopener noreferrer">${a.operator}</a>)</td>
+            <td>${n(t26.energyCt)}</td><td>${n(t26.flatFeeYear)}</td><td>${n(t26.lossCt, 3)}</td>
+            <td>${n(t26.meterEurMonth)}${a.meterIsMaximum ? "*" : ""}</td>
+            <td>${pct(t26.levies.usageTaxRate)}</td>
+          </tr>`;
+        })}
+      </tbody>
+    </table></div>
+    <p class="muted">* ${x.meterMax}</p>`;
+  }
+
+  /** Model values from 2027. They are the same in all grid areas. */
   private tariffTable() {
     const x = EXPLAIN[getLocale()].tables;
-    const ts = WIENER_NETZE_TARIFFS;
+    const ts = WIENER_NETZE_TARIFFS.filter((tt) => tt.estimate);
     const n = (v: number | undefined, d = 2) => (v === undefined || v === 0 ? "–" : fmtNum(v, d));
     const row = (label: string, f: (tt: (typeof ts)[number]) => string) =>
       html`<tr><td>${label}</td>${ts.map((tt) => html`<td class=${tt.estimate ? "model" : ""}>${f(tt)}</td>`)}</tr>`;
@@ -421,7 +446,6 @@ export class GcLegal extends BaseElement {
         ${row(x.flat, (tt) => n(tt.flatFeeYear))}
         ${row(x.capLow, (tt) => n(tt.capacity?.lowEurKwYear))}
         ${row(x.capHigh, (tt) => n(tt.capacity?.highEurKwYear))}
-        ${row(x.loss, (tt) => n(tt.lossCt))}
         ${row(x.meter, (tt) => n(tt.meterEurMonth))}
         ${row(x.snap, (tt) => `−${fmtNum(tt.snapReduction * 100)} %`)}
       </tbody>
@@ -433,12 +457,13 @@ export class GcLegal extends BaseElement {
     const x = EXPLAIN[getLocale()].tables;
     const l = WIENER_NETZE_TARIFFS[0].levies;
     const pct = (v: number, d = 1) => `${fmtNum(v * 100, d)} %`;
-    const e = l.eagContribution;
+    const e = WIENER_NETZE_TARIFFS[1].levies.eagContribution;
     return html`<div class="table-wrap"><table>
       <tbody>
         <tr><td>${x.elTax}</td><td>${fmtNum(l.electricityTaxCt, 2)}</td></tr>
         <tr><td>${x.eagFlat}</td><td>${fmtNum(l.eagFlatYear, 2)}</td></tr>
-        <tr><td>${x.eagShare}</td><td>${pct(e.energyRate)} / ${pct(e.capacityRate)} / ${pct(e.lossRate)}</td></tr>
+        <tr><td>${x.eag2026}</td><td>${fmtNum(EAG_2026.energyCt, 3)} / ${fmtNum(EAG_2026.flatYear, 3)} / ${fmtNum(EAG_2026.lossCt, 3)}</td></tr>
+        <tr><td>${x.eagShare}</td><td>${pct(e.energyRate)} / ${pct(e.capacityRate)}</td></tr>
         <tr><td>${x.usage}</td><td>${pct(l.usageTaxRate, 0)}</td></tr>
         <tr><td>${x.vat}</td><td>${pct(l.vatRate, 0)}</td></tr>
       </tbody>

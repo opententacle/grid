@@ -19,7 +19,7 @@ import { gridTotal, type YearCost, yearCost } from "../core/cost";
 import { fmtDate, fmtEur, fmtNum, fmtPct } from "../core/format";
 import { ParseError } from "../core/parse-error";
 import { parseAny } from "../core/parse-formats";
-import { TARIFF_DATA_DATE, tariffAt, tariffFor } from "../core/tariffs";
+import { GRID_AREAS, gridAreaById, TARIFF_DATA_DATE, tariffAt, tariffFor } from "../core/tariffs";
 import type { Analysis, EnergyContract } from "../core/types";
 import { getLocale, type Locale, type MessageKey, setLocale, t } from "../i18n/i18n";
 import { BODY_URLS, OPEN } from "../i18n/open";
@@ -32,10 +32,21 @@ import "./gc-chart-monthly";
 import "./gc-footer";
 
 const DEFAULT_CONTRACT: EnergyContract = { priceCt: 12, baseFeeMonth: 3 };
+const AREA_KEY = "gc.gridArea";
+
+/** Last chosen grid area, else the first one. */
+function loadAreaId(): string {
+  try {
+    return gridAreaById(localStorage.getItem(AREA_KEY) ?? "").id;
+  } catch {
+    return GRID_AREAS[0].id;
+  }
+}
 
 export class GcApp extends BaseElement {
   static properties = {
     sourceId: { state: true },
+    areaId: { state: true },
     analysis: { state: true },
     error: { state: true },
     loading: { state: true },
@@ -46,6 +57,7 @@ export class GcApp extends BaseElement {
     dragging: { state: true },
   };
   declare sourceId: string;
+  declare areaId: string;
   declare analysis: Analysis | undefined;
   declare error: string | undefined;
   declare loading: boolean;
@@ -60,6 +72,7 @@ export class GcApp extends BaseElement {
   constructor() {
     super();
     this.sourceId = SOURCES[0].id;
+    this.areaId = loadAreaId();
     this.loading = false;
     this.year = 2027;
     this.contract = { ...DEFAULT_CONTRACT };
@@ -70,6 +83,10 @@ export class GcApp extends BaseElement {
 
   private get source() {
     return sourceById(this.sourceId);
+  }
+
+  private get area() {
+    return gridAreaById(this.areaId);
   }
 
   // ---------- actions ----------
@@ -88,6 +105,7 @@ export class GcApp extends BaseElement {
       );
       track("file_parsed", {
         source: this.sourceId,
+        area: this.areaId,
         format,
         rows: readings.length,
         months: a.months.length,
@@ -120,6 +138,16 @@ export class GcApp extends BaseElement {
     if (y === this.year) return;
     this.year = y;
     track("year_changed", { year: y });
+  }
+
+  private setArea(id: string) {
+    this.areaId = gridAreaById(id).id;
+    try {
+      localStorage.setItem(AREA_KEY, this.areaId);
+    } catch {
+      // Storage can be blocked. The choice then lasts only for this page view.
+    }
+    track("area_selected", { area: this.areaId });
   }
 
   private setContract(patch: Partial<EnergyContract>) {
@@ -370,6 +398,13 @@ export class GcApp extends BaseElement {
         border: 1px solid var(--warn-border);
         color: var(--warn-text);
         font-size: 0.9rem;
+      }
+      .area {
+        max-width: 480px;
+        margin-bottom: 20px;
+      }
+      .area .hint {
+        margin: 8px 0 0;
       }
       .settings {
         display: grid;
@@ -758,11 +793,24 @@ export class GcApp extends BaseElement {
   }
 
   private renderSettings() {
-    const years = this.source.tariffs.map((x) => x.year);
-    const tariff = tariffFor(this.source.tariffs, this.year);
+    const tariffs = this.area.tariffs;
+    const years = tariffs.map((x) => x.year);
+    const tariff = tariffFor(tariffs, this.year);
     const idx = years.indexOf(this.year);
     return html`<section class="card" aria-labelledby="s3">
       <div class="step-title"><span class="num">3</span><h2 id="s3">${t("step.settings")}</h2></div>
+      <div class="area">
+        <label class="field">${t("area.label")}
+          <select class="input" name="area" @change=${(e: Event) => this.setArea((e.target as HTMLSelectElement).value)}>
+            ${GRID_AREAS.map(
+              (a) =>
+                html`<option value=${a.id} ?selected=${a.id === this.areaId}>${a.area} – ${a.operator}</option>`,
+            )}
+          </select>
+        </label>
+        <p class="hint">${fa(faCircleInfo)} ${t("area.hint")}
+          <a href="./faq.html#operators">${t("area.missing")}</a></p>
+      </div>
       <div class="settings">
         <div class="year">
           <label class="field" id="yl">${t("settings.year")}</label>
@@ -817,7 +865,7 @@ export class GcApp extends BaseElement {
   }
 
   private renderResults(a: Analysis) {
-    const tariffs = this.source.tariffs;
+    const tariffs = this.area.tariffs;
     const todayTariff = tariffAt(tariffs, this.today);
     const selTariff = tariffFor(tariffs, this.year);
     const today = yearCost(a.months, todayTariff, this.contract);
@@ -867,6 +915,7 @@ export class GcApp extends BaseElement {
             <div class="label">${t("kpi.today")}</div>
             <div class="value">${fmtEur(v(today))}</div>
             <div class="sub">${t("kpi.todayDate", { date: fmtDate(this.today), year: todayTariff.year })}</div>
+            <div class="sub">${t("kpi.area", { area: this.area.area })}</div>
             <div class="sub">${t("kpi.grid")}: ${fmtEur(g(today))}</div>
           </div>
           <div class="card kpi selected">

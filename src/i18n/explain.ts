@@ -9,7 +9,7 @@ export interface ExplainSection {
   title: string;
   paragraphs: string[];
   /** Name of a generated table, rendered after the paragraphs */
-  table?: "tariffs" | "levies";
+  table?: "areas" | "tariffs" | "levies";
   formula?: string;
 }
 
@@ -29,10 +29,13 @@ export interface ExplainText {
     snap: string;
     elTax: string;
     eagFlat: string;
+    eag2026: string;
     eagShare: string;
     usage: string;
     vat: string;
     model: string;
+    area: string;
+    meterMax: string;
   };
 }
 
@@ -69,8 +72,10 @@ const de: ExplainText = {
         "Heute zahlen Haushalte für das Netz einen Arbeitspreis je kWh und eine feste Pauschale je Jahr. Die Spitze spielt keine Rolle.",
         "Dazu kommen das Netzverlustentgelt je kWh und das Messentgelt je Monat.",
         "Von April bis September gilt zwischen 10 und 16 Uhr ein billigerer Arbeitspreis (Sommer-Niedrigpreisfenster, minus 20 %). Die App berechnet das mit Ihren Viertelstundenwerten.",
-        "Die Werte für 2026 stammen von Wiener Netze. Wir haben sie Zeile für Zeile mit einer echten Jahresabrechnung geprüft. Die Netzkosten stimmen auf den Cent.",
+        "Die Preise für 2026 hängen vom Netzbereich ab. Quelle ist die SNE-V 2018 (BGBl. II Nr. 305/2025, § 5 Abs. 1 Z 6 und § 6). Das Messentgelt steht im Preisblatt des Netzbetreibers.",
+        "Die Werte von Wiener Netze haben wir Zeile für Zeile mit einer echten Jahresabrechnung geprüft. Die Netzkosten stimmen auf den Cent.",
       ],
+      table: "areas",
     },
     {
       id: "new",
@@ -101,7 +106,8 @@ const de: ExplainText = {
       paragraphs: [
         "Die offiziellen Preise ab 2027 gibt es noch nicht. Sie kommen mit der SNE-T-V (erwartet im Dezember 2026).",
         "Darum nutzen wir die Modellwerte der E-Control für 2027 (Anfangsstufe) und 2029 (Endstufe, laut E-Control ab 1. Jänner 2029). 2028 liegt genau dazwischen. 2030 bleibt auf der Endstufe.",
-        "Die Modellwerte gelten für ganz Österreich. Die Preise von Wiener Netze können anders sein.",
+        "Die Modellwerte gelten für ganz Österreich. Die offiziellen Preise Ihres Netzbetreibers können anders sein.",
+        "Das Netzverlustentgelt ändert sich nicht. Die App nimmt den Wert von 2026 Ihres Netzbereichs.",
       ],
       table: "tariffs",
     },
@@ -110,8 +116,8 @@ const de: ExplainText = {
       title: "7. Energie, Abgaben und Steuern",
       paragraphs: [
         "Energie: Preis je kWh und Grundgebühr Ihres Lieferanten. Diese Werte geben Sie selbst ein. Tipp: Nehmen Sie den Preis von Ihrer Rechnung und ziehen Sie Rabatte ab.",
-        "Erneuerbaren-Förderbeitrag: ein fester Anteil der Netzentgelte. Ab 2027 nehmen wir dieselben Anteile an. Der Anteil der Pauschale gilt dann für den Leistungspreis.",
-        "Gebrauchsabgabe Wien: 7 % auf Energie und Netzentgelte.",
+        "Erneuerbaren-Förderbeitrag: 2026 ein fester Betrag. Er ist in ganz Österreich gleich (BGBl. II Nr. 301/2025). Ab 2027 nehmen wir einen festen Anteil an den Netzentgelten an. Der Anteil der Pauschale gilt dann für den Leistungspreis.",
+        "Gebrauchsabgabe: 7 % auf Energie und Netzentgelte. Diese Abgabe gibt es nur in Wien.",
         "Umsatzsteuer: 20 % auf alles. Mit dem Schalter „Netto“ sehen Sie die Werte ohne Umsatzsteuer.",
       ],
       table: "levies",
@@ -150,11 +156,14 @@ const de: ExplainText = {
     snap: "Sommer-Niedrigpreis (Abschlag)",
     elTax: "Elektrizitätsabgabe (ct/kWh)",
     eagFlat: "Erneuerbaren-Förderpauschale (€/Jahr)",
-    eagShare:
-      "Erneuerbaren-Förderbeitrag (Anteil Arbeitspreis / Pauschale bzw. Leistungspreis / Netzverlust)",
-    usage: "Gebrauchsabgabe Wien",
+    eag2026:
+      "Erneuerbaren-Förderbeitrag 2026 (Arbeitspreis ct/kWh / Pauschale €/Jahr / Netzverlust ct/kWh)",
+    eagShare: "Erneuerbaren-Förderbeitrag ab 2027 (Anteil Arbeitspreis / Leistungspreis)",
+    usage: "Gebrauchsabgabe (nur Wien)",
     vat: "Umsatzsteuer",
     model: "Modellwert",
+    area: "Netzbereich",
+    meterMax: "Höchstpreis laut SNE-V 2018 § 10. Der Netzbetreiber veröffentlicht keinen Wert.",
   },
 };
 
@@ -191,8 +200,10 @@ const en: ExplainText = {
         "Today, households pay for the grid an energy price per kWh and a fixed flat fee per year. The peak has no effect.",
         "There is also a grid loss fee per kWh and a metering fee per month.",
         "From April to September, a lower energy price applies between 10:00 and 16:00 (summer low-price window, minus 20 %). The app calculates this with your quarter-hour values.",
-        "The 2026 values come from Wiener Netze. We checked them line by line against a real annual bill. The grid costs are correct to the cent.",
+        "The 2026 prices depend on the grid area. The source is the SNE-V 2018 (BGBl. II No. 305/2025, § 5 (1) no. 6 and § 6). The metering fee is in the price sheet of the grid operator.",
+        "We checked the Wiener Netze values line by line against a real annual bill. The grid costs are correct to the cent.",
       ],
+      table: "areas",
     },
     {
       id: "new",
@@ -223,7 +234,8 @@ const en: ExplainText = {
       paragraphs: [
         "The official prices from 2027 are not published yet. They come with the SNE-T-V (expected in December 2026).",
         "So we use the E-Control model values for 2027 (start stage) and 2029 (final stage, from 1 January 2029 as announced by E-Control). 2028 is exactly in between. 2030 stays at the final stage.",
-        "The model values apply to all of Austria. The Wiener Netze prices can be different.",
+        "The model values apply to all of Austria. The official prices of your grid operator can be different.",
+        "The grid loss fee does not change. The app uses the 2026 value of your grid area.",
       ],
       table: "tariffs",
     },
@@ -232,8 +244,8 @@ const en: ExplainText = {
       title: "7. Energy, levies and taxes",
       paragraphs: [
         "Energy: price per kWh and base fee of your supplier. You enter these values yourself. Tip: take the price from your bill and subtract discounts.",
-        "Renewable energy contribution (Erneuerbaren-Förderbeitrag): a fixed share of the grid fees. From 2027 we assume the same shares. The share of the flat fee then applies to the capacity price.",
-        "Vienna usage tax (Gebrauchsabgabe): 7 % on energy and grid fees.",
+        "Renewable energy contribution (Erneuerbaren-Förderbeitrag): in 2026 a fixed amount. It is the same in all of Austria (BGBl. II No. 301/2025). From 2027 we assume a fixed share of the grid fees. The share of the flat fee then applies to the capacity price.",
+        "Usage tax (Gebrauchsabgabe): 7 % on energy and grid fees. Only Vienna has this levy.",
         "VAT: 20 % on everything. With the “Net” switch you see the values without VAT.",
       ],
       table: "levies",
@@ -272,11 +284,14 @@ const en: ExplainText = {
     snap: "Summer low price (reduction)",
     elTax: "Electricity tax (ct/kWh)",
     eagFlat: "Renewable energy flat fee (€/year)",
-    eagShare:
-      "Renewable energy contribution (share of energy price / flat fee or capacity price / grid loss)",
-    usage: "Vienna usage tax",
+    eag2026:
+      "Renewable energy contribution 2026 (energy ct/kWh / flat fee €/year / grid loss ct/kWh)",
+    eagShare: "Renewable energy contribution from 2027 (share of energy price / capacity price)",
+    usage: "Usage tax (only Vienna)",
     vat: "VAT",
     model: "Model value",
+    area: "Grid area",
+    meterMax: "Maximum price per SNE-V 2018 § 10. The grid operator does not publish a value.",
   },
 };
 

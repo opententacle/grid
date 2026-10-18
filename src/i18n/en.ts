@@ -26,6 +26,11 @@ export const en: Record<MessageKey, string> = {
   "source.steps": "How to export your data",
   "source.openPortal": "Open portal",
 
+  "area.label": "Grid area / grid operator",
+  "area.hint":
+    "The grid area sets the 2026 prices and the levies. The prices from 2027 are the same in all of Austria.",
+  "area.missing": "Is your grid area missing?",
+
   "wn.req.1": "A Wiener Netze smart meter and an account in the Smart Meter web portal",
   "wn.req.2":
     "Quarter-hour values activated (“Anlagen & Verträge” → “Anlagedaten” → edit meter → “Viertelstunden-Intervall”). Data is available from the day after activation.",
@@ -81,6 +86,7 @@ export const en: Record<MessageKey, string> = {
 
   "kpi.today": "Yearly cost with today's tariff",
   "kpi.todayDate": "As of {date} (tariff {year})",
+  "kpi.area": "Grid area {area}",
   "kpi.selected": "Yearly cost with tariff {year}",
   "kpi.diff": "{sign}{amount} ({pct}) compared to today",
   "kpi.same": "Same as today's tariff",
@@ -129,10 +135,10 @@ export const en: Record<MessageKey, string> = {
 
   "disclaimer.title": "Disclaimer",
   "disclaimer.text":
-    "All values are rough estimates and can contain mistakes. The tariffs from 2027 are E-Control model values (July 2026), not official Wiener Netze prices. No liability is accepted for correctness, completeness or timeliness. Only your bill is binding.",
+    "All values are rough estimates and can contain mistakes. The tariffs from 2027 are E-Control model values (July 2026), not official prices of your grid operator. No liability is accepted for correctness, completeness or timeliness. Only your bill is binding.",
   "assumptions.title": "Assumptions and sources",
   "assumptions.text":
-    "Tariff 2026: Wiener Netze, grid level 7 (SNE-V 2018 as amended 2026). From 2027: structure per SNE-G-V (BGBl. II No. 299/2026); prices per E-Control model (start stage 2027, final stage from 2029 as announced by E-Control), 2028 linearly interpolated. Monthly peak = highest quarter-hour value × 4 (average over 15 minutes), rounded to 2 decimals, at least 2 kW. From 2027 no flat fee and no metering fee. January–November 2027: one price per kW, without 10 kW threshold and without minimum (§ 6 (3a)). Grid loss fee, summer low-price window (−20 %, April–September 10:00–16:00), levies (electricity tax, renewable energy contribution and flat fee, Vienna usage tax 7 %) and VAT 20 % as in 2026. Not included: winter low-price window, flexible grid connections, feed-in, later start at the grid operator (until 30 June 2028).",
+    "Tariff 2026: prices of the selected grid area, grid level 7 without power metering (SNE-V 2018 as amended by BGBl. II No. 305/2025). Metering fee from the price sheet of the grid operator. Netz Oberösterreich does not publish a value, so we use the maximum price of 2.40 €/month (SNE-V 2018 § 10). From 2027: structure per SNE-G-V (BGBl. II No. 299/2026); prices per E-Control model (start stage 2027, final stage from 2029 as announced by E-Control), 2028 linearly interpolated. Monthly peak = highest quarter-hour value × 4 (average over 15 minutes), rounded to 2 decimals, at least 2 kW. From 2027 no flat fee and no metering fee. January–November 2027: one price per kW, without 10 kW threshold and without minimum (§ 6 (3a)). Grid loss fee of the grid area, summer low-price window (−20 %, April–September 10:00–16:00), levies (electricity tax, renewable energy contribution and flat fee, usage tax 7 % only in Vienna) and VAT 20 % as in 2026. Not included: winter low-price window, flexible grid connections, feed-in, later start at the grid operator (until 30 June 2028).",
   "assumptions.updated": "Tariff data as of {date}",
 
   "calc.title": "How we calculate",

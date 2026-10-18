@@ -1,6 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { capacityChargeMonth, monthCost, yearCost, yearWindow } from "./cost";
-import { tariffAt, tariffFor, WIENER_NETZE_TARIFFS } from "./tariffs";
+import {
+  EAG_2026,
+  GRID_AREAS,
+  gridAreaById,
+  tariffAt,
+  tariffFor,
+  WIENER_NETZE_TARIFFS,
+} from "./tariffs";
 import type { MonthStats } from "./types";
 
 const t2026 = tariffFor(WIENER_NETZE_TARIFFS, 2026);
@@ -51,6 +58,83 @@ describe("tariffs", () => {
     expect(tariffAt(WIENER_NETZE_TARIFFS, new Date(2026, 9, 15)).year).toBe(2026);
     expect(tariffAt(WIENER_NETZE_TARIFFS, new Date(2031, 0, 1)).year).toBe(2030);
     expect(tariffAt(WIENER_NETZE_TARIFFS, new Date(2020, 0, 1)).year).toBe(2026);
+  });
+});
+
+describe("grid areas", () => {
+  it("has the 2026 prices of SNE-V 2018 idF BGBl. II Nr. 305/2025 for Netzebene 7", () => {
+    const rows = GRID_AREAS.map((a) => {
+      const t = a.tariffs[0];
+      return [
+        a.id,
+        t.year,
+        t.energyCt,
+        t.flatFeeYear,
+        t.lossCt,
+        t.meterEurMonth,
+        t.levies.usageTaxRate,
+      ];
+    });
+    expect(rows).toEqual([
+      ["wien", 2026, 6.98, 54, 0.7, 2.18, 0.07],
+      ["noe", 2026, 8.79, 54, 0.384, 2.18, 0],
+      ["ooe", 2026, 6.29, 54, 0.528, 2.4, 0],
+      ["linz", 2026, 5.57, 54, 0.487, 2.38, 0],
+    ]);
+    expect(GRID_AREAS.filter((a) => a.meterIsMaximum).map((a) => a.id)).toEqual(["ooe"]);
+  });
+
+  it("uses the same E-Control model values from 2027 in all areas", () => {
+    const model = (id: string) =>
+      gridAreaById(id)
+        .tariffs.slice(1)
+        .map((t) => [t.year, t.energyCt, t.capacity, t.flatFeeYear, t.meterEurMonth]);
+    for (const a of GRID_AREAS) expect(model(a.id)).toEqual(model("wien"));
+  });
+
+  it("keeps the grid loss fee and levies of the area from 2027", () => {
+    for (const a of GRID_AREAS) {
+      for (const t of a.tariffs) {
+        expect(t.lossCt).toBe(a.tariffs[0].lossCt);
+        expect(t.levies.usageTaxRate).toBe(a.tariffs[0].levies.usageTaxRate);
+      }
+    }
+  });
+
+  it("charges the same renewable energy contribution in all areas in 2026", () => {
+    const m = month({ kwh: 300, snapKwh: 40 });
+    for (const a of GRID_AREAS) {
+      const c = monthCost(m, a.tariffs[0], NO_ENERGY);
+      const eag = c.levies - (300 * 0.1) / 100 - 19.02 / 12;
+      expect(eag).toBeCloseTo(
+        (300 * (EAG_2026.energyCt + EAG_2026.lossCt)) / 100 + EAG_2026.flatYear / 12,
+      );
+    }
+  });
+
+  it("charges the Gebrauchsabgabe only in Vienna", () => {
+    const m = month();
+    expect(monthCost(m, gridAreaById("wien").tariffs[0], NO_ENERGY).usageTax).toBeGreaterThan(0);
+    for (const id of ["noe", "ooe", "linz"]) {
+      expect(monthCost(m, gridAreaById(id).tariffs[0], NO_ENERGY).usageTax).toBe(0);
+    }
+  });
+
+  it("calculates the 2026 grid fees of Linz Netz", () => {
+    // 300 kWh, 40 kWh in the SNAP window: energy 300 × 5.57 − 40 × 5.57 × 0.2, loss 300 × 0.487
+    const c = monthCost(
+      month({ kwh: 300, snapKwh: 40 }),
+      gridAreaById("linz").tariffs[0],
+      NO_ENERGY,
+    );
+    expect(c.gridEnergy).toBeCloseTo((300 * 5.57 - 40 * 5.57 * 0.2 + 300 * 0.487) / 100);
+    expect(c.gridCapacity).toBeCloseTo(54 / 12);
+    expect(c.gridOther).toBeCloseTo(2.38);
+  });
+
+  it("falls back to Wiener Netze for an unknown id", () => {
+    expect(gridAreaById("unknown").id).toBe("wien");
+    expect(WIENER_NETZE_TARIFFS).toBe(gridAreaById("wien").tariffs);
   });
 });
 

@@ -24,6 +24,11 @@ export const de = {
   "source.steps": "So exportieren Sie Ihre Daten",
   "source.openPortal": "Portal öffnen",
 
+  "area.label": "Netzbereich / Netzbetreiber",
+  "area.hint":
+    "Der Netzbereich bestimmt die Preise für 2026 und die Abgaben. Die Preise ab 2027 sind in ganz Österreich gleich.",
+  "area.missing": "Ihr Netzbereich fehlt?",
+
   "wn.req.1": "Smart Meter von Wiener Netze und ein Konto im Smart Meter-Webportal",
   "wn.req.2":
     "Viertelstundenwerte aktiviert („Anlagen & Verträge“ → „Anlagedaten“ → Zähler bearbeiten → „Viertelstunden-Intervall“). Daten gibt es erst ab dem Tag nach der Aktivierung.",
@@ -82,6 +87,7 @@ export const de = {
 
   "kpi.today": "Jahreskosten mit heutigem Tarif",
   "kpi.todayDate": "Stand: {date} (Tarif {year})",
+  "kpi.area": "Netzbereich {area}",
   "kpi.selected": "Jahreskosten mit Tarif {year}",
   "kpi.diff": "{sign}{amount} ({pct}) gegenüber heute",
   "kpi.same": "Entspricht dem heutigen Tarif",
@@ -130,10 +136,10 @@ export const de = {
 
   "disclaimer.title": "Haftungsausschluss",
   "disclaimer.text":
-    "Alle Werte sind grobe Schätzungen und können Fehler enthalten. Die Tarife ab 2027 sind Modellwerte der E-Control (Stand Juli 2026), keine offiziellen Preise von Wiener Netze. Es wird keine Haftung für die Richtigkeit, Vollständigkeit oder Aktualität übernommen. Maßgeblich ist allein Ihre Rechnung.",
+    "Alle Werte sind grobe Schätzungen und können Fehler enthalten. Die Tarife ab 2027 sind Modellwerte der E-Control (Stand Juli 2026), keine offiziellen Preise Ihres Netzbetreibers. Es wird keine Haftung für die Richtigkeit, Vollständigkeit oder Aktualität übernommen. Maßgeblich ist allein Ihre Rechnung.",
   "assumptions.title": "Annahmen und Quellen",
   "assumptions.text":
-    "Tarif 2026: Wiener Netze, Netzebene 7 (SNE-V 2018 idF 2026). Ab 2027: Struktur laut SNE-G-V (BGBl. II Nr. 299/2026); Preise laut E-Control-Modell (Anfangsstufe 2027, Endstufe ab 2029 laut E-Control), 2028 linear interpoliert. Monatsspitze = höchster Viertelstundenwert × 4 (Durchschnitt über 15 Minuten), auf 2 Nachkommastellen gerundet, mindestens 2 kW. Ab 2027 keine Pauschale und kein Messentgelt. Jänner–November 2027: ein Preis je kW, ohne 10-kW-Staffel und ohne Minimum (§ 6 Abs. 3a). Netzverlustentgelt, Sommer-Niedrigpreisfenster (−20 %, April–September 10–16 Uhr), Abgaben (Elektrizitätsabgabe, Erneuerbaren-Förderbeitrag und -pauschale, Gebrauchsabgabe Wien 7 %) und USt. 20 % wie 2026. Nicht berücksichtigt: Winter-Niedrigpreisfenster, flexible Netzanschlüsse, Einspeisung, späterer Start beim Netzbetreiber (bis 30. Juni 2028).",
+    "Tarif 2026: Preise des gewählten Netzbereichs, Netzebene 7 ohne Leistungsmessung (SNE-V 2018 idF BGBl. II Nr. 305/2025). Messentgelt laut Preisblatt des Netzbetreibers. Netz Oberösterreich veröffentlicht keinen Wert, darum nehmen wir den Höchstpreis von 2,40 €/Monat (SNE-V 2018 § 10). Ab 2027: Struktur laut SNE-G-V (BGBl. II Nr. 299/2026); Preise laut E-Control-Modell (Anfangsstufe 2027, Endstufe ab 2029 laut E-Control), 2028 linear interpoliert. Monatsspitze = höchster Viertelstundenwert × 4 (Durchschnitt über 15 Minuten), auf 2 Nachkommastellen gerundet, mindestens 2 kW. Ab 2027 keine Pauschale und kein Messentgelt. Jänner–November 2027: ein Preis je kW, ohne 10-kW-Staffel und ohne Minimum (§ 6 Abs. 3a). Netzverlustentgelt des Netzbereichs, Sommer-Niedrigpreisfenster (−20 %, April–September 10–16 Uhr), Abgaben (Elektrizitätsabgabe, Erneuerbaren-Förderbeitrag und -pauschale, Gebrauchsabgabe 7 % nur in Wien) und USt. 20 % wie 2026. Nicht berücksichtigt: Winter-Niedrigpreisfenster, flexible Netzanschlüsse, Einspeisung, späterer Start beim Netzbetreiber (bis 30. Juni 2028).",
   "assumptions.updated": "Tarifdaten Stand {date}",
 
   "calc.title": "So rechnen wir",
