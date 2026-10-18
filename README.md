@@ -45,6 +45,7 @@ Put real exports in `exports/` for local tests. The folder is in `.gitignore`, b
 | `src/i18n/` | German and English texts |
 | `src/ui/` | Lit components and d3 charts |
 | `src/config.ts` | Author links and Impressum data |
+| `src/seo.ts` | Static HTML and schema.org data for search engines, added to the pages at build time |
 | `.claude/specs/` | Requirements, tech design, plan |
 
 ## Configuration

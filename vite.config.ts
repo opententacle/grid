@@ -1,7 +1,9 @@
 import { defineConfig } from "vitest/config";
+import { injectSeo } from "./src/seo";
 
 export default defineConfig({
   base: "/",
+  plugins: [{ name: "seo", transformIndexHtml: injectSeo }],
   build: {
     target: "es2022",
     sourcemap: true,
