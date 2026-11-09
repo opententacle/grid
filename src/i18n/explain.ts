@@ -34,6 +34,11 @@ export interface ExplainText {
     usage: string;
     vat: string;
     model: string;
+    energyOld: string;
+    energyNew: string;
+    energyFinal: string;
+    capFinal: string;
+    newNote: string;
     area: string;
     meterMax: string;
   };
@@ -82,9 +87,9 @@ const de: ExplainText = {
       title: "4. Der neue Tarif ab 2027",
       paragraphs: [
         "Ab 2027 gibt es einen Leistungspreis. Er ersetzt die Pauschale und das Messentgelt. Grundlage ist die SNE-G-V (BGBl. II Nr. 299/2026).",
-        "Sie zahlen jeden Monat für Ihre Monatsspitze. Der Preis ist in Euro je kW und Jahr angegeben. Pro Monat zahlen Sie ein Zwölftel davon.",
-        "Bis 10 kW gilt der normale Preis. Für jedes kW über 10 kW zahlen Sie den doppelten Preis.",
-        "Übergang Jänner bis November 2027: ein Preis je kW für die ganze Spitze, ohne 10-kW-Staffel und ohne Minimum von 2 kW (§ 6 Abs. 3a). Ab Dezember 2027 gilt die Staffel.",
+        "Übergang Jänner bis November 2027: Haushalte ohne Leistungsmessung zahlen noch eine Pauschale (82,80 € je Jahr) und einen eigenen Arbeitspreis (§ 6 Abs. 3a, § 7 Abs. 4a). Das Messentgelt ist in der Pauschale. Der Leistungspreis gilt ab Dezember 2027.",
+        "Sie zahlen jeden Monat für Ihre Monatsspitze. Die Verordnung nennt den Preis in Cent je kW und Monat. Die Tabellen zeigen ihn in Euro je kW und Jahr. Pro Monat zahlen Sie ein Zwölftel davon.",
+        "Bis 10 kW gilt der normale Preis. Für jedes kW über 10 kW zahlen Sie den 1,5-fachen Preis (Entwurf der SNE-T-V 2027). Verrechnet werden mindestens 2 kW.",
         "Der Arbeitspreis je kWh sinkt dafür. Ab 2029 soll das Verhältnis von Arbeitspreis zu Leistungspreis 50 : 50 sein.",
       ],
       formula:
@@ -94,9 +99,9 @@ const de: ExplainText = {
       id: "example",
       title: "5. Ein Beispiel",
       paragraphs: [
-        "Ihre Spitze im Jänner ist 4,4 kW. Der Preis ist 33,82 € je kW und Jahr (Endstufe ab 2029).",
-        "Rechnung: 4,4 × 33,82 € ÷ 12 = 12,40 € netto für Jänner.",
-        "Eine Wallbox lädt mit 11 kW. Dann ist die Spitze mindestens 11 kW: 10 × 33,82 € + 1 × 67,64 € = 405,84 € pro Jahr, also 33,82 € pro Monat.",
+        "Sie wohnen in Wien. Ihre Spitze im Dezember 2027 ist 4,4 kW. Der Preis laut Entwurf ist 2,46 € je kW und Monat (29,52 € je kW und Jahr).",
+        "Rechnung: 4,4 × 2,46 € = 10,82 € netto für Dezember.",
+        "Eine Wallbox lädt mit 11 kW. Dann ist die Spitze mindestens 11 kW: 10 × 2,46 € + 1 × 3,69 € = 28,29 € pro Monat.",
         "Laden Sie langsamer (z. B. 3,7 kW), sinkt die Spitze. Dann sinken auch die Kosten.",
       ],
     },
@@ -104,9 +109,9 @@ const de: ExplainText = {
       id: "prices",
       title: "6. Die Preise je Jahr",
       paragraphs: [
-        "Die offiziellen Preise ab 2027 gibt es noch nicht. Sie kommen mit der SNE-T-V (erwartet im Dezember 2026).",
-        "Darum nutzen wir die Modellwerte der E-Control für 2027 (Anfangsstufe) und 2029 (Endstufe, laut E-Control ab 1. Jänner 2029). 2028 liegt genau dazwischen. 2030 bleibt auf der Endstufe.",
-        "Die Modellwerte gelten für ganz Österreich. Die offiziellen Preise Ihres Netzbetreibers können anders sein.",
+        "Für 2027 gibt es einen Entwurf der Tarifverordnung (SNE-T-V 2027, 29. Oktober 2026). Die Begutachtung läuft bis 20. November 2026. Die endgültigen Preise kommen im Dezember 2026.",
+        "Der Text des Entwurfs ist nicht online. Die E-Control zeigt aber je Netzbereich die Netzentgelte für einen Haushalt mit 3.500 kWh und eine Grafik „alt gegen neu“. Daraus berechnen wir Arbeitspreis und Leistungspreis. Für Wien stimmt das Ergebnis mit dem Entwurf überein (2,46 € je kW und Monat).",
+        "Ab 2029 gilt die Endstufe (laut E-Control ab 1. Jänner 2029). Jeder Netzbereich ändert sich wie im Modell der E-Control: Ein Haushalt mit 3.500 kWh und 4 kW zahlt gleich viel weniger, und der Leistungspreis hat den gleichen Anteil. 2028 liegt genau dazwischen. 2030 bleibt auf der Endstufe.",
         "Das Netzverlustentgelt ändert sich nicht. Die App nimmt den Wert von 2026 Ihres Netzbereichs.",
       ],
       table: "tariffs",
@@ -137,10 +142,10 @@ const de: ExplainText = {
       id: "limits",
       title: "9. Was die App nicht berücksichtigt",
       paragraphs: [
-        "Winter-Niedrigpreisfenster ab Oktober 2027 (der Wert ist noch nicht bekannt).",
+        "Winter-Niedrigpreisfenster (WiNAP, Oktober bis März, 23–5 Uhr).",
         "Rabatt für flexible Netzanschlüsse (z. B. steuerbare Wallbox oder Wärmepumpe).",
         "Einspeisung aus einer PV-Anlage und Energiegemeinschaften.",
-        "Den Starttermin Ihres Netzbetreibers. Die Übergangszeit kann sich bis 30. Juni 2028 verschieben.",
+        "Den Starttermin Ihres Netzbetreibers. Die App nimmt den 1. Dezember 2027 für alle Netzbereiche. Der Termin kann sich je Netzbereich bis 30. Juni 2028 verschieben.",
         "Rabatte und Boni Ihres Lieferanten.",
       ],
     },
@@ -163,6 +168,12 @@ const de: ExplainText = {
     usage: "Örtliche Abgabe",
     vat: "Umsatzsteuer",
     model: "Modellwert",
+    energyOld: "Arbeitspreis Jän.–Nov. 2027 (ct/kWh)",
+    energyNew: "Arbeitspreis ab Dez. 2027 (ct/kWh)",
+    energyFinal: "Arbeitspreis ab 2029 (ct/kWh)",
+    capFinal: "Leistungspreis bis 10 kW ab 2029 (€/kW/Jahr)",
+    newNote:
+      "Werte 2027 aus dem Entwurf der SNE-T-V 2027 (29. Oktober 2026), aus den Tabellen und Grafiken der E-Control berechnet. Ohne Netzverlustentgelt. Jänner bis November 2027 zusätzlich Pauschale {flat} €/Jahr. Ab 2029: Schätzung. 2028 liegt in der Mitte.",
     area: "Netzbereich",
     meterMax: "Höchstpreis laut SNE-V 2018 § 10. Der Netzbetreiber veröffentlicht keinen Wert.",
   },
@@ -211,9 +222,9 @@ const en: ExplainText = {
       title: "4. The new tariff from 2027",
       paragraphs: [
         "From 2027, there is a capacity price. It replaces the flat fee and the metering fee. The legal basis is the SNE-G-V (BGBl. II No. 299/2026).",
-        "Each month you pay for your monthly peak. The price is given in euro per kW and year. Per month you pay one twelfth of it.",
-        "Up to 10 kW, the normal price applies. For each kW above 10 kW, you pay double the price.",
-        "Transition from January to November 2027: one price per kW for the whole peak, without 10 kW threshold and without 2 kW minimum (§ 6 (3a)). From December 2027, the threshold applies.",
+        "Transition from January to November 2027: households without power metering still pay a flat fee (€82.80 per year) and a separate energy price (§ 6 (3a), § 7 (4a)). The metering fee is part of the flat fee. The capacity price applies from December 2027.",
+        "Each month you pay for your monthly peak. The ordinance gives the price in cent per kW and month. The tables show it in euro per kW and year. Per month you pay one twelfth of it.",
+        "Up to 10 kW, the normal price applies. For each kW above 10 kW, you pay 1.5 times the price (draft SNE-T-V 2027). At least 2 kW are billed.",
         "In return, the energy price per kWh goes down. From 2029, the ratio of energy price to capacity price is to be 50 : 50.",
       ],
       formula:
@@ -223,9 +234,9 @@ const en: ExplainText = {
       id: "example",
       title: "5. An example",
       paragraphs: [
-        "Your peak in January is 4.4 kW. The price is €33.82 per kW and year (final stage from 2029).",
-        "Calculation: 4.4 × €33.82 ÷ 12 = €12.40 net for January.",
-        "A wallbox charges with 11 kW. Then the peak is at least 11 kW: 10 × €33.82 + 1 × €67.64 = €405.84 per year, or €33.82 per month.",
+        "You live in Vienna. Your peak in December 2027 is 4.4 kW. The draft price is €2.46 per kW and month (€29.52 per kW and year).",
+        "Calculation: 4.4 × €2.46 = €10.82 net for December.",
+        "A wallbox charges with 11 kW. Then the peak is at least 11 kW: 10 × €2.46 + 1 × €3.69 = €28.29 per month.",
         "If you charge more slowly (e.g. 3.7 kW), the peak goes down. Then the cost goes down too.",
       ],
     },
@@ -233,9 +244,9 @@ const en: ExplainText = {
       id: "prices",
       title: "6. The prices per year",
       paragraphs: [
-        "The official prices from 2027 are not published yet. They come with the SNE-T-V (expected in December 2026).",
-        "So we use the E-Control model values for 2027 (start stage) and 2029 (final stage, from 1 January 2029 as announced by E-Control). 2028 is exactly in between. 2030 stays at the final stage.",
-        "The model values apply to all of Austria. The official prices of your grid operator can be different.",
+        "For 2027 there is a draft tariff ordinance (SNE-T-V 2027, 29 October 2026). The review runs until 20 November 2026. The final prices come in December 2026.",
+        "The draft text is not online. But E-Control shows, for each grid area, the grid fees of a household with 3,500 kWh and an “old against new” chart. From these we calculate the energy price and the capacity price. For Vienna the result agrees with the draft (€2.46 per kW and month).",
+        "From 2029 the final stage applies (from 1 January 2029 as announced by E-Control). Each grid area changes as in the E-Control model: a household with 3,500 kWh and 4 kW pays the same percentage less, and the capacity price gets the same share. 2028 is exactly in between. 2030 stays at the final stage.",
         "The grid loss fee does not change. The app uses the 2026 value of your grid area.",
       ],
       table: "tariffs",
@@ -266,10 +277,10 @@ const en: ExplainText = {
       id: "limits",
       title: "9. What the app does not include",
       paragraphs: [
-        "Winter low-price window from October 2027 (the value is not known yet).",
+        "Winter low-price window (WiNAP, October to March, 23:00–05:00).",
         "Discount for flexible grid connections (e.g. a controllable wallbox or heat pump).",
         "Feed-in from a PV system and energy communities.",
-        "The start date of your grid operator. The transition period can move until 30 June 2028.",
+        "The start date of your grid operator. The app uses 1 December 2027 for all grid areas. The date can move until 30 June 2028 in each grid area.",
         "Discounts and bonuses of your supplier.",
       ],
     },
@@ -292,6 +303,12 @@ const en: ExplainText = {
     usage: "Local levy",
     vat: "VAT",
     model: "Model value",
+    energyOld: "Energy price Jan–Nov 2027 (ct/kWh)",
+    energyNew: "Energy price from Dec 2027 (ct/kWh)",
+    energyFinal: "Energy price from 2029 (ct/kWh)",
+    capFinal: "Capacity price up to 10 kW from 2029 (€/kW/year)",
+    newNote:
+      "2027 values from the draft SNE-T-V 2027 (29 October 2026), calculated from the E-Control tables and charts. Without grid loss fee. January to November 2027 also a flat fee of €{flat}/year. From 2029: estimate. 2028 is in the middle.",
     area: "Grid area",
     meterMax: "Maximum price per SNE-V 2018 § 10. The grid operator does not publish a value.",
   },

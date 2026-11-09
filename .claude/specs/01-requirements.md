@@ -126,23 +126,25 @@ For each calendar month in the data:
 
 ## 6. Tariff assumptions (Wiener Netze, Netzebene 7, net)
 
-| Item | 2026 (valid) | 2027 | 2028 | 2029 | 2030 |
-|---|---|---|---|---|---|
-| Netznutzung energy price ct/kWh | 6.98 | 7.36* | 5.95* | 4.53* | 4.53* |
-| Pauschale €/year | 54.00 | – | – | – | – |
-| Capacity price ≤ 10 kW €/kW/year | – | 19.00* | 26.41* | 33.82* | 33.82* |
-| Capacity price > 10 kW €/kW/year | – | 38.00* | 52.82* | 67.64* | 67.64* |
-| Netzverlust ct/kWh | 0.700 | 0.700† | 0.700† | 0.700† | 0.700† |
-| Messentgelt €/month | 2.18 | – | – | – | – |
-| SNAP reduction (Apr–Sep, 10–16 h) | −20 % | −20 %† | −20 %† | −20 %† | −20 %† |
+| Item | 2026 (valid) | Jan–Nov 2027 | Dec 2027 | 2028 | 2029 | 2030 |
+|---|---|---|---|---|---|---|
+| Netznutzung energy price ct/kWh | 6.98 | 6.49° | 5.47° | 4.84* | 4.20* | 4.20* |
+| Pauschale €/year | 54.00 | 82.80° | – | – | – | – |
+| Capacity price ≤ 10 kW €/kW/year | – | – | 29.52° | 30.45* | 31.38* | 31.38* |
+| Capacity price > 10 kW €/kW/year | – | – | 44.28° | 45.68* | 47.07* | 47.07* |
+| Netzverlust ct/kWh | 0.700 | 0.700† | 0.700† | 0.700† | 0.700† | 0.700† |
+| Messentgelt €/month | 2.18 | – | – | – | – | – |
+| SNAP reduction (Apr–Sep, 10–16 h) | −20 % | −20 % | −20 % | −20 %† | −20 %† | −20 %† |
 
-`*` E-Control model values (presentation 14.07.2026, Austria-wide, not Wiener Netze-specific). 2028 is the midpoint (linear interpolation), 2030 equals the final stage 2029. `†` assumption: unchanged from 2026.
+`°` Draft SNE-T-V 2027 (R SNE 01/26, 29.10.2026, review until 20.11.2026). The draft text is not online. Wien capacity price 246 / 369 ct/kW per month and Pauschale 82.80 €/year (54 € + 12 × 2.40 € Messentgelt) are quoted from the draft. Energy prices are calculated from the E-Control table for 3,500 kWh (old structure 9.56 ct/kWh, new structure with 4 kW 9.54 ct/kWh, both with Netzverlust). Other grid areas: same method; the capacity price comes from the slope of the E-Control comparison chart, the price above 10 kW from its bend at 10 kW (1.5 × in all grid areas). `*` Estimate: each grid area changes like the E-Control model (14.07.2026) for 3,500 kWh and 4 kW (same factor, same capacity share as the model final stage); 2028 is the midpoint, 2030 equals the final stage 2029. `†` assumption: unchanged from 2026.
+
+Note on the method: for Wien, table and chart agree exactly. For the other grid areas, the chart intercept with 82.80 € gives a capacity price about 10 % higher than the table method. The app uses the table method, so the E-Control table values are reproduced exactly.
 
 Capacity price per month = (min(peak, 10) × P₁ + max(peak − 10, 0) × P₂) / 12, minimum billed peak 2 kW.
 
-From 2027 there is no Pauschale and no Messentgelt (SNE-G-V § 2 Abs. 1 Z 11, § 5 Abs. 1). The E-Control start value (about 19 €/kW) already contains both (54 € + 28.80 € per year).
+From 2027 there is no Messentgelt (SNE-G-V § 2 Abs. 1 Z 11, § 5 Abs. 1). The Pauschale ends when the capacity price starts.
 
-Transition January to November 2027 (SNE-G-V § 6 Abs. 3a): capacity price per month = peak × P₁ / 12, without the 10 kW threshold and without the 2 kW minimum. P₁ is the model start value. From December 2027 the regular formula applies.
+Transition January to November 2027 (SNE-G-V § 6 Abs. 3a Z 1, § 7 Abs. 4a): customers without power measurement (households) pay a flat fee per meter and a separate energy price. No capacity price, the peak does not count. (§ 6 Abs. 3a Z 2, a uniform price per kW, applies only to other customers on Netzebene 7.) From December 2027 the new structure applies. A grid area can move this date until 30.6.2028 (§ 6 Abs. 3b); the app uses 1.12.2027 for all grid areas.
 
 Levies (assumed unchanged): Elektrizitätsabgabe 0.1 ct/kWh (H0 household 2026), Erneuerbaren-Förderbeitrag as share of each grid fee (2026: 0.583 ct/kWh on Arbeitspreis, 3.796 €/year on Pauschale, 0.037 ct/kWh on Netzverlust; from 2027 the Pauschale share applies to the capacity price), Erneuerbaren-Förderpauschale 19.02 €/year, Gebrauchsabgabe Wien 7 % on energy + all grid fees, VAT 20 %.
 
@@ -150,11 +152,11 @@ Verification: the 2026 model was checked line by line against a real Wien Energi
 
 Minimum billed power (checked against BGBl. II Nr. 299/2026, § 6 Abs. 3): the 20 % rule (20 % of the contracted grid capacity in Bezugsrichtung) applies only on Netzebenen 1 to 6. On Netzebene 7 the minimum is 2 kW (Kleinstanschlüsse excepted). The app models Netzebene 7, so the 2 kW minimum is correct and the 20 % rule does not apply.
 
-Not modelled in version 1: WiNAP (winter reduction from 1.10.2027, value not known), flexible connection discount, operator-specific start date (transition can move until 30.6.2028, § 6 Abs. 3b), feed-in (PV).
+Not modelled in version 1: WiNAP (winter reduction Oct–Mar 23–5 h; the draft sets it at 80 % of the energy price), flexible connection discount, operator-specific start date (transition can move until 30.6.2028, § 6 Abs. 3b), feed-in (PV).
 
 ## 7. Decisions
 
-- D-1 (owner) Tariffs 2027–2030: E-Control model values + linear interpolation. Final stage from 2029 (E-Control announcement, 12.10.2026); 2028 is the midpoint, 2030 equals 2029. The calculation follows the SNE-G-V rules as close as possible (monthly highest quarter-hour, 2 decimals, minimum 2 kW, 10 kW threshold, double price above).
+- D-1 (owner) Tariffs 2027–2030: 2027 per grid area from the SNE-T-V 2027 draft (29.10.2026); final stage 2029 per grid area along the E-Control model; 2028 is the midpoint, 2030 equals 2029. The calculation follows the SNE-G-V rules as close as possible (monthly highest quarter-hour, 2 decimals, minimum 2 kW, 10 kW threshold, 1.5 × price above per draft, flat fee January–November 2027).
 - D-2 (owner) Cost scope: gross all-in by default, net toggle.
 - D-3 (owner) PostHog: cookieless, EU host, no consent banner. Separate privacy page.
 - D-5 (owner) Footer: author name, subtle LinkedIn and GitHub links. Disclaimer: rough estimate, values can contain mistakes, no liability.

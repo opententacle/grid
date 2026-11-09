@@ -6,7 +6,14 @@ import { faSun } from "@fortawesome/free-solid-svg-icons/faSun";
 import { css, html } from "lit";
 import { IMPRESSUM } from "../config";
 import { fmtDate, fmtNum } from "../core/format";
-import { EAG_2026, GRID_AREAS, TARIFF_DATA_DATE, WIENER_NETZE_TARIFFS } from "../core/tariffs";
+import {
+  EAG_2026,
+  FLAT_FEE_2027,
+  GRID_AREAS,
+  TARIFF_DATA_DATE,
+  tariffFor,
+  WIENER_NETZE_TARIFFS,
+} from "../core/tariffs";
 import type { Levies } from "../core/types";
 import { EXPLAIN } from "../i18n/explain";
 import { FAQ } from "../i18n/faq";
@@ -186,6 +193,11 @@ export class GcLegal extends BaseElement {
       th {
         color: var(--text-2);
         font-weight: 600;
+      }
+      table.wrap-head th {
+        white-space: normal;
+        vertical-align: bottom;
+        min-width: 7em;
       }
       .model {
         color: var(--warn-text);
@@ -438,25 +450,24 @@ export class GcLegal extends BaseElement {
     <p class="muted">* ${x.meterMax}</p>`;
   }
 
-  /** Model values from 2027. They are the same in all grid areas. */
+  /** Prices from 2027 per grid area (2027: SNE-T-V 2027 draft, from 2029: estimate). */
   private tariffTable() {
     const x = EXPLAIN[getLocale()].tables;
-    const ts = WIENER_NETZE_TARIFFS.filter((tt) => tt.estimate);
-    const n = (v: number | undefined, d = 2) => (v === undefined || v === 0 ? "–" : fmtNum(v, d));
-    const row = (label: string, f: (tt: (typeof ts)[number]) => string) =>
-      html`<tr><td>${label}</td>${ts.map((tt) => html`<td class=${tt.estimate ? "model" : ""}>${f(tt)}</td>`)}</tr>`;
-    return html`<div class="table-wrap"><table>
-      <thead><tr><th>${x.item}</th>${ts.map((tt) => html`<th>${tt.year}${tt.estimate ? "*" : ""}</th>`)}</tr></thead>
+    const n = (v: number | undefined, d = 2) => (v === undefined ? "–" : fmtNum(v, d));
+    return html`<div class="table-wrap"><table class="wrap-head">
+      <thead><tr><th>${x.area}</th><th>${x.energyOld}</th><th>${x.energyNew}</th><th>${x.capLow}</th>
+        <th>${x.capHigh}</th><th class="model">${x.energyFinal}</th><th class="model">${x.capFinal}</th></tr></thead>
       <tbody>
-        ${row(x.energy, (tt) => n(tt.energyCt))}
-        ${row(x.flat, (tt) => n(tt.flatFeeYear))}
-        ${row(x.capLow, (tt) => n(tt.capacity?.lowEurKwYear))}
-        ${row(x.capHigh, (tt) => n(tt.capacity?.highEurKwYear))}
-        ${row(x.meter, (tt) => n(tt.meterEurMonth))}
-        ${row(x.snap, (tt) => `−${fmtNum(tt.snapReduction * 100)} %`)}
+        ${GRID_AREAS.map((a) => {
+          const t27 = tariffFor(a.tariffs, 2027);
+          const t29 = tariffFor(a.tariffs, 2029);
+          return html`<tr><td>${a.area}</td><td>${n(t27.oldSystem?.energyCt)}</td><td>${n(t27.energyCt)}</td>
+            <td>${n(t27.capacity?.lowEurKwYear)}</td><td>${n(t27.capacity?.highEurKwYear)}</td>
+            <td class="model">${n(t29.energyCt)}</td><td class="model">${n(t29.capacity?.lowEurKwYear)}</td></tr>`;
+        })}
       </tbody>
     </table></div>
-    <p class="muted">* ${x.model}</p>`;
+    <p class="muted">${x.newNote.replace("{flat}", fmtNum(FLAT_FEE_2027, 2))}</p>`;
   }
 
   private leviesTable() {

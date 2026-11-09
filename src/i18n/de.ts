@@ -81,7 +81,7 @@ export const de = {
   "settings.year": "Tarifjahr",
   "settings.yearHint.2026": "Aktueller Tarif: Arbeitspreis + Pauschale, kein Leistungspreis.",
   "settings.yearHint.new":
-    "Neues Modell: Arbeitspreis + Leistungspreis je Monatsspitze (über 10 kW doppelter Preis).",
+    "Neues Modell: Arbeitspreis + Leistungspreis je Monatsspitze (über 10 kW 1,5-facher Preis).",
   "settings.estimate": "Schätzung",
   "settings.energyPrice": "Energiepreis Lieferant",
   "settings.energyPriceUnit": "ct/kWh netto",
@@ -120,7 +120,7 @@ export const de = {
   "chart.costs.title": "Kosten pro Monat",
   "chart.costs.desc": "Aufteilung der Kosten je Monat mit dem Tarif {year} ({mode}).",
   "chart.transitionNote":
-    "Tarifjahr {year}: Die 10-kW-Grenze gilt erst ab Dezember. Jänner bis November gilt ein Preis je kW für die ganze Spitze, ohne Staffel und ohne Minimum (SNE-G-V § 6 Abs. 3a).",
+    "Tarifjahr {year}: Der Leistungspreis gilt erst ab Dezember. Jänner bis November zahlen Haushalte ohne Leistungsmessung eine Pauschale und einen eigenen Arbeitspreis. Die Spitze zählt dann nicht (SNE-G-V § 6 Abs. 3a).",
   "chart.detail.title": "Viertelstundenwerte im Detail",
   "chart.detail.desc": "Leistung je Viertelstunde (kW). Die Linie zeigt die Monatsspitze.",
   "chart.detail.prev": "Vorheriger Monat",
@@ -142,12 +142,16 @@ export const de = {
   "col.total": "Summe",
   incomplete: "unvollständig",
 
+  "news.title": "Neu",
+  "news.all": "Alle Änderungen auf GitHub",
+  "news.close": "Hinweis schließen",
+
   "disclaimer.title": "Haftungsausschluss",
   "disclaimer.text":
-    "Alle Werte sind grobe Schätzungen und können Fehler enthalten. Die Tarife ab 2027 sind Modellwerte der E-Control (Stand Juli 2026), keine offiziellen Preise Ihres Netzbetreibers. Es wird keine Haftung für die Richtigkeit, Vollständigkeit oder Aktualität übernommen. Maßgeblich ist allein Ihre Rechnung.",
+    "Alle Werte sind grobe Schätzungen und können Fehler enthalten. Die Tarife 2027 kommen aus dem Entwurf der Tarifverordnung (SNE-T-V 2027, Stand 29. Oktober 2026) und sind noch nicht endgültig. Die Tarife ab 2028 sind Schätzungen nach dem Modell der E-Control. Es wird keine Haftung für die Richtigkeit, Vollständigkeit oder Aktualität übernommen. Maßgeblich ist allein Ihre Rechnung.",
   "assumptions.title": "Annahmen und Quellen",
   "assumptions.text":
-    "Tarif 2026: Preise des gewählten Netzbereichs, Netzebene 7 ohne Leistungsmessung (SNE-V 2018 idF BGBl. II Nr. 305/2025). Messentgelt laut Preisblatt des Netzbetreibers. Netz Oberösterreich veröffentlicht keinen Wert, darum nehmen wir den Höchstpreis von 2,40 €/Monat (SNE-V 2018 § 10). Ab 2027: Struktur laut SNE-G-V (BGBl. II Nr. 299/2026); Preise laut E-Control-Modell (Anfangsstufe 2027, Endstufe ab 2029 laut E-Control), 2028 linear interpoliert. Monatsspitze = höchster Viertelstundenwert × 4 (Durchschnitt über 15 Minuten), auf 2 Nachkommastellen gerundet, mindestens 2 kW. Ab 2027 keine Pauschale und kein Messentgelt. Jänner–November 2027: ein Preis je kW, ohne 10-kW-Staffel und ohne Minimum (§ 6 Abs. 3a). Netzverlustentgelt des Netzbereichs, Sommer-Niedrigpreisfenster (−20 %, April–September 10–16 Uhr), Abgaben (Elektrizitätsabgabe, Erneuerbaren-Förderbeitrag und -pauschale, örtliche Abgaben: Gebrauchsabgabe Wien 7 %, Gebrauchsabgabe Salzburg 0,3789 ct/kWh, Benützungsabgabe Klagenfurt 1,637 ct/kWh) und USt. 20 % wie 2026. Kleinwalsertal: deutsche Stromsteuer und 19 % USt. Nicht berücksichtigt: Winter-Niedrigpreisfenster, flexible Netzanschlüsse, Einspeisung, späterer Start beim Netzbetreiber (bis 30. Juni 2028).",
+    "Tarif 2026: Preise des gewählten Netzbereichs, Netzebene 7 ohne Leistungsmessung (SNE-V 2018 idF BGBl. II Nr. 305/2025). Messentgelt laut Preisblatt des Netzbetreibers. Netz Oberösterreich veröffentlicht keinen Wert, darum nehmen wir den Höchstpreis von 2,40 €/Monat (SNE-V 2018 § 10). Ab 2027: Struktur laut SNE-G-V (BGBl. II Nr. 299/2026). Preise 2027 je Netzbereich laut Entwurf der SNE-T-V 2027 (29. Oktober 2026), abgeleitet aus Tabellen und Grafiken der E-Control. Endstufe ab 2029: gleiche Änderung wie im Modell der E-Control, 2028 in der Mitte. Monatsspitze = höchster Viertelstundenwert × 4 (Durchschnitt über 15 Minuten), auf 2 Nachkommastellen gerundet, mindestens 2 kW. Über 10 kW gilt der 1,5-fache Preis. Ab 2027 kein Messentgelt. Jänner–November 2027: Pauschale 82,80 €/Jahr und eigener Arbeitspreis, kein Leistungspreis (§ 6 Abs. 3a). Ab Dezember 2027 Leistungspreis ohne Pauschale. Netzverlustentgelt des Netzbereichs, Sommer-Niedrigpreisfenster (−20 %, April–September 10–16 Uhr), Abgaben (Elektrizitätsabgabe, Erneuerbaren-Förderbeitrag und -pauschale, örtliche Abgaben: Gebrauchsabgabe Wien 7 %, Gebrauchsabgabe Salzburg 0,3789 ct/kWh, Benützungsabgabe Klagenfurt 1,637 ct/kWh) und USt. 20 % wie 2026. Kleinwalsertal: deutsche Stromsteuer und 19 % USt. Nicht berücksichtigt: Winter-Niedrigpreisfenster, flexible Netzanschlüsse, Einspeisung, späterer Start beim Netzbetreiber (bis 30. Juni 2028).",
   "assumptions.updated": "Tarifdaten Stand {date}",
 
   "calc.title": "So rechnen wir",

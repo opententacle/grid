@@ -72,11 +72,19 @@ Before the first release, fill in `src/config.ts` (Impressum, LinkedIn URL).
 
 ## Tariff model (summary)
 
-| | 2026 | 2027 | 2028 | 2029 | 2030 |
-|---|---|---|---|---|---|
-| Netznutzung ct/kWh | 6.98 | 7.36 | 5.95 | 4.53 | 4.53 |
-| Pauschale €/year | 54 | – | – | – | – |
-| Capacity ≤ 10 kW €/kW/year | – | 19.00 | 26.41 | 33.82 | 33.82 |
-| Capacity > 10 kW €/kW/year | – | 38.00 | 52.82 | 67.64 | 67.64 |
+Wiener Netze, Netzebene 7, not measured, net. Other grid areas: `src/core/tariffs.ts`.
 
-2026: Wiener Netze, Netzebene 7. 2027 and 2029: E-Control model (start and final stage, July 2026; final stage from 1 January 2029 as announced by E-Control). 2028: linear interpolation. 2030: final stage. From 2027 no Pauschale and no Messentgelt; January–November 2027 one price per kW without threshold and minimum (SNE-G-V § 6 Abs. 3a). Details and all other components: `src/core/tariffs.ts` and `.claude/specs/01-requirements.md`.
+| | 2026 | Jan–Nov 2027 | Dec 2027 | 2028 | 2029 | 2030 |
+|---|---|---|---|---|---|---|
+| Netznutzung ct/kWh | 6.98 | 6.49 | 5.47 | 4.84 | 4.20 | 4.20 |
+| Pauschale €/year | 54 | 82.80 | – | – | – | – |
+| Messentgelt €/month | 2.18 | – | – | – | – | – |
+| Capacity ≤ 10 kW €/kW/year | – | – | 29.52 | 30.45 | 31.38 | 31.38 |
+| Capacity > 10 kW €/kW/year | – | – | 44.28 | 45.68 | 47.07 | 47.07 |
+
+- 2026: SNE-V 2018 idF BGBl. II Nr. 305/2025.
+- 2027: draft SNE-T-V 2027 (29.10.2026, not final). The draft text is not online. Values per grid area are calculated from the E-Control tables (3,500 kWh, old and new structure) and the E-Control comparison charts. Wien: capacity price 246 / 369 ct/kW per month as in the draft. Above 10 kW: 1.5 × the price up to 10 kW.
+- Transition (SNE-G-V § 6 Abs. 3a, § 7 Abs. 4a): January to November 2027 flat fee and separate energy price, capacity price from 1 December 2027 in all grid areas. Each grid area can move this date until 30 June 2028 (not modelled).
+- 2029: final stage, same change as the E-Control model (14.07.2026). 2028: midpoint. 2030: same as 2029.
+
+Details: `src/core/tariffs.ts` and `.claude/specs/01-requirements.md`.

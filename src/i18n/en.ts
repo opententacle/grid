@@ -80,7 +80,7 @@ export const en: Record<MessageKey, string> = {
   "settings.year": "Tariff year",
   "settings.yearHint.2026": "Current tariff: energy price + flat fee, no capacity price.",
   "settings.yearHint.new":
-    "New model: energy price + capacity price per monthly peak (double price above 10 kW).",
+    "New model: energy price + capacity price per monthly peak (1.5 times the price above 10 kW).",
   "settings.estimate": "Estimate",
   "settings.energyPrice": "Supplier energy price",
   "settings.energyPriceUnit": "ct/kWh net",
@@ -119,7 +119,7 @@ export const en: Record<MessageKey, string> = {
   "chart.costs.title": "Cost per month",
   "chart.costs.desc": "Cost split per month with the {year} tariff ({mode}).",
   "chart.transitionNote":
-    "Tariff year {year}: the 10 kW threshold applies only from December. From January to November, one price per kW applies to the whole peak, without threshold and without minimum (SNE-G-V § 6 (3a)).",
+    "Tariff year {year}: the capacity price applies only from December. From January to November, households without power metering pay a flat fee and a separate energy price. The peak does not count then (SNE-G-V § 6 (3a)).",
   "chart.detail.title": "Quarter-hour values in detail",
   "chart.detail.desc": "Power per quarter-hour (kW). The line shows the monthly peak.",
   "chart.detail.prev": "Previous month",
@@ -141,12 +141,16 @@ export const en: Record<MessageKey, string> = {
   "col.total": "Total",
   incomplete: "incomplete",
 
+  "news.title": "New",
+  "news.all": "All changes on GitHub",
+  "news.close": "Close notice",
+
   "disclaimer.title": "Disclaimer",
   "disclaimer.text":
-    "All values are rough estimates and can contain mistakes. The tariffs from 2027 are E-Control model values (July 2026), not official prices of your grid operator. No liability is accepted for correctness, completeness or timeliness. Only your bill is binding.",
+    "All values are rough estimates and can contain mistakes. The 2027 tariffs come from the draft tariff ordinance (SNE-T-V 2027, 29 October 2026) and are not final. The tariffs from 2028 are estimates based on the E-Control model. No liability is accepted for correctness, completeness or timeliness. Only your bill is binding.",
   "assumptions.title": "Assumptions and sources",
   "assumptions.text":
-    "Tariff 2026: prices of the selected grid area, grid level 7 without power metering (SNE-V 2018 as amended by BGBl. II No. 305/2025). Metering fee from the price sheet of the grid operator. Netz Oberösterreich does not publish a value, so we use the maximum price of 2.40 €/month (SNE-V 2018 § 10). From 2027: structure per SNE-G-V (BGBl. II No. 299/2026); prices per E-Control model (start stage 2027, final stage from 2029 as announced by E-Control), 2028 linearly interpolated. Monthly peak = highest quarter-hour value × 4 (average over 15 minutes), rounded to 2 decimals, at least 2 kW. From 2027 no flat fee and no metering fee. January–November 2027: one price per kW, without 10 kW threshold and without minimum (§ 6 (3a)). Grid loss fee of the grid area, summer low-price window (−20 %, April–September 10:00–16:00), levies (electricity tax, renewable energy contribution and flat fee, local levies: Vienna usage tax 7 %, Salzburg usage tax 0.3789 ct/kWh, Klagenfurt Benützungsabgabe 1.637 ct/kWh) and VAT 20 % as in 2026. Kleinwalsertal: German electricity tax and 19 % VAT. Not included: winter low-price window, flexible grid connections, feed-in, later start at the grid operator (until 30 June 2028).",
+    "Tariff 2026: prices of the selected grid area, grid level 7 without power metering (SNE-V 2018 as amended by BGBl. II No. 305/2025). Metering fee from the price sheet of the grid operator. Netz Oberösterreich does not publish a value, so we use the maximum price of 2.40 €/month (SNE-V 2018 § 10). From 2027: structure per SNE-G-V (BGBl. II No. 299/2026). 2027 prices per grid area from the draft SNE-T-V 2027 (29 October 2026), derived from E-Control tables and charts. Final stage from 2029: same change as in the E-Control model, 2028 in the middle. Monthly peak = highest quarter-hour value × 4 (average over 15 minutes), rounded to 2 decimals, at least 2 kW. Above 10 kW, 1.5 times the price applies. From 2027 no metering fee. January–November 2027: flat fee €82.80/year and a separate energy price, no capacity price (§ 6 (3a)). From December 2027 capacity price without flat fee. Grid loss fee of the grid area, summer low-price window (−20 %, April–September 10:00–16:00), levies (electricity tax, renewable energy contribution and flat fee, local levies: Vienna usage tax 7 %, Salzburg usage tax 0.3789 ct/kWh, Klagenfurt Benützungsabgabe 1.637 ct/kWh) and VAT 20 % as in 2026. Kleinwalsertal: German electricity tax and 19 % VAT. Not included: winter low-price window, flexible grid connections, feed-in, later start at the grid operator (until 30 June 2028).",
   "assumptions.updated": "Tariff data as of {date}",
 
   "calc.title": "How we calculate",

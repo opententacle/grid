@@ -39,11 +39,19 @@ export interface CapacityPrice {
   thresholdKw: number;
   /** Lowest billed peak in kW */
   minKw: number;
-  /**
-   * Transition rule (SNE-G-V § 6 Abs. 3a): in months 1 to this month, one price
-   * (lowEurKwYear) applies to the whole peak, without threshold and without minimum.
-   */
-  uniformUntilMonth?: number;
+}
+
+/**
+ * Old structure in the transition (SNE-G-V § 6 Abs. 3a, § 7 Abs. 4a): in months 1 to
+ * `untilMonth`, a customer without power measurement pays a flat fee and a separate energy price.
+ */
+export interface OldSystem {
+  /** Last calendar month (1..12) of the old structure */
+  untilMonth: number;
+  /** Energy price ct/kWh in the old structure */
+  energyCt: number;
+  /** Flat fee €/year in the old structure */
+  flatFeeYear: number;
 }
 
 export interface Levies {
@@ -75,6 +83,8 @@ export interface Tariff {
   /** Pauschale €/year (used when no capacity price applies) */
   flatFeeYear: number;
   capacity?: CapacityPrice;
+  /** Transition: months that still use the old structure */
+  oldSystem?: OldSystem;
   /** Messentgelt €/month */
   meterEurMonth: number;
   /** Share of energyCt removed inside the SNAP window */

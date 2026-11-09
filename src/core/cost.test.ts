@@ -3,6 +3,8 @@ import { capacityChargeMonth, monthCost, yearCost, yearWindow } from "./cost";
 import {
   areaForCode,
   EAG_2026,
+  FLAT_FEE_2027,
+  finalStage,
   GRID_AREAS,
   gridAreaById,
   tariffAt,
@@ -35,24 +37,40 @@ function month(over: Partial<MonthStats> = {}): MonthStats {
 const NO_ENERGY = { priceCt: 0, baseFeeMonth: 0 };
 
 describe("tariffs", () => {
-  it("has a phased model from 2027 to the final stage 2029", () => {
+  it("has the Wien draft values for 2027 and a phased path to the final stage 2029", () => {
     const years = WIENER_NETZE_TARIFFS.map((t) => [t.year, t.energyCt, t.capacity?.lowEurKwYear]);
     expect(years).toEqual([
       [2026, 6.98, undefined],
-      [2027, 7.36, 19],
-      [2028, 5.95, 26.41],
-      [2029, 4.53, 33.82],
-      [2030, 4.53, 33.82],
+      [2027, 5.47, 29.52],
+      [2028, 4.84, 30.45],
+      [2029, 4.2, 31.38],
+      [2030, 4.2, 31.38],
     ]);
-    expect(t2030.capacity?.highEurKwYear).toBe(67.64);
+    // SNE-T-V 2027 draft, Netzbereich Wien: 246 and 369 ct/kW per month
+    expect(t2027.capacity?.lowEurKwYear).toBeCloseTo((246 * 12) / 100);
+    expect(t2027.capacity?.highEurKwYear).toBeCloseTo((369 * 12) / 100);
+    expect(t2030.capacity?.highEurKwYear).toBe(47.07);
   });
 
-  it("has no metering fee and no flat fee from 2027 (SNE-G-V § 5 Abs. 1)", () => {
+  it("uses the old structure from January to November 2027 (SNE-G-V § 6 Abs. 3a)", () => {
+    expect(t2027.oldSystem).toEqual({ untilMonth: 11, energyCt: 6.49, flatFeeYear: FLAT_FEE_2027 });
+    expect(FLAT_FEE_2027).toBe(54 + 12 * 2.4);
+    for (const t of WIENER_NETZE_TARIFFS.filter((x) => x.year >= 2028)) {
+      expect(t.oldSystem).toBeUndefined();
+    }
+  });
+
+  it("has no metering fee and no flat fee in the new structure (SNE-G-V § 5 Abs. 1)", () => {
     for (const t of WIENER_NETZE_TARIFFS.filter((x) => x.year >= 2027)) {
       expect(t.meterEurMonth).toBe(0);
       expect(t.flatFeeYear).toBe(0);
     }
     expect(t2026.meterEurMonth).toBe(2.18);
+  });
+
+  it("moves to the final stage like the E-Control model", () => {
+    // The model start stage itself must give the model final stage.
+    expect(finalStage(7.36, 19)).toEqual({ energyCt: 4.53, low: 33.82 });
   });
 
   it("selects the tariff valid at a date", () => {
@@ -95,12 +113,43 @@ describe("grid areas", () => {
     expect(GRID_AREAS.filter((a) => a.meterIsMaximum).map((a) => a.id)).toEqual(["ooe"]);
   });
 
-  it("uses the same E-Control model values from 2027 in all areas", () => {
-    const model = (id: string) =>
-      gridAreaById(id)
-        .tariffs.slice(1)
-        .map((t) => [t.year, t.energyCt, t.capacity, t.flatFeeYear, t.meterEurMonth]);
-    for (const a of GRID_AREAS) expect(model(a.id)).toEqual(model("wien"));
+  it("reproduces the E-Control tables for 3,500 kWh (press release 29.10.2026)", () => {
+    // ct/kWh net, grid use + grid loss; old structure / new structure with 4 kW
+    const table: Record<string, [number, number]> = {
+      wien: [9.56, 9.54],
+      burgenland: [10.81, 11.0],
+      kaernten: [13.6, 12.98],
+      klagenfurt: [9.27, 9.53],
+      noe: [10.16, 9.71],
+      ooe: [9.36, 9.06],
+      linz: [8.66, 8.91],
+      salzburg: [9.28, 8.36],
+      steiermark: [11.01, 11.06],
+      graz: [8.47, 8.8],
+      tirol: [9.56, 8.65],
+      innsbruck: [11.31, 11.56],
+      vorarlberg: [7.06, 6.86],
+      kleinwalsertal: [19.39, 19.0],
+    };
+    expect(Object.keys(table)).toEqual(GRID_AREAS.map((a) => a.id));
+    for (const a of GRID_AREAS) {
+      const t = tariffFor(a.tariffs, 2027);
+      const old = t.oldSystem;
+      if (!old || !t.capacity) throw new Error(a.id);
+      const oldCt = old.energyCt + t.lossCt + (old.flatFeeYear / 3500) * 100;
+      const newCt = t.energyCt + t.lossCt + ((4 * t.capacity.lowEurKwYear) / 3500) * 100;
+      expect(Math.abs(oldCt - table[a.id][0]), a.id).toBeLessThan(0.006);
+      expect(Math.abs(newCt - table[a.id][1]), a.id).toBeLessThan(0.012);
+    }
+  });
+
+  it("uses 1.5 times the price above 10 kW in all areas", () => {
+    for (const a of GRID_AREAS) {
+      for (const t of a.tariffs.filter((x) => x.capacity)) {
+        const c = t.capacity;
+        expect(c && c.highEurKwYear / c.lowEurKwYear, `${a.id} ${t.year}`).toBeCloseTo(1.5, 2);
+      }
+    }
   });
 
   it("keeps the grid loss fee and levies of the area from 2027", () => {
@@ -178,25 +227,24 @@ describe("grid areas", () => {
 });
 
 describe("capacityChargeMonth", () => {
-  it("uses one price without threshold and minimum from January to November 2027", () => {
-    expect(capacityChargeMonth(12, t2027, 1)).toBeCloseTo((12 * 19) / 12);
-    expect(capacityChargeMonth(0.5, t2027, 11)).toBeCloseTo((0.5 * 19) / 12);
-    expect(capacityChargeMonth(0, t2027, 6)).toBe(0);
+  it("uses the flat fee from January to November 2027, whatever the peak", () => {
+    expect(capacityChargeMonth(12, t2027, 1)).toBeCloseTo(82.8 / 12);
+    expect(capacityChargeMonth(0.5, t2027, 11)).toBeCloseTo(82.8 / 12);
   });
 
-  it("uses threshold and minimum again from December 2027", () => {
-    expect(capacityChargeMonth(12, t2027, 12)).toBeCloseTo((10 * 19 + 2 * 38) / 12);
-    expect(capacityChargeMonth(0.5, t2027, 12)).toBeCloseTo((2 * 19) / 12);
+  it("uses the capacity price with threshold and minimum from December 2027", () => {
+    expect(capacityChargeMonth(12, t2027, 12)).toBeCloseTo((10 * 29.52 + 2 * 44.28) / 12);
+    expect(capacityChargeMonth(0.5, t2027, 12)).toBeCloseTo((2 * 29.52) / 12);
   });
 
   it("uses the flat fee before 2027", () => {
     expect(capacityChargeMonth(12, t2026)).toBeCloseTo(54 / 12);
   });
   it("bills at least 2 kW", () => {
-    expect(capacityChargeMonth(0.5, t2030)).toBeCloseTo((2 * 33.82) / 12);
+    expect(capacityChargeMonth(0.5, t2030)).toBeCloseTo((2 * 31.38) / 12);
   });
-  it("doubles the price above 10 kW", () => {
-    expect(capacityChargeMonth(12, t2030)).toBeCloseTo((10 * 33.82 + 2 * 67.64) / 12);
+  it("uses the higher price above 10 kW", () => {
+    expect(capacityChargeMonth(12, t2030)).toBeCloseTo((10 * 31.38 + 2 * 47.07) / 12);
   });
 });
 
@@ -221,10 +269,12 @@ describe("monthCost", () => {
   });
 
   it("uses the calendar month of the data for the 2027 transition rule", () => {
-    const jan = monthCost(month({ month: 1, peakKw: 12 }), t2027, NO_ENERGY);
-    const dec = monthCost(month({ month: 12, peakKw: 12 }), t2027, NO_ENERGY);
-    expect(jan.gridCapacity).toBeCloseTo(19);
-    expect(dec.gridCapacity).toBeCloseTo((10 * 19 + 2 * 38) / 12);
+    const jan = monthCost(month({ month: 1, kwh: 100, peakKw: 12 }), t2027, NO_ENERGY);
+    const dec = monthCost(month({ month: 12, kwh: 100, peakKw: 12 }), t2027, NO_ENERGY);
+    expect(jan.gridCapacity).toBeCloseTo(82.8 / 12);
+    expect(jan.gridEnergy).toBeCloseTo((100 * (6.49 + 0.7)) / 100);
+    expect(dec.gridCapacity).toBeCloseTo((10 * 29.52 + 2 * 44.28) / 12);
+    expect(dec.gridEnergy).toBeCloseTo((100 * (5.47 + 0.7)) / 100);
   });
 
   it("prorates fixed fees for partial months", () => {
@@ -267,8 +317,8 @@ describe("yearCost", () => {
       t2030,
       NO_ENERGY,
     ).total.gridCapacity;
-    expect(low).toBeCloseTo(4 * 33.82);
-    expect(high).toBeCloseTo(10 * 33.82 + 67.64);
+    expect(low).toBeCloseTo(4 * 31.38);
+    expect(high).toBeCloseTo(10 * 31.38 + 47.07);
   });
 });
 

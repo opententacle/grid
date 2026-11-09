@@ -13,11 +13,27 @@ export const ZERO_COST: CostBreakdown = {
   gross: 0,
 };
 
-/** Capacity charge in € for the peak (kW) of one calendar month (1..12). */
-export function capacityChargeMonth(peakKw: number, t: Tariff, month = 12): number {
+/**
+ * Tariff that applies in one calendar month (1..12). In the transition months the old structure
+ * applies: flat fee and old energy price, no capacity price (SNE-G-V § 6 Abs. 3a, § 7 Abs. 4a).
+ */
+export function tariffInMonth(t: Tariff, month: number): Tariff {
+  const old = t.oldSystem;
+  if (!old || month > old.untilMonth) return t;
+  return {
+    ...t,
+    energyCt: old.energyCt,
+    flatFeeYear: old.flatFeeYear,
+    capacity: undefined,
+    oldSystem: undefined,
+  };
+}
+
+/** Capacity charge (or flat fee) in € for the peak (kW) of one calendar month (1..12). */
+export function capacityChargeMonth(peakKw: number, tariff: Tariff, month = 12): number {
+  const t = tariffInMonth(tariff, month);
   if (!t.capacity) return t.flatFeeYear / 12;
   const c = t.capacity;
-  if (c.uniformUntilMonth && month <= c.uniformUntilMonth) return (peakKw * c.lowEurKwYear) / 12;
   const p = Math.max(peakKw, c.minKw);
   const low = Math.min(p, c.thresholdKw) * c.lowEurKwYear;
   const high = Math.max(p - c.thresholdKw, 0) * c.highEurKwYear;
@@ -25,7 +41,8 @@ export function capacityChargeMonth(peakKw: number, t: Tariff, month = 12): numb
 }
 
 /** Cost of one month. A partial month is billed with its share of the fixed monthly fees. */
-export function monthCost(m: MonthStats, t: Tariff, contract: EnergyContract): CostBreakdown {
+export function monthCost(m: MonthStats, tariff: Tariff, contract: EnergyContract): CostBreakdown {
+  const t = tariffInMonth(tariff, m.month);
   const share = Math.min(1, m.readings / m.expectedReadings);
   const energy = (m.kwh * contract.priceCt) / 100 + contract.baseFeeMonth * share;
   const gridEnergy =

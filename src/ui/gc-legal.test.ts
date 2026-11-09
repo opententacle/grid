@@ -33,7 +33,14 @@ describe("gc-legal", () => {
     expect($(el, "h1").textContent).toBe("So rechnet der Netzkosten-Rechner");
     expect($$(el, "section")).toHaveLength(9);
     const header = $$(el, "#prices thead th").map((th) => th.textContent);
-    expect(header).toEqual(["Position", "2027*", "2028*", "2029*", "2030*"]);
+    expect(header).toHaveLength(7);
+    expect(header[0]).toBe("Netzbereich");
+    const prices = $$(el, "#prices tbody tr").map((tr) =>
+      [...tr.querySelectorAll("td")].map((td) => td.textContent?.trim()),
+    );
+    expect(prices).toHaveLength(14);
+    expect(prices[0]).toEqual(["Wien", "6,49", "5,47", "29,52", "44,28", "4,20", "31,38"]);
+    expect($(el, "#prices .muted").textContent).toContain("82,80");
     const areas = $$(el, "#today tbody tr").map((tr) =>
       [...tr.querySelectorAll("td")].map((td) => td.textContent?.replace(/\s+/g, " ").trim()),
     );

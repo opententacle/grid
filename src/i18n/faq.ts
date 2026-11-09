@@ -61,9 +61,18 @@ const de: FaqText = {
       points: ["Leistungspreis auf Netzebene 7 (§ 6 Abs. 3b)"],
     },
     {
+      date: "29.10.2026",
+      title: "Entwurf der Tarifverordnung (SNE-T-V 2027)",
+      points: [
+        "Preise 2027 je Netzbereich",
+        "Begutachtung bis 20.11.2026",
+        "App: Werte aus dem Entwurf",
+      ],
+    },
+    {
       date: "Dez. 2026",
-      title: "Tarifverordnung (SNE-T-V) erwartet",
-      points: ["Preise je Netzbereich", "Bis dahin: Modellwerte der E-Control"],
+      title: "Tarifverordnung (SNE-T-V 2027) erwartet",
+      points: ["Endgültige Preise 2027"],
       plan: true,
     },
     {
@@ -71,7 +80,6 @@ const de: FaqText = {
       title: "Neue Struktur in Kraft",
       points: [
         "Leistungspreis + Arbeitspreis (§ 5 Abs. 1)",
-        "Pauschale entfällt",
         "Messentgelt entfällt",
         "Spitze = höchster Viertelstundenwert im Monat (§ 3 Abs. 1)",
       ],
@@ -79,7 +87,11 @@ const de: FaqText = {
     {
       date: "1.1.–30.11.2027",
       title: "Übergang Netzebene 7",
-      points: ["Ein Preis je kW (§ 6 Abs. 3a)", "Keine 10-kW-Staffel", "Kein 2-kW-Minimum"],
+      points: [
+        "Ohne Leistungsmessung: Pauschale je Zählpunkt (§ 6 Abs. 3a Z 1)",
+        "Eigener Arbeitspreis (§ 7 Abs. 4a)",
+        "Entwurf: Pauschale 82,80 €/Jahr",
+      ],
     },
     {
       date: "1.10.2027",
@@ -94,7 +106,8 @@ const de: FaqText = {
       date: "1.12.2027",
       title: "Reguläres Modell",
       points: [
-        "Eigener Preis über 10 kW (§ 6 Abs. 2), Modell: doppelt",
+        "Leistungspreis statt Pauschale",
+        "Eigener Preis über 10 kW (§ 6 Abs. 2), Entwurf: 1,5-fach",
         "Mindestens 2 kW (§ 6 Abs. 3)",
       ],
     },
@@ -136,7 +149,7 @@ const de: FaqText = {
       id: "operators",
       q: "Funktioniert der Rechner für ganz Österreich?",
       a: [
-        "Ja. Die neuen Regeln gelten für alle Netzbetreiber in Österreich. Die Preise ab 2027 sind Modellwerte der E-Control für ganz Österreich.",
+        "Ja. Die neuen Regeln gelten für alle Netzbetreiber in Österreich. Die Preise 2027 kommen je Netzbereich aus dem Entwurf der Tarifverordnung.",
         "Die Preise für 2026 („heute“) hängen vom Netzbereich ab. Die App kennt alle 14 Netzbereiche der SNE-V 2018.",
         "Die App erkennt den Netzbereich aus der Zählpunktnummer in Ihrer Datei. Die Nummer beginnt mit dem Code des Netzbetreibers, zum Beispiel AT001000 für Wiener Netze. Hat Ihre Datei keine Zählpunktnummer, wählen Sie den Netzbereich in Schritt 3.",
         "Ihr Netzbetreiber ist ein kleines Unternehmen, zum Beispiel ein Stadtwerk? Dann gelten die Preise Ihres Netzbereichs. Meist ist das Ihr Bundesland. Nur das Messentgelt kann anders sein.",
@@ -180,9 +193,9 @@ const de: FaqText = {
       id: "fees",
       q: "Fallen Pauschale und Messentgelt weg?",
       a: [
-        "Ja, ab 2027. Das Netznutzungsentgelt hat dann nur einen Leistungspreis und einen Arbeitspreis.",
-        "Ein Messentgelt kommt in der Verordnung nicht mehr vor.",
-        "Die Kosten stecken im Leistungspreis. Die E-Control rechnet 54 € Pauschale und 28,80 € Messentgelt in den Startwert von rund 19 €/kW ein.",
+        "Das Messentgelt fällt ab 2027 weg. Die Pauschale fällt weg, sobald der Leistungspreis gilt (laut App ab Dezember 2027).",
+        "Bis dahin steigt die Pauschale laut Entwurf von 54 € auf 82,80 € je Jahr. Das sind 54 € plus 12 × 2,40 € Messentgelt.",
+        "Danach stecken die Kosten im Leistungspreis.",
         "Das Netzverlustentgelt bleibt (ct/kWh).",
       ],
       ref: "§ 2 Abs. 1 Z 11, § 5 Abs. 1, § 12",
@@ -191,12 +204,12 @@ const de: FaqText = {
       id: "transition",
       q: "Was gilt von Jänner bis November 2027?",
       a: [
-        "Ein Übergang für Netzebene 7: ein einheitlicher Preis je kW für die ganze Spitze.",
-        "Es gibt keine 10-kW-Staffel und kein Minimum von 2 kW.",
-        "Ab Dezember 2027 gilt das reguläre Modell.",
-        "Die App rechnet so. Als Preis nimmt sie den Startwert der E-Control.",
+        "Ein Übergang für Netzebene 7. Haushalte ohne Leistungsmessung zahlen eine Pauschale je Zählpunkt und einen eigenen Arbeitspreis.",
+        "Die Spitze zählt in dieser Zeit nicht.",
+        "Kunden mit Leistungsmessung zahlen einen einheitlichen Preis je kW. Die App rechnet für Haushalte ohne Leistungsmessung.",
+        "Ab Dezember 2027 gilt der Leistungspreis. Ihr Netzbereich kann den Termin bis 30. Juni 2028 verschieben.",
       ],
-      ref: "§ 6 Abs. 3a",
+      ref: "§ 6 Abs. 3a und 3b, § 7 Abs. 4a",
     },
     {
       id: "start",
@@ -256,8 +269,9 @@ const de: FaqText = {
       q: "Warum sind die Preise ab 2027 nur Schätzungen?",
       a: [
         "Die SNE-G-V regelt nur die Struktur.",
-        "Die Preise kommen mit der Tarifverordnung (SNE-T-V), erwartet im Dezember 2026.",
-        "Bis dahin nutzt die App die Modellwerte der E-Control. Sie gelten für ganz Österreich.",
+        "Die Preise kommen mit der Tarifverordnung (SNE-T-V 2027). Seit 29. Oktober 2026 gibt es einen Entwurf. Die endgültige Fassung kommt im Dezember 2026.",
+        "Der Text des Entwurfs ist nicht online. Die App berechnet die Preise aus den Tabellen und Grafiken der E-Control. Für Wien stimmen sie mit dem Entwurf überein.",
+        "Für 2028 und später gibt es noch keine Preise. Die App schätzt sie nach dem Modell der E-Control.",
       ],
       ref: "§ 1 Abs. 1, § 6 Abs. 2",
     },
@@ -294,9 +308,18 @@ const en: FaqText = {
       points: ["Capacity price on grid level 7 (§ 6 (3b))"],
     },
     {
+      date: "29 Oct 2026",
+      title: "Draft tariff regulation (SNE-T-V 2027)",
+      points: [
+        "2027 prices per grid area",
+        "Review until 20 Nov 2026",
+        "App: values from the draft",
+      ],
+    },
+    {
       date: "Dec 2026",
-      title: "Tariff regulation (SNE-T-V) expected",
-      points: ["Prices per grid area", "Until then: E-Control model values"],
+      title: "Tariff regulation (SNE-T-V 2027) expected",
+      points: ["Final 2027 prices"],
       plan: true,
     },
     {
@@ -304,7 +327,6 @@ const en: FaqText = {
       title: "New structure in force",
       points: [
         "Capacity price + energy price (§ 5 (1))",
-        "No flat fee",
         "No metering fee",
         "Peak = highest quarter-hour value in the month (§ 3 (1))",
       ],
@@ -312,7 +334,11 @@ const en: FaqText = {
     {
       date: "1 Jan – 30 Nov 2027",
       title: "Transition on grid level 7",
-      points: ["One price per kW (§ 6 (3a))", "No 10 kW threshold", "No 2 kW minimum"],
+      points: [
+        "Without power metering: flat fee per meter (§ 6 (3a) no. 1)",
+        "Separate energy price (§ 7 (4a))",
+        "Draft: flat fee €82.80/year",
+      ],
     },
     {
       date: "1 Oct 2027",
@@ -326,7 +352,11 @@ const en: FaqText = {
     {
       date: "1 Dec 2027",
       title: "Regular model",
-      points: ["Own price above 10 kW (§ 6 (2)), model: double", "At least 2 kW (§ 6 (3))"],
+      points: [
+        "Capacity price instead of the flat fee",
+        "Own price above 10 kW (§ 6 (2)), draft: 1.5 times",
+        "At least 2 kW (§ 6 (3))",
+      ],
     },
     {
       date: "31 Dec 2027",
@@ -366,7 +396,7 @@ const en: FaqText = {
       id: "operators",
       q: "Does the calculator work for all of Austria?",
       a: [
-        "Yes. The new rules apply to all grid operators in Austria. The prices from 2027 are E-Control model values for all of Austria.",
+        "Yes. The new rules apply to all grid operators in Austria. The 2027 prices of each grid area come from the draft tariff regulation.",
         "The prices for 2026 (“today”) depend on the grid area. The app knows all 14 grid areas of the SNE-V 2018.",
         "The app finds the grid area from the metering point number in your file. The number starts with the code of the grid operator, for example AT001000 for Wiener Netze. If your file has no metering point number, select the grid area in step 3.",
         "Is your grid operator a small company, for example a municipal utility? Then the prices of your grid area apply. Usually this is your federal state. Only the metering fee can be different.",
@@ -410,9 +440,9 @@ const en: FaqText = {
       id: "fees",
       q: "Do the flat fee and the metering fee end?",
       a: [
-        "Yes, from 2027. The grid usage fee then has only a capacity price and an energy price.",
-        "The regulation has no metering fee any more.",
-        "The costs are part of the capacity price. E-Control puts the €54 flat fee and the €28.80 metering fee into the start value of about €19/kW.",
+        "The metering fee ends in 2027. The flat fee ends when the capacity price starts (in the app: December 2027).",
+        "Until then, the draft raises the flat fee from €54 to €82.80 per year. That is €54 plus 12 × €2.40 metering fee.",
+        "After that, the costs are part of the capacity price.",
         "The grid loss fee stays (ct/kWh).",
       ],
       ref: "§ 2 (1) no. 11, § 5 (1), § 12",
@@ -421,12 +451,12 @@ const en: FaqText = {
       id: "transition",
       q: "What applies from January to November 2027?",
       a: [
-        "A transition for grid level 7: one price per kW for the whole peak.",
-        "There is no 10 kW threshold and no 2 kW minimum.",
-        "From December 2027, the regular model applies.",
-        "The app calculates this. As the price, it uses the E-Control start value.",
+        "A transition for grid level 7. Households without power metering pay a flat fee per meter and a separate energy price.",
+        "The peak does not count in this period.",
+        "Customers with power metering pay one price per kW. The app calculates for households without power metering.",
+        "From December 2027, the capacity price applies. Your grid area can move this date until 30 June 2028.",
       ],
-      ref: "§ 6 (3a)",
+      ref: "§ 6 (3a) and (3b), § 7 (4a)",
     },
     {
       id: "start",
@@ -486,8 +516,9 @@ const en: FaqText = {
       q: "Why are the prices from 2027 only estimates?",
       a: [
         "The SNE-G-V sets only the structure.",
-        "The prices come with the tariff regulation (SNE-T-V), expected in December 2026.",
-        "Until then, the app uses the E-Control model values. They apply to all of Austria.",
+        "The prices come with the tariff regulation (SNE-T-V 2027). A draft exists since 29 October 2026. The final version comes in December 2026.",
+        "The draft text is not online. The app calculates the prices from the E-Control tables and charts. For Vienna they agree with the draft.",
+        "For 2028 and later there are no prices yet. The app estimates them with the E-Control model.",
       ],
       ref: "§ 1 (1), § 6 (2)",
     },

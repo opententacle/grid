@@ -67,22 +67,26 @@ const de: OpenText = {
     {
       id: "prices",
       q: "Wie hoch sind die Preise ab 2027 bei Wiener Netze?",
-      assumption: "Modellwerte der E-Control für ganz Österreich.",
-      impact: "Die Preise im Netzbereich Wien können höher oder niedriger sein.",
+      assumption:
+        "Werte aus dem Entwurf der SNE-T-V 2027 (29. Oktober 2026): Leistungspreis 2,46 € je kW und Monat bis 10 kW, 3,69 € darüber. Arbeitspreis aus den Tabellen der E-Control berechnet.",
+      impact: "Die endgültigen Preise können nach der Begutachtung anders sein.",
       who: ["econtrol"],
-      ref: "Tarifverordnung SNE-T-V (erwartet im Dezember 2026)",
+      ref: "Tarifverordnung SNE-T-V 2027 (erwartet im Dezember 2026)",
     },
     {
       id: "transition",
-      q: "Wie hoch ist der einheitliche Preis je kW von Jänner bis November 2027?",
-      assumption: "Der Startwert der E-Control: 19 € je kW und Jahr.",
-      who: ["econtrol"],
-      ref: "SNE-G-V § 6 Abs. 3a",
+      q: "Gilt der alte Tarif mit Pauschale von Jänner bis November 2027 auch für Haushalte mit Smart Meter?",
+      assumption:
+        "Ja. Haushalte ohne Leistungsmessung zahlen die Pauschale (82,80 € je Jahr) und den eigenen Arbeitspreis.",
+      impact:
+        "Gilt für Smart-Meter-Haushalte der einheitliche Preis je kW, zählt die Spitze schon ab Jänner.",
+      who: ["econtrol", "wienernetze"],
+      ref: "SNE-G-V § 6 Abs. 3a, § 7 Abs. 4a",
     },
     {
       id: "start",
       q: "Ab wann verrechnet Wiener Netze den Leistungspreis?",
-      assumption: "Ab 1. Jänner 2027, mit dem Übergang bis 30. November 2027.",
+      assumption: "Ab 1. Dezember 2027. Bis dahin gilt die Pauschale.",
       impact:
         "Der Übergang kann sich bis 30. Juni 2028 verschieben. Dann gelten länger andere Preise.",
       who: ["wienernetze", "econtrol"],
@@ -150,22 +154,26 @@ const en: OpenText = {
     {
       id: "prices",
       q: "What are the Wiener Netze prices from 2027?",
-      assumption: "E-Control model values for all of Austria.",
-      impact: "The prices in the Vienna grid area can be higher or lower.",
+      assumption:
+        "Values from the draft SNE-T-V 2027 (29 October 2026): capacity price €2.46 per kW and month up to 10 kW, €3.69 above. Energy price calculated from the E-Control tables.",
+      impact: "The final prices can be different after the review.",
       who: ["econtrol"],
-      ref: "Tariff regulation SNE-T-V (expected in December 2026)",
+      ref: "Tariff regulation SNE-T-V 2027 (expected in December 2026)",
     },
     {
       id: "transition",
-      q: "What is the single price per kW from January to November 2027?",
-      assumption: "The E-Control start value: €19 per kW and year.",
-      who: ["econtrol"],
-      ref: "SNE-G-V § 6 (3a)",
+      q: "Does the old tariff with flat fee from January to November 2027 also apply to households with a smart meter?",
+      assumption:
+        "Yes. Households without power metering pay the flat fee (€82.80 per year) and the separate energy price.",
+      impact:
+        "If the single price per kW applies to smart meter households, the peak counts from January.",
+      who: ["econtrol", "wienernetze"],
+      ref: "SNE-G-V § 6 (3a), § 7 (4a)",
     },
     {
       id: "start",
       q: "From when does Wiener Netze bill the capacity price?",
-      assumption: "From 1 January 2027, with the transition until 30 November 2027.",
+      assumption: "From 1 December 2027. Until then, the flat fee applies.",
       impact: "The transition can move until 30 June 2028. Then other prices apply for longer.",
       who: ["wienernetze", "econtrol"],
       ref: "SNE-G-V § 6 (3b)",
